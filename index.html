@@ -1,551 +1,782 @@
-import React, { useState } from 'react';
-import { 
-  MapPin, Calendar, DollarSign, Award, Users, TrendingUp, Smartphone, 
-  Search, ShieldCheck, ChevronRight, PlayCircle, BarChart3, Building, Briefcase
-} from 'lucide-react';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EventSpot - Pitch & Platform</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Babel for parsing JSX in the browser -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  
+  <!-- Import Maps to load React and Lucide Icons natively in the browser -->
+  <script type="importmap">
+    {
+      "imports": {
+        "react": "https://esm.sh/react@18.2.0",
+        "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
+        "lucide-react": "https://esm.sh/lucide-react@0.292.0?deps=react@18.2.0"
+      }
+    }
+  </script>
+</head>
+<body class="bg-[#0a0f1c] text-slate-300">
+  <!-- This is where React will inject the app -->
+  <div id="root"></div>
 
-export default function EventSpotApp() {
-  const [activeTab, setActiveTab] = useState('home');
+  <!-- React Application Code -->
+  <script type="text/babel" data-type="module">
+    import React, { useState, useEffect } from 'react';
+    import { createRoot } from 'react-dom/client';
+    import { 
+      MapPin, Calendar, DollarSign, Award, Users, TrendingUp, Smartphone, 
+      Search, ShieldCheck, ChevronRight, PlayCircle, BarChart3, Building, Briefcase,
+      Building2, Home, BookOpen, Monitor, Megaphone, LineChart, Sparkles, LayoutDashboard, Layers
+    } from 'lucide-react';
 
-  const navItems = [
-    { id: 'home', label: 'Home' },
-    { id: 'demo', label: 'App Demo' },
-    { id: 'business', label: 'Business Case' },
-    { id: 'financials', label: 'Financials' },
-    { id: 'team', label: 'Team Group 8' }
-  ];
+    function EventSpotApp() {
+      const [activeTab, setActiveTab] = useState('home');
+      const [isScrolled, setIsScrolled] = useState(false);
 
-  return (
-    <div className="min-h-screen bg-slate-50 font-sans text-slate-900">
-      {/* Navigation */}
-      <nav className="bg-white shadow-sm sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16 items-center">
-            <div className="flex items-center space-x-2 cursor-pointer" onClick={() => setActiveTab('home')}>
-              <MapPin className="h-8 w-8 text-indigo-600" />
-              <span className="font-bold text-2xl tracking-tight text-indigo-900">EventSpot</span>
+      useEffect(() => {
+        const handleScroll = () => setIsScrolled(window.scrollY > 20);
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+      }, []);
+
+      const navItems = [
+        { id: 'home', label: 'Overview' },
+        { id: 'demo', label: 'Interactive Demo' },
+        { id: 'business', label: 'Business Case' },
+        { id: 'financials', label: 'Pro Forma' },
+        { id: 'team', label: 'Group 8' }
+      ];
+
+      return (
+        <div className="min-h-screen bg-[#0a0f1c] font-sans text-slate-300 overflow-hidden selection:bg-indigo-500/30">
+          {/* Custom Styles for Animations & Glassmorphism */}
+          <style>{`
+            @keyframes float {
+              0%, 100% { transform: translateY(0px) rotate(0deg); }
+              50% { transform: translateY(-20px) rotate(2deg); }
+            }
+            @keyframes float-reverse {
+              0%, 100% { transform: translateY(0px) rotate(0deg); }
+              50% { transform: translateY(20px) rotate(-2deg); }
+            }
+            @keyframes pulse-glow {
+              0%, 100% { opacity: 0.4; transform: scale(1); }
+              50% { opacity: 0.7; transform: scale(1.05); }
+            }
+            .animate-float { animation: float 6s ease-in-out infinite; }
+            .animate-float-delayed { animation: float-reverse 7s ease-in-out infinite; }
+            .animate-glow { animation: pulse-glow 4s ease-in-out infinite; }
+            
+            .glass-panel {
+              background: rgba(255, 255, 255, 0.03);
+              backdrop-filter: blur(12px);
+              -webkit-backdrop-filter: blur(12px);
+              border: 1px solid rgba(255, 255, 255, 0.05);
+            }
+            .glass-panel-hover:hover {
+              background: rgba(255, 255, 255, 0.06);
+              border: 1px solid rgba(99, 102, 241, 0.3);
+              transform: translateY(-4px);
+              box-shadow: 0 10px 40px -10px rgba(99, 102, 241, 0.2);
+            }
+            .text-gradient {
+              background-clip: text;
+              -webkit-background-clip: text;
+              -webkit-text-fill-color: transparent;
+              background-image: linear-gradient(90deg, #818cf8, #c084fc);
+            }
+            
+            /* Custom Scrollbar for App Demo */
+            .hide-scrollbar::-webkit-scrollbar { display: none; }
+            .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+          `}</style>
+
+          {/* Global Background Ambient Glows */}
+          <div className="fixed top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-indigo-900/20 blur-[120px] pointer-events-none"></div>
+          <div className="fixed bottom-[-20%] right-[-10%] w-[40%] h-[50%] rounded-full bg-fuchsia-900/10 blur-[100px] pointer-events-none"></div>
+
+          {/* Navigation */}
+          <nav className={`fixed w-full z-50 transition-all duration-300 ${isScrolled ? 'glass-panel border-b-white/10 py-3' : 'bg-transparent py-5'}`}>
+            <div className="max-w-7xl mx-auto px-6 lg:px-12 flex justify-between items-center">
+              <div className="flex items-center space-x-3 cursor-pointer group" onClick={() => setActiveTab('home')}>
+                <div className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg shadow-indigo-500/30 group-hover:shadow-indigo-500/50 transition-all duration-300">
+                  <MapPin className="h-5 w-5 text-white" />
+                  <div className="absolute inset-0 rounded-xl border border-white/20"></div>
+                </div>
+                <span className="font-extrabold text-xl tracking-tight text-white">EventSpot</span>
+              </div>
+              
+              <div className="hidden md:flex bg-slate-900/50 p-1.5 rounded-full border border-white/5 backdrop-blur-md">
+                {navItems.map((item) => (
+                  <button
+                    key={item.id}
+                    onClick={() => setActiveTab(item.id)}
+                    className={`px-5 py-2 text-sm font-medium rounded-full transition-all duration-300 ${
+                      activeTab === item.id
+                        ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-md'
+                        : 'text-slate-400 hover:text-white hover:bg-white/5'
+                    }`}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
             </div>
-            <div className="hidden md:flex space-x-8">
-              {navItems.map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => setActiveTab(item.id)}
-                  className={`${
-                    activeTab === item.id
-                      ? 'text-indigo-600 border-b-2 border-indigo-600 font-semibold'
-                      : 'text-slate-500 hover:text-indigo-600'
-                  } px-1 py-2 text-sm font-medium transition-colors`}
-                >
-                  {item.label}
-                </button>
-              ))}
-            </div>
-            {/* Mobile menu button could go here, keeping simple for demo */}
-          </div>
+          </nav>
+
+          {/* Main Content Area */}
+          <main className="relative z-10 pt-32 pb-24 min-h-screen max-w-7xl mx-auto px-6 lg:px-12 flex flex-col justify-center">
+            {activeTab === 'home' && <HomeView setActiveTab={setActiveTab} />}
+            {activeTab === 'demo' && <DemoView />}
+            {activeTab === 'business' && <BusinessCaseView />}
+            {activeTab === 'financials' && <FinancialsView />}
+            {activeTab === 'team' && <TeamView />}
+          </main>
         </div>
-      </nav>
+      );
+    }
 
-      {/* Main Content Area */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {activeTab === 'home' && <HomeView setActiveTab={setActiveTab} />}
-        {activeTab === 'demo' && <DemoView />}
-        {activeTab === 'business' && <BusinessCaseView />}
-        {activeTab === 'financials' && <FinancialsView />}
-        {activeTab === 'team' && <TeamView />}
-      </main>
-
-      {/* Footer */}
-      <footer className="bg-indigo-900 text-indigo-100 py-8 mt-12">
-        <div className="max-w-7xl mx-auto px-4 text-center">
-          <MapPin className="h-8 w-8 text-indigo-400 mx-auto mb-4" />
-          <p className="font-semibold text-lg mb-2">EventSpot</p>
-          <p className="text-sm text-indigo-300">Created by AREC 323 - Group 8</p>
-          <p className="text-xs text-indigo-400 mt-4">Connecting small spaces, small groups, and small businesses in Edmonton.</p>
-        </div>
-      </footer>
-    </div>
-  );
-}
-
-/* =========================================
-   1. HOME VIEW
-========================================= */
-function HomeView({ setActiveTab }) {
-  return (
-    <div className="space-y-16 animate-in fade-in duration-500">
-      {/* Hero Section */}
-      <div className="relative bg-indigo-600 rounded-3xl overflow-hidden shadow-2xl">
-        <div className="absolute inset-0 bg-gradient-to-r from-indigo-700 to-indigo-500 opacity-90"></div>
-        <div className="relative z-10 px-8 py-16 md:py-24 md:px-16 flex flex-col items-center text-center">
-          <h1 className="text-4xl md:text-6xl font-extrabold text-white mb-6 tracking-tight">
-            Book unique spaces.<br />Find local sponsors.
-          </h1>
-          <p className="text-xl text-indigo-100 max-w-2xl mb-10">
-            The all‑in‑one event planning app for Edmonton. Stop juggling multiple websites. Find your perfect space, book instantly, and connect with small businesses to fund your next event.
-          </p>
-          <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
-            <button 
-              onClick={() => setActiveTab('demo')}
-              className="bg-white text-indigo-700 font-bold py-3 px-8 rounded-full shadow-lg hover:bg-indigo-50 transition flex items-center justify-center"
-            >
-              <PlayCircle className="mr-2 h-5 w-5" /> Try the App Demo
-            </button>
-            <button 
-              onClick={() => setActiveTab('business')}
-              className="bg-indigo-800 text-white font-bold py-3 px-8 rounded-full border border-indigo-500 hover:bg-indigo-700 transition"
-            >
-              View Business Pitch
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Problem & Solution */}
-      <div className="grid md:grid-cols-3 gap-8">
-        <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
-          <div className="bg-red-100 text-red-600 p-3 rounded-lg w-fit mb-4">
-            <ShieldCheck className="h-6 w-6" />
-          </div>
-          <h3 className="text-xl font-bold mb-3">The Problem</h3>
-          <p className="text-slate-600">
-            Booking spaces for small events and raising capital is a frustrating challenge. Students and organizers waste hours juggling phone calls, emails, and restrictive policies.
-          </p>
-        </div>
-        <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
-          <div className="bg-green-100 text-green-600 p-3 rounded-lg w-fit mb-4">
-            <Smartphone className="h-6 w-6" />
-          </div>
-          <h3 className="text-xl font-bold mb-3">Our Solution</h3>
-          <p className="text-slate-600">
-            An intuitive marketplace app. Rent underused spaces by the hour (like unrented apartments or large balconies), book instantly, and secure micro-sponsorships.
-          </p>
-        </div>
-        <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
-          <div className="bg-purple-100 text-purple-600 p-3 rounded-lg w-fit mb-4">
-            <Award className="h-6 w-6" />
-          </div>
-          <h3 className="text-xl font-bold mb-3">The Advantage</h3>
-          <p className="text-slate-600">
-            Loyalty rewards for recurring users, targeted awareness for local vendors, and a seamless mobile experience that traditional competitors like hotels simply don't offer.
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* =========================================
-   2. APP DEMO VIEW (Interactive)
-========================================= */
-function DemoView() {
-  const [role, setRole] = useState('renter'); // renter, leaser, sponsor
-
-  const dummySpaces = [
-    { id: 1, name: 'Spacious Downtown Balcony', type: 'Outdoor', price: '$45/hr', rating: '4.8', img: '🏙️' },
-    { id: 2, name: 'Unrented Strathcona Apartment', type: 'Indoor/Lounge', price: '$80/hr', rating: '5.0', img: '🛋️' },
-    { id: 3, name: 'Campus Study Hall (Sublet)', type: 'Academic', price: '$25/hr', rating: '4.5', img: '📚' },
-  ];
-
-  const dummyEvents = [
-    { id: 1, name: 'Engineering Student Mixer', attendees: '50-70', asking: '$150 Sponsorship', niche: 'Tech/Students' },
-    { id: 2, name: 'Local Art Pop-up', attendees: '100+', asking: '$300 Sponsorship', niche: 'Arts/Culture' },
-  ];
-
-  return (
-    <div className="animate-in fade-in duration-500">
-      <div className="text-center mb-8">
-        <h2 className="text-3xl font-bold text-slate-900 mb-2">EventSpot App Simulator</h2>
-        <p className="text-slate-500">Experience the user journey from three different perspectives.</p>
-      </div>
-
-      <div className="max-w-md mx-auto bg-slate-900 rounded-[2.5rem] p-3 shadow-2xl relative border-4 border-slate-800">
-        {/* Notch */}
-        <div className="absolute top-0 inset-x-0 h-6 flex justify-center z-20">
-          <div className="w-32 h-6 bg-slate-900 rounded-b-xl"></div>
-        </div>
-
-        {/* Screen */}
-        <div className="bg-slate-50 h-[700px] rounded-[2rem] overflow-hidden flex flex-col relative">
+    /* =========================================
+       1. HOME VIEW (Bespoke Pitch Hero)
+    ========================================= */
+    function HomeView({ setActiveTab }) {
+      return (
+        <div className="space-y-32 animate-in fade-in zoom-in-95 duration-700">
           
-          {/* App Header */}
-          <div className="bg-indigo-600 text-white pt-10 pb-4 px-6 shadow-md z-10">
-            <div className="flex justify-between items-center mb-4">
-              <span className="font-bold text-lg flex items-center"><MapPin className="h-5 w-5 mr-1"/> EventSpot</span>
-              <div className="bg-indigo-500 rounded-full p-1.5"><Users className="h-5 w-5"/></div>
-            </div>
-            
-            {/* Role Switcher */}
-            <div className="flex bg-indigo-700 rounded-lg p-1">
-              <button 
-                className={`flex-1 text-xs font-medium py-1.5 rounded-md transition ${role === 'renter' ? 'bg-white text-indigo-700' : 'text-indigo-100'}`}
-                onClick={() => setRole('renter')}
-              >Renter</button>
-              <button 
-                className={`flex-1 text-xs font-medium py-1.5 rounded-md transition ${role === 'leaser' ? 'bg-white text-indigo-700' : 'text-indigo-100'}`}
-                onClick={() => setRole('leaser')}
-              >Leaser</button>
-              <button 
-                className={`flex-1 text-xs font-medium py-1.5 rounded-md transition ${role === 'sponsor' ? 'bg-white text-indigo-700' : 'text-indigo-100'}`}
-                onClick={() => setRole('sponsor')}
-              >Sponsor</button>
-            </div>
-          </div>
-
-          {/* App Body Content */}
-          <div className="flex-1 overflow-y-auto p-4 pb-20 bg-slate-50">
-            
-            {/* RENTER VIEW */}
-            {role === 'renter' && (
-              <div className="animate-in slide-in-from-right-4 duration-300">
-                <div className="relative mb-6">
-                  <Search className="absolute left-3 top-2.5 h-5 w-5 text-slate-400" />
-                  <input type="text" placeholder="Search Edmonton spaces..." className="w-full pl-10 pr-4 py-2.5 rounded-xl border-none shadow-sm text-sm focus:ring-2 focus:ring-indigo-500 outline-none" />
-                </div>
-                <h3 className="font-bold text-slate-800 mb-3 text-sm">Recommended for you</h3>
-                <div className="space-y-4">
-                  {dummySpaces.map(space => (
-                    <div key={space.id} className="bg-white rounded-xl p-3 shadow-sm border border-slate-100 flex items-center space-x-4 hover:border-indigo-300 cursor-pointer transition">
-                      <div className="h-16 w-16 bg-indigo-50 rounded-lg flex items-center justify-center text-3xl">
-                        {space.img}
-                      </div>
-                      <div className="flex-1">
-                        <h4 className="font-semibold text-slate-800 text-sm">{space.name}</h4>
-                        <p className="text-xs text-slate-500">{space.type} • ⭐ {space.rating}</p>
-                        <p className="text-indigo-600 font-bold mt-1 text-sm">{space.price}</p>
-                      </div>
-                      <button className="bg-indigo-600 text-white p-2 rounded-lg"><ChevronRight className="h-4 w-4"/></button>
-                    </div>
-                  ))}
-                </div>
+          {/* Hero Split Layout */}
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            <div className="space-y-8 relative z-10">
+              <div className="inline-flex items-center space-x-2 glass-panel px-4 py-2 rounded-full border-indigo-500/30 border">
+                <Sparkles className="h-4 w-4 text-indigo-400" />
+                <span className="text-sm font-medium text-indigo-200">AREC 323 • Group 8 Project</span>
               </div>
-            )}
-
-            {/* LEASER VIEW */}
-            {role === 'leaser' && (
-              <div className="animate-in slide-in-from-right-4 duration-300">
-                <div className="bg-indigo-50 border border-indigo-100 rounded-xl p-4 text-center mb-6">
-                  <Building className="h-8 w-8 text-indigo-500 mx-auto mb-2" />
-                  <h3 className="font-bold text-slate-800 text-sm">Turn Empty Space into Cash</h3>
-                  <p className="text-xs text-slate-600 mt-1">List your unused apartment, balcony, or office space for hours at a time.</p>
-                </div>
-                <button className="w-full bg-indigo-600 text-white font-bold py-3 rounded-xl shadow-md mb-6">
-                  + Create New Listing
+              
+              <h1 className="text-5xl md:text-7xl font-extrabold text-white tracking-tight leading-[1.1]">
+                Unlock spaces.<br />
+                <span className="text-gradient">Fund your event.</span>
+              </h1>
+              
+              <p className="text-lg text-slate-400 max-w-xl leading-relaxed">
+                The all‑in‑one ecosystem for Edmonton. Stop juggling emails and rigid venue contracts. Find underused spaces instantly and connect with local sponsors to bring your vision to life.
+              </p>
+              
+              <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-6 pt-4">
+                <button 
+                  onClick={() => setActiveTab('demo')}
+                  className="relative group overflow-hidden rounded-full p-[1px]"
+                >
+                  <span className="absolute inset-0 bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-500 rounded-full animate-glow"></span>
+                  <div className="relative bg-[#0a0f1c] px-8 py-4 rounded-full flex items-center justify-center transition-all duration-300 group-hover:bg-opacity-0 group-hover:text-white">
+                    <Smartphone className="mr-3 h-5 w-5 text-indigo-400 group-hover:text-white transition-colors" /> 
+                    <span className="font-bold text-slate-200">Interactive Demo</span>
+                  </div>
                 </button>
-                <h3 className="font-bold text-slate-800 mb-3 text-sm">Your Active Listings</h3>
-                <div className="bg-white rounded-xl p-4 border border-dashed border-slate-300 text-center text-slate-500 text-sm">
-                  No active listings yet.
-                </div>
+                <button 
+                  onClick={() => setActiveTab('business')}
+                  className="px-8 py-4 rounded-full font-bold text-slate-300 border border-slate-700 hover:border-slate-500 hover:bg-slate-800 transition-all flex items-center justify-center"
+                >
+                  Business Pitch <ChevronRight className="ml-2 h-4 w-4" />
+                </button>
               </div>
-            )}
+            </div>
 
-            {/* SPONSOR VIEW */}
-            {role === 'sponsor' && (
-              <div className="animate-in slide-in-from-right-4 duration-300">
-                <div className="bg-purple-50 border border-purple-100 rounded-xl p-4 mb-6">
-                  <Briefcase className="h-6 w-6 text-purple-600 mb-2" />
-                  <h3 className="font-bold text-slate-800 text-sm">Grow Your Small Business</h3>
-                  <p className="text-xs text-slate-600 mt-1">Sponsor local student events. Get your logo on their banners and target specific demographics directly.</p>
-                </div>
-                <h3 className="font-bold text-slate-800 mb-3 text-sm">Events seeking sponsors</h3>
-                <div className="space-y-4">
-                  {dummyEvents.map(event => (
-                    <div key={event.id} className="bg-white rounded-xl p-4 shadow-sm border border-slate-100">
-                      <div className="flex justify-between items-start mb-2">
-                        <h4 className="font-bold text-slate-800 text-sm leading-tight">{event.name}</h4>
-                        <span className="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded-md">{event.asking}</span>
-                      </div>
-                      <div className="flex space-x-2 text-xs text-slate-500 mb-3">
-                        <span className="bg-slate-100 px-2 py-1 rounded">{event.attendees} attendees</span>
-                        <span className="bg-slate-100 px-2 py-1 rounded">{event.niche}</span>
-                      </div>
-                      <button className="w-full bg-purple-600 text-white text-xs font-bold py-2 rounded-lg hover:bg-purple-700">
-                        Offer Sponsorship
-                      </button>
+            {/* Abstract Hero Visual */}
+            <div className="relative h-[500px] hidden lg:block perspective-1000">
+              <div className="absolute inset-0 flex items-center justify-center">
+                {/* Floating Object 1 */}
+                <div className="absolute z-20 top-10 right-10 glass-panel p-6 rounded-2xl animate-float shadow-2xl shadow-indigo-500/20 border-t border-l border-white/20 transform rotate-12">
+                  <div className="flex items-center space-x-4 mb-4">
+                    <div className="h-10 w-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+                      <DollarSign className="h-5 w-5 text-white" />
                     </div>
-                  ))}
+                    <div>
+                      <div className="h-2 w-20 bg-slate-600 rounded-full mb-2"></div>
+                      <div className="h-2 w-12 bg-slate-700 rounded-full"></div>
+                    </div>
+                  </div>
+                  <div className="h-2 w-32 bg-indigo-500/50 rounded-full"></div>
+                </div>
+
+                {/* Floating Object 2 */}
+                <div className="absolute z-10 bottom-20 left-10 glass-panel p-5 rounded-2xl animate-float-delayed shadow-2xl shadow-purple-500/20 border-t border-l border-white/20 transform -rotate-6">
+                  <MapPin className="h-8 w-8 text-indigo-400 mb-3" />
+                  <div className="h-2 w-24 bg-slate-600 rounded-full mb-2"></div>
+                  <div className="h-2 w-16 bg-slate-700 rounded-full"></div>
+                </div>
+
+                {/* Central Abstract Ring */}
+                <svg viewBox="0 0 200 200" className="absolute w-80 h-80 animate-[spin_60s_linear_infinite] opacity-30">
+                  <defs>
+                    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#818cf8" />
+                      <stop offset="100%" stopColor="#c084fc" />
+                    </linearGradient>
+                  </defs>
+                  <circle cx="100" cy="100" r="90" fill="none" stroke="url(#grad1)" strokeWidth="1" strokeDasharray="10 5" />
+                  <circle cx="100" cy="100" r="70" fill="none" stroke="url(#grad1)" strokeWidth="2" strokeDasharray="20 10" opacity="0.5" />
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          {/* Problems & Solutions (Bento Grid Style) */}
+          <div className="grid md:grid-cols-3 gap-6">
+            <div className="glass-panel p-8 rounded-3xl glass-panel-hover transition-all duration-500">
+              <div className="w-12 h-12 rounded-xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center mb-6">
+                <ShieldCheck className="h-6 w-6 text-rose-400" />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-3">The Problem</h3>
+              <p className="text-slate-400 text-sm leading-relaxed">
+                Students and organizers waste hours juggling phone calls, emails, and restrictive policies just to find space and funding.
+              </p>
+            </div>
+            
+            <div className="glass-panel p-8 rounded-3xl glass-panel-hover transition-all duration-500 relative overflow-hidden group">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl group-hover:bg-emerald-500/20 transition-all"></div>
+              <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-6 relative z-10">
+                <Layers className="h-6 w-6 text-emerald-400" />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-3 relative z-10">Our Solution</h3>
+              <p className="text-slate-400 text-sm leading-relaxed relative z-10">
+                A frictionless marketplace. Rent underused spaces by the hour, book instantly, and secure micro-sponsorships seamlessly.
+              </p>
+            </div>
+            
+            <div className="glass-panel p-8 rounded-3xl glass-panel-hover transition-all duration-500">
+              <div className="w-12 h-12 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center mb-6">
+                <Award className="h-6 w-6 text-indigo-400" />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-3">The Advantage</h3>
+              <p className="text-slate-400 text-sm leading-relaxed">
+                Loyalty rewards, highly-targeted awareness for local vendors, and a modern mobile experience that legacy competitors lack.
+              </p>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    /* =========================================
+       2. APP DEMO VIEW (Custom UI & Animations)
+    ========================================= */
+    function DemoView() {
+      const [role, setRole] = useState('renter');
+
+      const spaces = [
+        { id: 1, name: 'Downtown Balcony', type: 'Outdoor', price: '$45', rating: '4.8', icon: Building2, color: 'text-blue-400', bg: 'bg-blue-500/10' },
+        { id: 2, name: 'Strathcona Lounge', type: 'Indoor', price: '$80', rating: '5.0', icon: Home, color: 'text-orange-400', bg: 'bg-orange-500/10' },
+        { id: 3, name: 'Campus Study Hall', type: 'Academic', price: '$25', rating: '4.5', icon: BookOpen, color: 'text-green-400', bg: 'bg-green-500/10' },
+      ];
+
+      const events = [
+        { id: 1, name: 'Engineering Mixer', attendees: '50-70', asking: '$150', niche: 'Tech' },
+        { id: 2, name: 'Local Art Pop-up', attendees: '100+', asking: '$300', niche: 'Culture' },
+      ];
+
+      return (
+        <div className="animate-in slide-in-from-bottom-8 duration-700">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-extrabold text-white mb-4 tracking-tight">Experience EventSpot</h2>
+            <p className="text-slate-400">Toggle roles to explore the dual-sided marketplace dynamic.</p>
+          </div>
+
+          <div className="flex flex-col md:flex-row items-center justify-center gap-12">
+            
+            {/* Context Text */}
+            <div className="w-full md:w-1/3 space-y-8 order-2 md:order-1">
+              <div className={`transition-all duration-500 ${role === 'renter' ? 'opacity-100 scale-100' : 'opacity-30 scale-95 cursor-pointer'}`} onClick={() => setRole('renter')}>
+                <h3 className="text-xl font-bold text-white mb-2 flex items-center"><Search className="mr-2 text-indigo-400 h-5 w-5"/> The Renter</h3>
+                <p className="text-sm text-slate-400">Find the perfect niche space for hours, not days. Bypass hotel bureaucracy and secure immediate booking.</p>
+              </div>
+              <div className={`transition-all duration-500 ${role === 'leaser' ? 'opacity-100 scale-100' : 'opacity-30 scale-95 cursor-pointer'}`} onClick={() => setRole('leaser')}>
+                <h3 className="text-xl font-bold text-white mb-2 flex items-center"><Building className="mr-2 text-emerald-400 h-5 w-5"/> The Leaser</h3>
+                <p className="text-sm text-slate-400">Monetize your unrented apartment, massive balcony, or closed retail space during off-hours easily.</p>
+              </div>
+              <div className={`transition-all duration-500 ${role === 'sponsor' ? 'opacity-100 scale-100' : 'opacity-30 scale-95 cursor-pointer'}`} onClick={() => setRole('sponsor')}>
+                <h3 className="text-xl font-bold text-white mb-2 flex items-center"><Briefcase className="mr-2 text-purple-400 h-5 w-5"/> The Sponsor</h3>
+                <p className="text-sm text-slate-400">Small businesses can directly fund micro-events for hyper-targeted local marketing and brand awareness.</p>
+              </div>
+            </div>
+
+            {/* Realistic Phone Device */}
+            <div className="order-1 md:order-2 relative w-[340px] h-[720px]">
+              {/* Ambient Glow behind phone */}
+              <div className="absolute inset-0 bg-indigo-500/30 blur-[60px] rounded-[3rem]"></div>
+              
+              {/* Hardware Frame */}
+              <div className="absolute inset-0 bg-slate-900 border-[10px] border-slate-800 rounded-[3.5rem] shadow-2xl overflow-hidden ring-1 ring-white/10 flex flex-col z-10">
+                
+                {/* Dynamic Island / Notch */}
+                <div className="absolute top-2 inset-x-0 h-7 flex justify-center z-50 pointer-events-none">
+                  <div className="w-28 bg-black rounded-full shadow-inner flex items-center justify-between px-3">
+                    <div className="w-2 h-2 rounded-full bg-indigo-500/20"></div>
+                    <div className="w-2 h-2 rounded-full bg-emerald-500/20"></div>
+                  </div>
+                </div>
+
+                {/* App UI Canvas */}
+                <div className="flex-1 bg-[#0f1523] text-slate-200 overflow-hidden flex flex-col relative mt-8 rounded-t-3xl">
+                  
+                  {/* App Header */}
+                  <div className="pt-6 pb-4 px-6 relative z-20 bg-[#0f1523]/90 backdrop-blur-md border-b border-white/5">
+                    <div className="flex justify-between items-center mb-6">
+                      <span className="font-extrabold text-lg flex items-center tracking-tight text-white">
+                        <MapPin className="h-5 w-5 mr-1.5 text-indigo-400"/> EventSpot
+                      </span>
+                      <div className="h-8 w-8 rounded-full bg-indigo-500/20 flex items-center justify-center border border-indigo-500/30">
+                        <Users className="h-4 w-4 text-indigo-300"/>
+                      </div>
+                    </div>
+                    
+                    {/* Role Switcher in UI */}
+                    <div className="flex bg-slate-800/50 rounded-xl p-1 border border-white/5">
+                      <button onClick={() => setRole('renter')} className={`flex-1 text-[11px] font-bold py-2 rounded-lg transition-all duration-300 ${role === 'renter' ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-400'}`}>RENTER</button>
+                      <button onClick={() => setRole('leaser')} className={`flex-1 text-[11px] font-bold py-2 rounded-lg transition-all duration-300 ${role === 'leaser' ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-400'}`}>LEASER</button>
+                      <button onClick={() => setRole('sponsor')} className={`flex-1 text-[11px] font-bold py-2 rounded-lg transition-all duration-300 ${role === 'sponsor' ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-400'}`}>SPONSOR</button>
+                    </div>
+                  </div>
+
+                  {/* Dynamic Content Area */}
+                  <div className="flex-1 overflow-y-auto hide-scrollbar p-5 pb-24 relative z-10">
+                    
+                    {/* RENTER VIEW */}
+                    <div className={`transition-all duration-500 absolute w-full px-5 left-0 ${role === 'renter' ? 'opacity-100 translate-x-0 pointer-events-auto' : 'opacity-0 translate-x-8 pointer-events-none'}`}>
+                      <div className="relative mb-6">
+                        <Search className="absolute left-4 top-3.5 h-4 w-4 text-slate-500" />
+                        <input type="text" placeholder="Search spaces in YEG..." disabled className="w-full bg-slate-800/50 pl-11 pr-4 py-3 rounded-2xl border border-white/5 text-sm outline-none placeholder:text-slate-500 text-white" />
+                      </div>
+                      <h3 className="font-bold text-white mb-4 text-sm tracking-wide">TOP PICKS FOR YOU</h3>
+                      <div className="space-y-3">
+                        {spaces.map((space, i) => (
+                          <div key={space.id} className="bg-slate-800/40 rounded-2xl p-3 border border-white/5 flex items-center space-x-4 animate-in slide-in-from-right-8" style={{ animationDelay: `${i * 100}ms` }}>
+                            <div className={`h-12 w-12 rounded-xl flex items-center justify-center ${space.bg}`}>
+                              <space.icon className={`h-6 w-6 ${space.color}`} />
+                            </div>
+                            <div className="flex-1">
+                              <h4 className="font-bold text-white text-sm">{space.name}</h4>
+                              <p className="text-[11px] text-slate-400 mt-0.5">{space.type} • ⭐ {space.rating}</p>
+                            </div>
+                            <div className="text-right">
+                              <p className="text-indigo-400 font-bold text-sm">{space.price}</p>
+                              <p className="text-[10px] text-slate-500">/hr</p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* LEASER VIEW */}
+                    <div className={`transition-all duration-500 absolute w-full px-5 left-0 ${role === 'leaser' ? 'opacity-100 translate-x-0 pointer-events-auto' : 'opacity-0 -translate-x-8 pointer-events-none'}`}>
+                      <div className="bg-gradient-to-br from-emerald-900/40 to-slate-900 border border-emerald-500/20 rounded-3xl p-6 text-center mb-6 relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-20 h-20 bg-emerald-500/10 rounded-full blur-xl"></div>
+                        <Building className="h-8 w-8 text-emerald-400 mx-auto mb-3 relative z-10" />
+                        <h3 className="font-bold text-white text-sm relative z-10">Monetize Empty Space</h3>
+                        <p className="text-xs text-slate-400 mt-2 leading-relaxed relative z-10">List underused property for short hourly intervals and earn extra income seamlessly.</p>
+                      </div>
+                      <button className="w-full bg-emerald-500 text-slate-900 font-bold py-3.5 rounded-2xl mb-8 flex items-center justify-center space-x-2 hover:bg-emerald-400 transition-colors">
+                        <span>Create Listing</span>
+                      </button>
+                      <h3 className="font-bold text-white mb-4 text-sm tracking-wide">YOUR LISTINGS</h3>
+                      <div className="bg-slate-800/30 rounded-2xl p-6 border border-dashed border-white/10 text-center flex flex-col items-center justify-center">
+                        <Layers className="h-6 w-6 text-slate-600 mb-2"/>
+                        <p className="text-slate-500 text-xs">No active spaces listed yet.</p>
+                      </div>
+                    </div>
+
+                    {/* SPONSOR VIEW */}
+                    <div className={`transition-all duration-500 absolute w-full px-5 left-0 ${role === 'sponsor' ? 'opacity-100 translate-x-0 pointer-events-auto' : 'opacity-0 translate-x-8 pointer-events-none'}`}>
+                       <div className="bg-gradient-to-br from-purple-900/40 to-slate-900 border border-purple-500/20 rounded-3xl p-6 mb-6">
+                        <div className="flex items-center space-x-3 mb-2">
+                          <Briefcase className="h-5 w-5 text-purple-400" />
+                          <h3 className="font-bold text-white text-sm">Grow Your Reach</h3>
+                        </div>
+                        <p className="text-xs text-slate-400 leading-relaxed">Sponsor local events to get hyper-targeted brand awareness exactly where your customers are.</p>
+                      </div>
+                      <h3 className="font-bold text-white mb-4 text-sm tracking-wide">SEEKING SPONSORS</h3>
+                      <div className="space-y-4">
+                        {events.map((event, i) => (
+                          <div key={event.id} className="bg-slate-800/40 rounded-2xl p-4 border border-white/5 animate-in slide-in-from-right-8" style={{ animationDelay: `${i * 100}ms` }}>
+                            <div className="flex justify-between items-start mb-3">
+                              <h4 className="font-bold text-white text-sm">{event.name}</h4>
+                              <span className="bg-purple-500/20 text-purple-300 text-[10px] font-bold px-2 py-1 rounded-md border border-purple-500/30">Asking {event.asking}</span>
+                            </div>
+                            <div className="flex space-x-2 text-[10px] text-slate-400 mb-4">
+                              <span className="bg-slate-700/50 px-2 py-1 rounded">{event.attendees} attendees</span>
+                              <span className="bg-slate-700/50 px-2 py-1 rounded">{event.niche}</span>
+                            </div>
+                            <button className="w-full bg-white/5 border border-white/10 text-white text-xs font-bold py-2.5 rounded-xl hover:bg-purple-600 transition-colors">
+                              Offer Funding
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* App Bottom Nav */}
+                  <div className="absolute bottom-0 w-full bg-[#0f1523]/90 backdrop-blur-xl border-t border-white/5 p-4 pb-8 flex justify-around z-50">
+                    <div className="flex flex-col items-center text-indigo-400 cursor-pointer">
+                      <LayoutDashboard className="h-6 w-6 mb-1" />
+                      <span className="text-[9px] font-bold tracking-wider">HUB</span>
+                    </div>
+                    <div className="flex flex-col items-center text-slate-500 cursor-pointer hover:text-slate-300 transition-colors">
+                      <Calendar className="h-6 w-6 mb-1" />
+                      <span className="text-[9px] font-bold tracking-wider">BOOKED</span>
+                    </div>
+                    <div className="flex flex-col items-center text-slate-500 cursor-pointer hover:text-slate-300 transition-colors">
+                      <Monitor className="h-6 w-6 mb-1" />
+                      <span className="text-[9px] font-bold tracking-wider">PROFILE</span>
+                    </div>
+                  </div>
+
                 </div>
               </div>
-            )}
-          </div>
-
-          {/* App Bottom Nav */}
-          <div className="bg-white border-t border-slate-200 p-4 pb-6 absolute bottom-0 w-full flex justify-around">
-            <div className="flex flex-col items-center text-indigo-600">
-              <Search className="h-6 w-6" />
-              <span className="text-[10px] font-medium mt-1">Explore</span>
-            </div>
-            <div className="flex flex-col items-center text-slate-400">
-              <Calendar className="h-6 w-6" />
-              <span className="text-[10px] font-medium mt-1">Bookings</span>
-            </div>
-            <div className="flex flex-col items-center text-slate-400">
-              <Users className="h-6 w-6" />
-              <span className="text-[10px] font-medium mt-1">Profile</span>
             </div>
           </div>
         </div>
-      </div>
-    </div>
-  );
-}
+      );
+    }
 
-/* =========================================
-   3. BUSINESS CASE VIEW
-========================================= */
-function BusinessCaseView() {
-  return (
-    <div className="max-w-4xl mx-auto space-y-12 animate-in fade-in duration-500">
-      <div className="text-center mb-10">
-        <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Market Opportunity</h2>
-        <p className="text-lg text-slate-600">Strategic positioning and competitor analysis in Edmonton, Alberta.</p>
-      </div>
+    /* =========================================
+       3. BUSINESS CASE VIEW (Bento Style)
+    ========================================= */
+    function BusinessCaseView() {
+      return (
+        <div className="max-w-5xl mx-auto space-y-12 animate-in fade-in zoom-in-95 duration-700">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-4 tracking-tight">Market Strategy</h2>
+            <div className="h-1 w-20 bg-indigo-500 mx-auto rounded-full mb-6"></div>
+            <p className="text-lg text-slate-400 max-w-2xl mx-auto">Strategic positioning, targeted demographics, and competitive analysis in the Edmonton, Alberta ecosystem.</p>
+          </div>
 
-      <div className="grid md:grid-cols-2 gap-8">
-        {/* Target Audience */}
-        <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
-          <h3 className="text-2xl font-bold text-indigo-900 mb-6 flex items-center">
-            <Users className="mr-3 text-indigo-500" /> Target Customers
-          </h3>
-          <ul className="space-y-4">
-            <li className="flex items-start">
-              <div className="bg-indigo-100 p-1 rounded-full mr-3 mt-1"><ChevronRight className="h-4 w-4 text-indigo-600" /></div>
-              <div>
-                <strong className="block text-slate-800">Students & Event Organizers</strong>
-                <span className="text-slate-600 text-sm">Need affordable, unique spaces. Demand is highly inelastic when planning an in-person event.</span>
+          <div className="grid lg:grid-cols-5 gap-6">
+            
+            {/* Target Audience - Takes 3 columns */}
+            <div className="lg:col-span-3 glass-panel p-8 rounded-[2rem]">
+              <h3 className="text-2xl font-bold text-white mb-8 flex items-center">
+                <Users className="mr-3 text-indigo-400" /> Core Demographics
+              </h3>
+              <div className="space-y-6">
+                <div className="flex items-start bg-slate-800/30 p-5 rounded-2xl border border-white/5">
+                  <div className="bg-indigo-500/20 p-2 rounded-xl mr-4 shrink-0"><BookOpen className="h-5 w-5 text-indigo-400" /></div>
+                  <div>
+                    <strong className="block text-white text-lg mb-1">Students & Organizers</strong>
+                    <span className="text-slate-400 text-sm leading-relaxed">Demand is highly inelastic when planning an in-person event. They need unique, affordable spaces without massive hotel deposits.</span>
+                  </div>
+                </div>
+                <div className="flex items-start bg-slate-800/30 p-5 rounded-2xl border border-white/5">
+                  <div className="bg-purple-500/20 p-2 rounded-xl mr-4 shrink-0"><Megaphone className="h-5 w-5 text-purple-400" /></div>
+                  <div>
+                    <strong className="block text-white text-lg mb-1">Small Business Owners</strong>
+                    <span className="text-slate-400 text-sm leading-relaxed">Require affordable, highly-targeted local marketing. Event sponsorship directly puts their brand in front of active community members.</span>
+                  </div>
+                </div>
+                <div className="flex items-start bg-slate-800/30 p-5 rounded-2xl border border-white/5">
+                  <div className="bg-emerald-500/20 p-2 rounded-xl mr-4 shrink-0"><Building2 className="h-5 w-5 text-emerald-400" /></div>
+                  <div>
+                    <strong className="block text-white text-lg mb-1">Property Leasers</strong>
+                    <span className="text-slate-400 text-sm leading-relaxed">Individuals sitting on unrented apartments or large balconies looking to monetize off-hours with zero long-term commitment.</span>
+                  </div>
+                </div>
               </div>
-            </li>
-            <li className="flex items-start">
-              <div className="bg-indigo-100 p-1 rounded-full mr-3 mt-1"><ChevronRight className="h-4 w-4 text-indigo-600" /></div>
-              <div>
-                <strong className="block text-slate-800">Small Business Owners</strong>
-                <span className="text-slate-600 text-sm">Looking for affordable, highly-targeted local marketing through event sponsorships.</span>
-              </div>
-            </li>
-            <li className="flex items-start">
-              <div className="bg-indigo-100 p-1 rounded-full mr-3 mt-1"><ChevronRight className="h-4 w-4 text-indigo-600" /></div>
-              <div>
-                <strong className="block text-slate-800">Property Leasers</strong>
-                <span className="text-slate-600 text-sm">Individuals looking to monetize underused spaces (apartments, large balconies) for a few hours.</span>
-              </div>
-            </li>
-          </ul>
-        </div>
+            </div>
 
-        {/* Marketing Mix */}
-        <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
-          <h3 className="text-2xl font-bold text-indigo-900 mb-6 flex items-center">
-            <TrendingUp className="mr-3 text-indigo-500" /> Marketing Mix
-          </h3>
-          <div className="space-y-4">
-            <div className="bg-slate-50 p-4 rounded-lg border border-slate-100">
-              <strong className="text-indigo-700">Product:</strong> A digital marketplace app for renting spaces and promoting businesses.
+            {/* Marketing Mix - Takes 2 columns */}
+            <div className="lg:col-span-2 space-y-6 flex flex-col">
+              <div className="glass-panel p-8 rounded-[2rem] flex-1">
+                <h3 className="text-2xl font-bold text-white mb-6 flex items-center">
+                  <TrendingUp className="mr-3 text-pink-400" /> Marketing Mix
+                </h3>
+                <div className="space-y-4">
+                  <div className="border-l-2 border-indigo-500 pl-4 py-1">
+                    <p className="text-xs font-bold text-indigo-400 tracking-wider mb-1">PRODUCT</p>
+                    <p className="text-slate-300 text-sm">Dual-sided digital marketplace app for short-term renting and micro-sponsorships.</p>
+                  </div>
+                  <div className="border-l-2 border-purple-500 pl-4 py-1">
+                    <p className="text-xs font-bold text-purple-400 tracking-wider mb-1">PRICE</p>
+                    <p className="text-slate-300 text-sm">10% Booking Commission (~$500 cart) + $35/mo optional Vendor Subscription.</p>
+                  </div>
+                  <div className="border-l-2 border-pink-500 pl-4 py-1">
+                    <p className="text-xs font-bold text-pink-400 tracking-wider mb-1">PLACE</p>
+                    <p className="text-slate-300 text-sm">Initially geo-fenced to the Edmonton, Alberta market via App/Web.</p>
+                  </div>
+                  <div className="border-l-2 border-emerald-500 pl-4 py-1">
+                    <p className="text-xs font-bold text-emerald-400 tracking-wider mb-1">PROMOTION</p>
+                    <p className="text-slate-300 text-sm">Social media, targeted YouTube ads, and grassroots on-campus promotions.</p>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className="bg-slate-50 p-4 rounded-lg border border-slate-100">
-              <strong className="text-indigo-700">Price:</strong> ~10% Booking Commission ($500 avg cart) + $35/mo Vendor Subscription.
-            </div>
-            <div className="bg-slate-50 p-4 rounded-lg border border-slate-100">
-              <strong className="text-indigo-700">Place:</strong> Initially focused on the Edmonton, Alberta market (Online/App).
-            </div>
-            <div className="bg-slate-50 p-4 rounded-lg border border-slate-100">
-              <strong className="text-indigo-700">Promotion:</strong> Social media, YouTube ads, Instagram, and on-campus in-person promotions.
+          </div>
+
+          {/* Competitor Analysis - Full Width Graphic Layout */}
+          <div className="relative rounded-[2rem] overflow-hidden border border-white/10">
+            <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 opacity-80"></div>
+            <div className="relative z-10 p-10 md:p-12">
+              <div className="flex items-center mb-8">
+                <LineChart className="h-8 w-8 text-white mr-4" />
+                <h3 className="text-3xl font-bold text-white">Competitive Landscape</h3>
+              </div>
+              
+              <div className="grid md:grid-cols-2 gap-10">
+                <div>
+                  <div className="flex items-center space-x-3 mb-6 border-b border-rose-500/30 pb-3">
+                    <span className="h-3 w-3 rounded-full bg-rose-500"></span>
+                    <h4 className="font-bold text-lg text-slate-200">The Old Way (Competitors)</h4>
+                  </div>
+                  <ul className="space-y-4 text-slate-400 text-sm">
+                    <li className="flex items-center"><span className="mr-3 opacity-50">✕</span> University of Alberta Rooms (Highly Restrictive)</li>
+                    <li className="flex items-center"><span className="mr-3 opacity-50">✕</span> Peerspace (Not locally optimized for YEG/Students)</li>
+                    <li className="flex items-center"><span className="mr-3 opacity-50">✕</span> Large Hotel Chains (Rigid, expensive, formal only)</li>
+                  </ul>
+                </div>
+                
+                <div className="bg-indigo-500/10 p-6 rounded-2xl border border-indigo-500/20">
+                  <div className="flex items-center space-x-3 mb-6 border-b border-emerald-500/30 pb-3">
+                    <span className="h-3 w-3 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <h4 className="font-bold text-lg text-white">The EventSpot Edge</h4>
+                  </div>
+                  <ul className="space-y-4 text-slate-300 text-sm font-medium">
+                    <li className="flex items-start"><span className="mr-3 text-emerald-400">✓</span> <span><strong className="text-white">Loyalty Ecosystem:</strong> Built-in rewards incentivize recurring use.</span></li>
+                    <li className="flex items-start"><span className="mr-3 text-emerald-400">✓</span> <span><strong className="text-white">Sponsor Integration:</strong> A unique feature unlocking funding directly inside the app.</span></li>
+                    <li className="flex items-start"><span className="mr-3 text-emerald-400">✓</span> <span><strong className="text-white">Mobile-First Fluidity:</strong> Modern UX design over legacy web forms.</span></li>
+                  </ul>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      );
+    }
 
-      {/* Competitor Analysis */}
-      <div className="bg-slate-900 text-white p-8 md:p-10 rounded-3xl shadow-xl mt-12 relative overflow-hidden">
-        <div className="relative z-10">
-          <h3 className="text-2xl font-bold mb-8">Competitor Analysis & Our Edge</h3>
-          <div className="grid md:grid-cols-2 gap-8">
+    /* =========================================
+       4. FINANCIALS VIEW (Fintech Dashboard Style)
+    ========================================= */
+    function FinancialsView() {
+      return (
+        <div className="max-w-6xl mx-auto animate-in fade-in zoom-in-95 duration-700">
+          <div className="flex flex-col md:flex-row justify-between items-end mb-10">
             <div>
-              <h4 className="font-semibold text-indigo-300 mb-4 border-b border-indigo-800 pb-2">The Competition</h4>
-              <ul className="space-y-3 text-slate-300">
-                <li>• University of Alberta Rooms (Restrictive)</li>
-                <li>• Peerspace (Not locally optimized)</li>
-                <li>• Large Hotel Chains (Expensive, rigid)</li>
-              </ul>
+              <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-3 tracking-tight">Pro Forma</h2>
+              <p className="text-slate-400">Year 1 Financial Projections & Startup Assumptions.</p>
             </div>
-            <div>
-              <h4 className="font-semibold text-emerald-400 mb-4 border-b border-indigo-800 pb-2">EventSpot's Advantage</h4>
-              <ul className="space-y-3 text-slate-300">
-                <li><strong className="text-white">Loyalty System:</strong> Incentivizes recurring use.</li>
-                <li><strong className="text-white">Sponsor Integration:</strong> Unlocks funding for organizers.</li>
-                <li><strong className="text-white">Mobile-First Accessibility:</strong> Modern app experience.</li>
-              </ul>
+            <div className="bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 px-4 py-2 rounded-xl text-sm font-bold flex items-center mt-4 md:mt-0">
+              <BarChart3 className="mr-2 h-4 w-4" /> LIVE MODEL
             </div>
           </div>
-        </div>
-      </div>
-    </div>
-  );
-}
 
-/* =========================================
-   4. FINANCIALS VIEW (From PDF)
-========================================= */
-function FinancialsView() {
-  return (
-    <div className="max-w-5xl mx-auto animate-in fade-in duration-500">
-      <div className="text-center mb-10">
-        <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Financial Projections</h2>
-        <p className="text-lg text-slate-600">Year 1 Pro Forma assumptions and income statement.</p>
-      </div>
-
-      {/* KPI Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
-        <div className="bg-indigo-50 p-6 rounded-2xl border border-indigo-100 text-center">
-          <p className="text-indigo-600 text-sm font-bold uppercase mb-1">Projected Bookings</p>
-          <p className="text-3xl font-extrabold text-indigo-900">250</p>
-          <p className="text-xs text-indigo-500 mt-1">@ ~$500 avg value</p>
-        </div>
-        <div className="bg-emerald-50 p-6 rounded-2xl border border-emerald-100 text-center">
-          <p className="text-emerald-600 text-sm font-bold uppercase mb-1">Vendor Subs</p>
-          <p className="text-3xl font-extrabold text-emerald-900">30</p>
-          <p className="text-xs text-emerald-500 mt-1">@ $35 / month</p>
-        </div>
-        <div className="bg-blue-50 p-6 rounded-2xl border border-blue-100 text-center">
-          <p className="text-blue-600 text-sm font-bold uppercase mb-1">Total Revenue</p>
-          <p className="text-3xl font-extrabold text-blue-900">$25.1k</p>
-          <p className="text-xs text-blue-500 mt-1">Year 1 Projection</p>
-        </div>
-        <div className="bg-purple-50 p-6 rounded-2xl border border-purple-100 text-center">
-          <p className="text-purple-600 text-sm font-bold uppercase mb-1">Net Income</p>
-          <p className="text-3xl font-extrabold text-purple-900">$945</p>
-          <p className="text-xs text-purple-500 mt-1">After 10% Tax</p>
-        </div>
-      </div>
-
-      <div className="grid md:grid-cols-2 gap-8">
-        {/* Assumptions Table */}
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-          <div className="bg-slate-50 px-6 py-4 border-b border-slate-200 flex items-center">
-            <BarChart3 className="mr-2 text-slate-500" />
-            <h3 className="font-bold text-slate-800">Key Assumptions & Estimates</h3>
+          {/* KPI Dashboard Grid */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            {[
+              { label: 'Projected Bookings', value: '250', sub: '@ ~$500 avg value', color: 'text-blue-400', border: 'border-blue-500/20', bg: 'bg-blue-500/5' },
+              { label: 'Vendor Subs', value: '30', sub: '@ $35 / month', color: 'text-emerald-400', border: 'border-emerald-500/20', bg: 'bg-emerald-500/5' },
+              { label: 'Total Revenue', value: '$25.1k', sub: 'Year 1 Top Line', color: 'text-purple-400', border: 'border-purple-500/20', bg: 'bg-purple-500/5' },
+              { label: 'Net Income', value: '$945', sub: 'After 10% Tax & Exp', color: 'text-indigo-400', border: 'border-indigo-500/20', bg: 'bg-indigo-500/5' }
+            ].map((kpi, i) => (
+              <div key={i} className={`p-6 rounded-3xl border ${kpi.border} ${kpi.bg} relative overflow-hidden group`}>
+                <div className={`absolute -right-4 -top-4 w-16 h-16 rounded-full blur-xl opacity-20 group-hover:opacity-40 transition-opacity bg-current ${kpi.color}`}></div>
+                <p className="text-slate-400 text-xs font-bold uppercase tracking-wider mb-2">{kpi.label}</p>
+                <p className={`text-4xl font-extrabold mb-1 ${kpi.color}`}>{kpi.value}</p>
+                <p className="text-xs text-slate-500">{kpi.sub}</p>
+              </div>
+            ))}
           </div>
-          <div className="p-6">
-            <div className="space-y-4 text-sm">
-              <div className="flex justify-between border-b border-slate-100 pb-2">
-                <span className="text-slate-600">Commission from Bookings</span>
-                <span className="font-medium text-slate-900">10%</span>
+
+          <div className="grid lg:grid-cols-12 gap-8">
+            
+            {/* Pro Forma Statement - 7 columns */}
+            <div className="lg:col-span-7 glass-panel rounded-[2rem] overflow-hidden flex flex-col">
+              <div className="bg-slate-900/80 px-8 py-5 border-b border-white/5 flex items-center">
+                <DollarSign className="mr-2 text-emerald-400" />
+                <h3 className="font-bold text-white tracking-wide">Income Statement (Year 1)</h3>
               </div>
-              <div className="flex justify-between border-b border-slate-100 pb-2">
-                <span className="text-slate-600">Variable Costs / Booking</span>
-                <span className="font-medium text-slate-900">$5.00</span>
+              <div className="p-8 flex-1">
+                <div className="space-y-1 text-sm font-medium">
+                  
+                  {/* Revenue */}
+                  <div className="flex justify-between py-2 text-slate-300">
+                    <span>Commission Sales Revenue</span>
+                    <span>$12,500</span>
+                  </div>
+                  <div className="flex justify-between py-2 text-slate-300">
+                    <span>Vendor Subscription Revenue</span>
+                    <span>$12,600</span>
+                  </div>
+                  <div className="flex justify-between py-3 my-2 border-y border-white/10 text-white font-bold text-base">
+                    <span>Total Revenue</span>
+                    <span className="text-emerald-400">$25,100</span>
+                  </div>
+                  
+                  {/* Expenses */}
+                  <div className="flex justify-between py-2 text-slate-400">
+                    <span>Cost of Goods Sold (COGS)</span>
+                    <span>-$1,250</span>
+                  </div>
+                  <div className="flex justify-between py-3 my-2 border-y border-white/10 text-white font-bold text-base">
+                    <span>Gross Profit</span>
+                    <span>$23,850</span>
+                  </div>
+                  <div className="flex justify-between py-2 text-slate-400">
+                    <span>Operating Expenses (Fixed)</span>
+                    <span>-$22,000</span>
+                  </div>
+                  <div className="flex justify-between py-3 my-2 border-y border-white/10 text-white font-bold text-base">
+                    <span>Operating Income (EBIT)</span>
+                    <span>$1,850</span>
+                  </div>
+                  
+                  {/* Tax & Net */}
+                  <div className="flex justify-between py-2 text-slate-400">
+                    <span>Interest Expense</span>
+                    <span>-$800</span>
+                  </div>
+                  <div className="flex justify-between py-2 text-slate-400">
+                    <span>Earnings Before Tax</span>
+                    <span>$1,050</span>
+                  </div>
+                  <div className="flex justify-between py-2 text-slate-400">
+                    <span>Income Tax Expense (10%)</span>
+                    <span>-$105</span>
+                  </div>
+                  
+                  <div className="flex justify-between items-center mt-6 pt-6 border-t border-indigo-500/30">
+                    <span className="text-xl font-extrabold text-white">Net Income</span>
+                    <div className="bg-indigo-500/20 px-4 py-2 rounded-xl border border-indigo-500/30">
+                      <span className="text-xl font-extrabold text-indigo-400">$945</span>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className="flex justify-between border-b border-slate-100 pb-2">
-                <span className="text-slate-600">Fixed Costs (Dev, Mktg, Legal)</span>
-                <span className="font-medium text-slate-900">$22,000 / yr</span>
+            </div>
+
+            {/* Assumptions Column - 5 columns */}
+            <div className="lg:col-span-5 space-y-6">
+              <div className="glass-panel p-8 rounded-[2rem] border border-white/10">
+                <h3 className="font-bold text-white mb-6 tracking-wide flex items-center">
+                  <LayoutDashboard className="h-5 w-5 mr-2 text-purple-400"/> Model Assumptions
+                </h3>
+                <ul className="space-y-5 text-sm">
+                  <li className="bg-slate-800/50 p-4 rounded-xl border border-white/5">
+                    <div className="flex justify-between mb-1">
+                      <span className="text-slate-400">Commission Rate</span>
+                      <span className="text-white font-bold">10%</span>
+                    </div>
+                    <p className="text-[10px] text-slate-500">Standard cut from average $500 cart.</p>
+                  </li>
+                  <li className="bg-slate-800/50 p-4 rounded-xl border border-white/5">
+                    <div className="flex justify-between mb-1">
+                      <span className="text-slate-400">Variable Costs</span>
+                      <span className="text-white font-bold">$5.00</span>
+                    </div>
+                    <p className="text-[10px] text-slate-500">Per booking (payment processing, server fees).</p>
+                  </li>
+                  <li className="bg-slate-800/50 p-4 rounded-xl border border-white/5">
+                    <div className="flex justify-between mb-1">
+                      <span className="text-slate-400">Fixed Costs</span>
+                      <span className="text-white font-bold">$22,000</span>
+                    </div>
+                    <p className="text-[10px] text-slate-500">Dev (12k), Marketing (5k), Hosting/Events (3k), Legal (2k).</p>
+                  </li>
+                </ul>
               </div>
-              <div className="flex justify-between pb-2">
-                <span className="text-slate-600">Startup Financing</span>
-                <span className="font-medium text-slate-900 text-right">
-                  $10k Loan (8%),<br/>$5k Grant, $5k Group
-                </span>
+
+              <div className="bg-gradient-to-br from-indigo-900/40 to-purple-900/40 p-8 rounded-[2rem] border border-indigo-500/20 relative overflow-hidden">
+                <div className="absolute top-0 right-0 p-4 opacity-10"><DollarSign className="h-24 w-24"/></div>
+                <h3 className="font-bold text-white mb-2 relative z-10">Startup Financing</h3>
+                <p className="text-sm text-indigo-200 mb-4 relative z-10">Total Required: $20,000</p>
+                <div className="space-y-2 relative z-10 text-xs">
+                  <div className="flex justify-between border-b border-indigo-500/20 pb-1">
+                    <span className="text-slate-300">Bank Loan (8% APR)</span>
+                    <span className="text-white font-bold">$10,000</span>
+                  </div>
+                  <div className="flex justify-between border-b border-indigo-500/20 pb-1">
+                    <span className="text-slate-300">Alberta Business Grant</span>
+                    <span className="text-white font-bold">$5,000</span>
+                  </div>
+                  <div className="flex justify-between pb-1">
+                    <span className="text-slate-300">Founder Contributions ($1k ea)</span>
+                    <span className="text-white font-bold">$5,000</span>
+                  </div>
+                </div>
               </div>
+            </div>
+
+          </div>
+        </div>
+      );
+    }
+
+    /* =========================================
+       5. TEAM VIEW (Sleek Organizational Nodes)
+    ========================================= */
+    function TeamView() {
+      const team = [
+        { name: 'Chim Wopara', role: 'Software Architecture', desc: 'Developing the web application and core user journey.', color: 'from-blue-500 to-cyan-500' },
+        { name: 'Ethan Robinson', role: 'Financial Analysis', desc: 'Financial modeling, balance sheets, and projections.', color: 'from-emerald-500 to-teal-500' },
+        { name: 'Nicole Sukaria', role: 'Brand Strategy', desc: 'Market positioning and target audience outreach.', color: 'from-pink-500 to-rose-500' },
+        { name: 'Valentina Valdes', role: 'Operations & HR', desc: 'Team management and operational monitoring.', color: 'from-purple-500 to-indigo-500' },
+        { name: 'Temi Akindele', role: 'Data & Research', desc: 'Competitor analysis and quality control metrics.', color: 'from-amber-500 to-orange-500' },
+      ];
+
+      return (
+        <div className="max-w-6xl mx-auto animate-in fade-in zoom-in-95 duration-700">
+          <div className="text-center mb-16 relative">
+            <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-4 tracking-tight">The Minds Behind EventSpot</h2>
+            <p className="text-lg text-slate-400">AREC 323 • Group 8</p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 relative z-10">
+            {team.map((member, index) => (
+              <div key={index} className="glass-panel rounded-3xl p-6 relative overflow-hidden group hover:-translate-y-2 transition-transform duration-300">
+                {/* Top color accent strip */}
+                <div className={`absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r ${member.color}`}></div>
+                
+                <div className="flex flex-col h-full">
+                  <div className="flex items-center space-x-4 mb-5">
+                    {/* Abstract Avatar Graphic instead of emoji */}
+                    <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${member.color} p-[1px]`}>
+                      <div className="w-full h-full bg-[#0a0f1c] rounded-2xl flex items-center justify-center relative overflow-hidden">
+                        <div className={`absolute inset-0 bg-gradient-to-br ${member.color} opacity-20`}></div>
+                        <span className="font-extrabold text-white text-xl tracking-tighter">
+                          {member.name.split(' ').map(n => n[0]).join('')}
+                        </span>
+                      </div>
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-bold text-white leading-tight">{member.name}</h3>
+                      <p className="text-xs text-slate-400 font-medium tracking-wide uppercase mt-1">{member.role}</p>
+                    </div>
+                  </div>
+                  <p className="text-sm text-slate-400 leading-relaxed border-t border-white/5 pt-4 mt-auto">
+                    {member.desc}
+                  </p>
+                </div>
+              </div>
+            ))}
+            
+            {/* Commitment Box */}
+            <div className="glass-panel rounded-3xl p-8 border border-indigo-500/20 bg-indigo-900/10 flex flex-col justify-center text-center">
+              <ShieldCheck className="h-8 w-8 text-indigo-400 mx-auto mb-4" />
+              <h3 className="text-lg font-bold text-white mb-2">Group Commitment</h3>
+              <p className="text-xs text-slate-400 leading-relaxed">
+                Operating under strict accountability, requiring 24hr communication loops, and data-driven collaboration to ensure business viability.
+              </p>
             </div>
           </div>
         </div>
+      );
+    }
 
-        {/* Pro Forma Statement */}
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-          <div className="bg-indigo-600 px-6 py-4 flex items-center">
-            <DollarSign className="mr-2 text-indigo-100" />
-            <h3 className="font-bold text-white">Pro Forma Income Statement</h3>
-          </div>
-          <div className="p-0">
-            <table className="w-full text-sm">
-              <tbody>
-                <tr className="border-b border-slate-100">
-                  <td className="py-3 px-6 text-slate-600 pl-8">Commission Sales Revenue</td>
-                  <td className="py-3 px-6 text-right font-medium">$12,500</td>
-                </tr>
-                <tr className="border-b border-slate-100">
-                  <td className="py-3 px-6 text-slate-600 pl-8">Vendor Subscription Revenue</td>
-                  <td className="py-3 px-6 text-right font-medium">$12,600</td>
-                </tr>
-                <tr className="bg-slate-50 font-bold border-b border-slate-200">
-                  <td className="py-3 px-6 text-slate-800">Total Revenue</td>
-                  <td className="py-3 px-6 text-right">$25,100</td>
-                </tr>
-                <tr className="border-b border-slate-100">
-                  <td className="py-3 px-6 text-red-600 pl-8">Cost of Goods Sold (COGS)</td>
-                  <td className="py-3 px-6 text-right font-medium text-red-600">-$1,250</td>
-                </tr>
-                <tr className="bg-slate-50 font-bold border-b border-slate-200">
-                  <td className="py-3 px-6 text-slate-800">Gross Profit</td>
-                  <td className="py-3 px-6 text-right">$23,850</td>
-                </tr>
-                <tr className="border-b border-slate-100">
-                  <td className="py-3 px-6 text-red-600 pl-8">Operating Expenses (Fixed)</td>
-                  <td className="py-3 px-6 text-right font-medium text-red-600">-$22,000</td>
-                </tr>
-                <tr className="bg-slate-50 font-bold border-b border-slate-200">
-                  <td className="py-3 px-6 text-slate-800">Operating Income (EBIT)</td>
-                  <td className="py-3 px-6 text-right">$1,850</td>
-                </tr>
-                <tr className="border-b border-slate-100">
-                  <td className="py-3 px-6 text-red-600 pl-8">Interest Expense</td>
-                  <td className="py-3 px-6 text-right font-medium text-red-600">-$800</td>
-                </tr>
-                <tr className="bg-slate-50 font-bold border-b border-slate-200">
-                  <td className="py-3 px-6 text-slate-800">Earnings Before Tax</td>
-                  <td className="py-3 px-6 text-right">$1,050</td>
-                </tr>
-                <tr className="border-b border-slate-100">
-                  <td className="py-3 px-6 text-red-600 pl-8">Income Tax Expense (10%)</td>
-                  <td className="py-3 px-6 text-right font-medium text-red-600">-$105</td>
-                </tr>
-                <tr className="bg-indigo-50 font-bold text-indigo-900 border-b border-indigo-200">
-                  <td className="py-4 px-6 text-lg">Net Income (After Tax)</td>
-                  <td className="py-4 px-6 text-right text-lg">$945</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* =========================================
-   5. TEAM VIEW
-========================================= */
-function TeamView() {
-  const team = [
-    { name: 'Chim Wopara', role: 'Software & Programming', desc: 'Developing the web-based app for the user journey.', icon: '💻' },
-    { name: 'Ethan Robinson', role: 'Financial Analysis', desc: 'Preparing balance sheets and financial modeling.', icon: '📈' },
-    { name: 'Nicole Sukaria', role: 'Brand Awareness & Promotion', desc: 'Marketing strategy and target audience outreach.', icon: '📣' },
-    { name: 'Valentina Valdes', role: 'HR & Management', desc: 'Monitoring progress and overall team operations.', icon: '🤝' },
-    { name: 'Temi Akindele', role: 'Data Collection & Research', desc: 'Competitor analysis and ensuring quality control.', icon: '📊' },
-  ];
-
-  return (
-    <div className="max-w-5xl mx-auto animate-in fade-in duration-500">
-      <div className="text-center mb-12">
-        <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Meet Group 8</h2>
-        <p className="text-lg text-slate-600">The founding team behind EventSpot (AREC 323).</p>
-      </div>
-
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {team.map((member, index) => (
-          <div key={index} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 hover:shadow-md transition">
-            <div className="text-4xl mb-4">{member.icon}</div>
-            <h3 className="text-xl font-bold text-slate-800 mb-1">{member.name}</h3>
-            <p className="text-indigo-600 font-semibold text-sm mb-3">{member.role}</p>
-            <p className="text-slate-600 text-sm">{member.desc}</p>
-          </div>
-        ))}
-      </div>
-
-      <div className="mt-16 bg-slate-50 p-8 rounded-2xl border border-slate-200 text-center">
-        <h3 className="text-xl font-bold text-slate-800 mb-4">Our Commitment</h3>
-        <p className="text-slate-600 max-w-2xl mx-auto">
-          We operate under a strict accountability agreement, prioritizing clear communication, 
-          in-person collaboration, and dedicated performance to ensure the success of this project and business model.
-        </p>
-      </div>
-    </div>
-  );
-}
+    // Mount the React app to the HTML #root div
+    const root = createRoot(document.getElementById('root'));
+    root.render(<EventSpotApp />);
+  </script>
+</body>
+</html>
