@@ -33,7 +33,8 @@
     import { 
       MapPin, Calendar, DollarSign, Award, Users, TrendingUp, Smartphone, 
       Search, ShieldCheck, ChevronRight, PlayCircle, BarChart3, Building, Briefcase,
-      Building2, Home, BookOpen, Monitor, Megaphone, LineChart, Sparkles, LayoutDashboard, Layers
+      Building2, Home, BookOpen, Monitor, Megaphone, LineChart, Sparkles, LayoutDashboard, Layers,
+      Zap, Clock, Globe, ArrowRight, CheckCircle2
     } from 'lucide-react';
 
     // Custom Brand Logo Component
@@ -130,12 +131,12 @@
                 <span className="font-extrabold text-xl tracking-tight text-white group-hover:text-indigo-200 transition-colors">EventSpot</span>
               </div>
               
-              <div className="hidden md:flex bg-slate-900/50 p-1.5 rounded-full border border-white/5 backdrop-blur-md">
+              <div className="hidden md:flex bg-slate-900/50 p-1.5 rounded-full border border-white/5 backdrop-blur-md overflow-x-auto">
                 {navItems.map((item) => (
                   <button
                     key={item.id}
                     onClick={() => setActiveTab(item.id)}
-                    className={`px-5 py-2 text-sm font-medium rounded-full transition-all duration-300 ${
+                    className={`px-5 py-2 text-sm font-medium rounded-full transition-all duration-300 whitespace-nowrap ${
                       activeTab === item.id
                         ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-md'
                         : 'text-slate-400 hover:text-white hover:bg-white/5'
@@ -155,20 +156,22 @@
             {activeTab === 'business' && <BusinessCaseView />}
             {activeTab === 'financials' && <FinancialsView />}
             {activeTab === 'team' && <TeamView />}
+            {activeTab === 'privacy' && <PrivacyView />}
+            {activeTab === 'terms' && <TermsView />}
           </main>
 
           {/* Corporate Footer */}
           <footer className="relative z-10 border-t border-white/5 bg-slate-900/50 backdrop-blur-md pt-10 pb-8 mt-auto">
             <div className="max-w-7xl mx-auto px-6 lg:px-12">
               <div className="flex flex-col md:flex-row justify-between items-center mb-6 space-y-4 md:space-y-0">
-                <div className="flex items-center space-x-2">
-                  <EventSpotLogo className="h-6 w-6 grayscale opacity-70 hover:grayscale-0 hover:opacity-100 transition-all cursor-pointer" />
+                <div className="flex items-center space-x-2 cursor-pointer" onClick={() => setActiveTab('home')}>
+                  <EventSpotLogo className="h-6 w-6 grayscale opacity-70 hover:grayscale-0 hover:opacity-100 transition-all" />
                   <span className="font-bold text-white tracking-wide">EventSpot Inc.</span>
                 </div>
                 <div className="flex space-x-8 text-sm font-medium">
-                  <a href="#" className="text-slate-400 hover:text-indigo-400 transition-colors">Privacy Policy</a>
-                  <a href="#" className="text-slate-400 hover:text-indigo-400 transition-colors">Terms & Conditions</a>
-                  <a href="#" className="text-slate-400 hover:text-indigo-400 transition-colors">Cookie Policy</a>
+                  <a href="#" onClick={(e) => { e.preventDefault(); setActiveTab('privacy'); }} className="text-slate-400 hover:text-indigo-400 transition-colors">Privacy Policy</a>
+                  <a href="#" onClick={(e) => { e.preventDefault(); setActiveTab('terms'); }} className="text-slate-400 hover:text-indigo-400 transition-colors">Terms & Conditions</a>
+                  <a href="#" className="text-slate-400 hover:text-indigo-400 transition-colors">Contact Us</a>
                 </div>
               </div>
               <div className="text-center md:text-left text-xs text-slate-500 flex flex-col md:flex-row justify-between items-center border-t border-white/5 pt-6">
@@ -182,7 +185,7 @@
     }
 
     /* =========================================
-       1. HOME VIEW (Bespoke Pitch Hero)
+       1. HOME VIEW (Expanded Landing Page)
     ========================================= */
     function HomeView({ setActiveTab }) {
       return (
@@ -264,39 +267,134 @@
             </div>
           </div>
 
-          {/* Problems & Solutions (Bento Grid Style) */}
-          <div className="grid md:grid-cols-3 gap-6">
-            <div className="glass-panel p-8 rounded-3xl glass-panel-hover transition-all duration-500">
-              <div className="w-12 h-12 rounded-xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center mb-6">
-                <ShieldCheck className="h-6 w-6 text-rose-400" />
+          {/* Key Metrics Strip */}
+          <div className="glass-panel rounded-[2rem] p-8 md:p-12 border border-white/10">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center divide-x divide-white/10">
+              <div>
+                <p className="text-4xl font-extrabold text-white mb-2">250+</p>
+                <p className="text-sm text-slate-400 font-medium">Projected Bookings</p>
               </div>
-              <h3 className="text-xl font-bold text-white mb-3">The Problem</h3>
-              <p className="text-slate-400 text-sm leading-relaxed">
-                Students and organizers waste hours juggling phone calls, emails, and restrictive policies just to find space and funding.
-              </p>
-            </div>
-            
-            <div className="glass-panel p-8 rounded-3xl glass-panel-hover transition-all duration-500 relative overflow-hidden group">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl group-hover:bg-emerald-500/20 transition-all"></div>
-              <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-6 relative z-10">
-                <Layers className="h-6 w-6 text-emerald-400" />
+              <div>
+                <p className="text-4xl font-extrabold text-indigo-400 mb-2">30+</p>
+                <p className="text-sm text-slate-400 font-medium">Local Sponsors</p>
               </div>
-              <h3 className="text-xl font-bold text-white mb-3 relative z-10">Our Solution</h3>
-              <p className="text-slate-400 text-sm leading-relaxed relative z-10">
-                A frictionless marketplace. Rent underused spaces by the hour, book instantly, and secure micro-sponsorships seamlessly.
-              </p>
-            </div>
-            
-            <div className="glass-panel p-8 rounded-3xl glass-panel-hover transition-all duration-500">
-              <div className="w-12 h-12 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center mb-6">
-                <Award className="h-6 w-6 text-indigo-400" />
+              <div>
+                <p className="text-4xl font-extrabold text-emerald-400 mb-2">10%</p>
+                <p className="text-sm text-slate-400 font-medium">Flat Commission</p>
               </div>
-              <h3 className="text-xl font-bold text-white mb-3">The Advantage</h3>
-              <p className="text-slate-400 text-sm leading-relaxed">
-                Loyalty rewards, highly-targeted awareness for local vendors, and a modern mobile experience that legacy competitors lack.
-              </p>
+              <div>
+                <p className="text-4xl font-extrabold text-purple-400 mb-2">0</p>
+                <p className="text-sm text-slate-400 font-medium">Upfront Listing Fees</p>
+              </div>
             </div>
           </div>
+
+          {/* How It Works Section */}
+          <div className="py-10">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-5xl font-extrabold text-white mb-4">How EventSpot Works</h2>
+              <p className="text-slate-400 max-w-2xl mx-auto">A seamless experience designed to bring event organizers, property owners, and local businesses together into one unified ecosystem.</p>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-8 relative">
+              {/* Connecting Line */}
+              <div className="hidden md:block absolute top-1/2 left-0 w-full h-0.5 bg-gradient-to-r from-indigo-500/0 via-indigo-500/50 to-purple-500/0 -translate-y-1/2 z-0"></div>
+
+              <div className="relative z-10 glass-panel p-8 rounded-3xl text-center flex flex-col items-center glass-panel-hover">
+                <div className="w-16 h-16 rounded-full bg-indigo-900/50 border border-indigo-500/50 flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(99,102,241,0.3)]">
+                  <Search className="h-7 w-7 text-indigo-400" />
+                </div>
+                <h3 className="text-xl font-bold text-white mb-3">1. Discover Spaces</h3>
+                <p className="text-slate-400 text-sm leading-relaxed">
+                  Browse a curated list of non-traditional spaces in Edmonton. From vacant lofts to large balconies, find the perfect hourly rental.
+                </p>
+              </div>
+
+              <div className="relative z-10 glass-panel p-8 rounded-3xl text-center flex flex-col items-center glass-panel-hover">
+                <div className="w-16 h-16 rounded-full bg-emerald-900/50 border border-emerald-500/50 flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(52,211,153,0.3)]">
+                  <Zap className="h-7 w-7 text-emerald-400" />
+                </div>
+                <h3 className="text-xl font-bold text-white mb-3">2. Book Instantly</h3>
+                <p className="text-slate-400 text-sm leading-relaxed">
+                  Say goodbye to lengthy email chains. Lock in your dates, agree to terms, and process payments securely in under two minutes.
+                </p>
+              </div>
+
+              <div className="relative z-10 glass-panel p-8 rounded-3xl text-center flex flex-col items-center glass-panel-hover">
+                <div className="w-16 h-16 rounded-full bg-purple-900/50 border border-purple-500/50 flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(192,132,252,0.3)]">
+                  <Briefcase className="h-7 w-7 text-purple-400" />
+                </div>
+                <h3 className="text-xl font-bold text-white mb-3">3. Secure Sponsorships</h3>
+                <p className="text-slate-400 text-sm leading-relaxed">
+                  List your upcoming event on the marketplace. Local businesses can offer micro-sponsorships to cover costs in exchange for brand exposure.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Problems & Solutions (Bento Grid Style) */}
+          <div className="py-10">
+            <h2 className="text-3xl font-extrabold text-white mb-8">Why Choose EventSpot</h2>
+            <div className="grid md:grid-cols-3 gap-6">
+              <div className="glass-panel p-8 rounded-3xl glass-panel-hover transition-all duration-500">
+                <div className="w-12 h-12 rounded-xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center mb-6">
+                  <ShieldCheck className="h-6 w-6 text-rose-400" />
+                </div>
+                <h3 className="text-xl font-bold text-white mb-3">The Problem</h3>
+                <p className="text-slate-400 text-sm leading-relaxed">
+                  Students and organizers waste hours juggling phone calls, emails, and restrictive policies just to find space and funding.
+                </p>
+              </div>
+              
+              <div className="glass-panel p-8 rounded-3xl glass-panel-hover transition-all duration-500 relative overflow-hidden group">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl group-hover:bg-emerald-500/20 transition-all"></div>
+                <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-6 relative z-10">
+                  <Layers className="h-6 w-6 text-emerald-400" />
+                </div>
+                <h3 className="text-xl font-bold text-white mb-3 relative z-10">Our Solution</h3>
+                <p className="text-slate-400 text-sm leading-relaxed relative z-10">
+                  A frictionless marketplace. Rent underused spaces by the hour, book instantly, and secure micro-sponsorships seamlessly.
+                </p>
+              </div>
+              
+              <div className="glass-panel p-8 rounded-3xl glass-panel-hover transition-all duration-500">
+                <div className="w-12 h-12 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center mb-6">
+                  <Award className="h-6 w-6 text-indigo-400" />
+                </div>
+                <h3 className="text-xl font-bold text-white mb-3">The Advantage</h3>
+                <p className="text-slate-400 text-sm leading-relaxed">
+                  Loyalty rewards, highly-targeted awareness for local vendors, and a modern mobile experience that legacy competitors lack.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* CTA Banner */}
+          <div className="relative rounded-[2.5rem] overflow-hidden border border-indigo-500/30">
+            <div className="absolute inset-0 bg-gradient-to-br from-indigo-900 via-purple-900 to-[#0a0f1c] opacity-80"></div>
+            <div className="absolute top-0 right-0 w-full h-full bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCI+CgkJPGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjEiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4wNSkiLz4KPC9zdmc+')] opacity-50"></div>
+            
+            <div className="relative z-10 p-10 md:p-16 text-center max-w-3xl mx-auto">
+              <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-6">Ready to change how you host?</h2>
+              <p className="text-indigo-200 text-lg mb-10">Join the waiting list today and be the first to access Edmonton's premier booking and sponsorship marketplace.</p>
+              
+              <div className="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4">
+                <button 
+                  onClick={() => setActiveTab('demo')}
+                  className="bg-white text-indigo-900 px-8 py-4 rounded-full font-bold shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:scale-105 transition-all flex items-center"
+                >
+                  <Smartphone className="mr-2 h-5 w-5" /> Launch Demo App
+                </button>
+                <button 
+                  onClick={() => setActiveTab('financials')}
+                  className="glass-panel px-8 py-4 rounded-full font-bold text-white hover:bg-white/10 transition-all flex items-center"
+                >
+                  View Projections <ArrowRight className="ml-2 h-5 w-5" />
+                </button>
+              </div>
+            </div>
+          </div>
+
         </div>
       );
     }
@@ -806,6 +904,103 @@
               <p className="text-xs text-slate-400 leading-relaxed">
                 Operating with strict accountability, requiring transparent communication loops, and data-driven innovation to ensure a thriving, secure marketplace.
               </p>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    /* =========================================
+       6. PRIVACY POLICY VIEW
+    ========================================= */
+    function PrivacyView() {
+      return (
+        <div className="max-w-4xl mx-auto animate-in fade-in zoom-in-95 duration-700">
+          <div className="glass-panel rounded-3xl p-8 md:p-12 border border-white/10">
+            <h1 className="text-4xl font-extrabold text-white mb-2 tracking-tight">Privacy Policy</h1>
+            <p className="text-slate-400 mb-8 pb-8 border-b border-white/10">Last updated: March 2026</p>
+
+            <div className="space-y-8 text-slate-300 leading-relaxed">
+              <section>
+                <h2 className="text-2xl font-bold text-white mb-4">1. Information We Collect</h2>
+                <p className="mb-4">At EventSpot Inc., we collect information that you provide directly to us when you register for an account, create a listing, book a space, or communicate with us. This includes:</p>
+                <ul className="list-disc pl-6 space-y-2 text-slate-400">
+                  <li><strong>Personal Information:</strong> Name, email address, phone number, and billing address.</li>
+                  <li><strong>Listing Data:</strong> Property addresses, images, and descriptions provided by Leasers.</li>
+                  <li><strong>Payment Information:</strong> Processed securely via our third-party payment gateways (we do not store full credit card numbers).</li>
+                </ul>
+              </section>
+
+              <section>
+                <h2 className="text-2xl font-bold text-white mb-4">2. How We Use Your Information</h2>
+                <p className="mb-4">We use the collected information for various purposes, including to:</p>
+                <ul className="list-disc pl-6 space-y-2 text-slate-400">
+                  <li>Facilitate the booking and sponsorship processes between users.</li>
+                  <li>Maintain and improve our marketplace infrastructure.</li>
+                  <li>Communicate with you regarding bookings, updates, and promotional offers.</li>
+                  <li>Ensure the security and integrity of our platform.</li>
+                </ul>
+              </section>
+
+              <section>
+                <h2 className="text-2xl font-bold text-white mb-4">3. Data Security & Sharing</h2>
+                <p className="text-slate-400">
+                  We implement robust security measures to protect your personal information. EventSpot does not sell, trade, or rent your personal identification information to others. We may share generic aggregated demographic information not linked to any personal identification information regarding visitors and users with our business partners and advertisers.
+                </p>
+              </section>
+
+              <section>
+                <h2 className="text-2xl font-bold text-white mb-4">4. Your Rights</h2>
+                <p className="text-slate-400">
+                  You have the right to access, update, or delete your personal information at any time through your account settings. If you have questions about our data practices, please contact our privacy team.
+                </p>
+              </section>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    /* =========================================
+       7. TERMS & CONDITIONS VIEW
+    ========================================= */
+    function TermsView() {
+      return (
+        <div className="max-w-4xl mx-auto animate-in fade-in zoom-in-95 duration-700">
+          <div className="glass-panel rounded-3xl p-8 md:p-12 border border-white/10">
+            <h1 className="text-4xl font-extrabold text-white mb-2 tracking-tight">Terms & Conditions</h1>
+            <p className="text-slate-400 mb-8 pb-8 border-b border-white/10">Last updated: March 2026</p>
+
+            <div className="space-y-8 text-slate-300 leading-relaxed">
+              <section>
+                <h2 className="text-2xl font-bold text-white mb-4">1. Acceptance of Terms</h2>
+                <p className="text-slate-400">
+                  By accessing or using the EventSpot Inc. platform (the "Service"), you agree to be bound by these Terms and Conditions. If you disagree with any part of the terms, then you may not access the Service.
+                </p>
+              </section>
+
+              <section>
+                <h2 className="text-2xl font-bold text-white mb-4">2. User Responsibilities</h2>
+                <div className="space-y-4 text-slate-400">
+                  <p><strong>Renters:</strong> You agree to use booked spaces responsibly, adhere to the specific rules set by the Leaser, and vacate the premises at the agreed-upon time. Any damages incurred during your booking are your financial responsibility.</p>
+                  <p><strong>Leasers:</strong> You confirm that you have the legal right to rent out the listed space. You must ensure the space is safe, clean, and accurately represented in your listing.</p>
+                  <p><strong>Sponsors:</strong> You agree to fulfill the financial commitments made through the app in exchange for the promotional benefits agreed upon with the event organizer.</p>
+                </div>
+              </section>
+
+              <section>
+                <h2 className="text-2xl font-bold text-white mb-4">3. Fees and Payments</h2>
+                <p className="text-slate-400">
+                  EventSpot charges a 10% commission on all successful bookings. Vendor subscriptions are billed at a flat rate of $35 per month. All fees are non-refundable unless otherwise stated in our cancellation policy. We reserve the right to modify our fee structure with 30 days prior notice to active users.
+                </p>
+              </section>
+
+              <section>
+                <h2 className="text-2xl font-bold text-white mb-4">4. Limitation of Liability</h2>
+                <p className="text-slate-400">
+                  EventSpot acts as a marketplace facilitator. We do not own, manage, or control the spaces listed on our platform. In no event shall EventSpot Inc., nor its directors, employees, or partners, be liable for any indirect, incidental, special, consequential or punitive damages resulting from your use of the Service or any physical spaces booked through the Service.
+                </p>
+              </section>
             </div>
           </div>
         </div>
