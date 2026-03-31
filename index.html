@@ -1254,6 +1254,8 @@
     function DeepDiveView({ onClose }) {
       const [step, setStep] = useState('signin');
       const [ddRole, setDdRole] = useState(null);
+      const [agreedToTerms, setAgreedToTerms] = useState(false);
+      const [termsOpen, setTermsOpen] = useState(false);
       const [form, setForm] = useState({ firstName:'Chim', lastName:'Wopara', phone:'+1 (780) 555-0192', address:'Edmonton, AB T6G 2H1' });
       const [appTab, setAppTab] = useState('hub');
       const [bookingFlow, setBookingFlow] = useState(null);
@@ -1335,7 +1337,7 @@
 
       // ---- ONBOARDING ----
       if (step !== 'app') {
-        const stepNum = { signin:0, onboard_name:1, onboard_contact:2, onboard_role:3, ready:4 }[step] || 0;
+        const stepNum = { signin:0, onboard_name:1, onboard_contact:2, onboard_role:3, onboard_terms:4, ready:5 }[step] || 0;
         return (
           <div className="fixed inset-0 z-[200] bg-[#040913] flex flex-col overflow-hidden">
             <div className="absolute inset-0 aurora-bg pointer-events-none bg-[radial-gradient(circle_at_16%_24%,rgba(16,185,129,0.2),transparent_40%),radial-gradient(circle_at_88%_16%,rgba(245,158,11,0.16),transparent_38%),radial-gradient(circle_at_52%_78%,rgba(52,211,153,0.16),transparent_42%)]"></div>
@@ -1345,7 +1347,7 @@
             <button onClick={onClose} className="absolute top-5 right-5 z-50 h-10 w-10 rounded-full bg-slate-800/60 border border-white/10 flex items-center justify-center hover:bg-slate-700 transition-colors"><X className="h-4 w-4 text-slate-400"/></button>
             {step !== 'signin' && step !== 'ready' && (
               <div className="absolute top-0 left-0 right-0 h-1 bg-slate-800/60">
-                <div className="h-full bg-gradient-to-r from-emerald-500 to-amber-600 transition-all duration-700" style={{width:`${((stepNum-1)/3)*100}%`}}></div>
+                <div className="h-full bg-gradient-to-r from-emerald-500 to-amber-600 transition-all duration-700" style={{width:`${((stepNum-1)/4)*100}%`}}></div>
               </div>
             )}
             <div className="flex-1 flex items-center justify-center p-6 overflow-y-auto">
@@ -1406,7 +1408,31 @@
                       </div>
                     ))}
                   </div>
-                  <button disabled={!ddRole} onClick={() => setStep('ready')} className={`w-full mt-6 text-white font-bold py-4 rounded-2xl transition-all shadow-lg ${ddRole ? 'bg-gradient-to-r from-emerald-600 to-amber-600 hover:opacity-90 shadow-emerald-500/20' : 'bg-slate-700 opacity-40 cursor-not-allowed'}`}>Continue</button>
+                  <button disabled={!ddRole} onClick={() => { setAgreedToTerms(false); setStep('onboard_terms'); }} className={`w-full mt-6 text-white font-bold py-4 rounded-2xl transition-all shadow-lg ${ddRole ? 'bg-gradient-to-r from-emerald-600 to-amber-600 hover:opacity-90 shadow-emerald-500/20' : 'bg-slate-700 opacity-40 cursor-not-allowed'}`}>Continue</button>
+                </div>
+              )}
+
+              {step === 'onboard_terms' && (
+                <div className="w-full max-w-md animate-in fade-in slide-in-from-right-8 duration-500">
+                  <div className="mb-8 text-center">
+                    <p className="text-xs font-bold text-emerald-400 tracking-widest mb-2">STEP 4 OF 4</p>
+                    <h2 className="text-3xl font-extrabold text-white mb-2">Terms & Conditions</h2>
+                    <p className="text-slate-400">Please review and accept our terms before continuing.</p>
+                  </div>
+                  <div className="bg-slate-800/40 border border-white/10 rounded-2xl p-5 mb-6">
+                    <p className="text-sm text-slate-300 leading-relaxed">By joining EventSpot, you agree to use the platform responsibly and in accordance with our community standards. Renters are responsible for any damages to booked spaces. Leasers must ensure listed spaces comply with local Alberta health and safety regulations. Sponsors must ensure campaign content is truthful and non-discriminatory.</p>
+                    <p className="text-sm text-slate-400 leading-relaxed mt-3">EventSpot collects personal information solely to facilitate bookings and communications between users. Your data is never sold to third parties. You may request deletion of your account and data at any time.</p>
+                    <button onClick={() => setTermsOpen(true)} className="mt-4 text-emerald-400 hover:text-emerald-300 text-sm font-bold underline underline-offset-2 transition-colors flex items-center gap-1">
+                      Read Full Terms &amp; Conditions →
+                    </button>
+                  </div>
+                  <label className="flex items-start gap-3 cursor-pointer mb-6 group">
+                    <div onClick={() => setAgreedToTerms(!agreedToTerms)} className={`mt-0.5 flex-shrink-0 h-5 w-5 rounded-md border-2 flex items-center justify-center transition-all ${agreedToTerms ? 'bg-emerald-500 border-emerald-500' : 'border-slate-600 group-hover:border-slate-400'}`}>
+                      {agreedToTerms && <svg className="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>}
+                    </div>
+                    <span onClick={() => setAgreedToTerms(!agreedToTerms)} className="text-sm text-slate-300 leading-snug">I have read and agree to EventSpot's <button onClick={e => { e.stopPropagation(); setTermsOpen(true); }} className="text-emerald-400 hover:text-emerald-300 font-bold underline underline-offset-2 transition-colors">Terms &amp; Conditions</button> and <button onClick={e => { e.stopPropagation(); setTermsOpen(true); }} className="text-emerald-400 hover:text-emerald-300 font-bold underline underline-offset-2 transition-colors">Privacy Policy</button>.</span>
+                  </label>
+                  <button disabled={!agreedToTerms} onClick={() => setStep('ready')} className={`w-full text-white font-bold py-4 rounded-2xl transition-all shadow-lg ${agreedToTerms ? 'bg-gradient-to-r from-emerald-600 to-amber-600 hover:opacity-90 shadow-emerald-500/20' : 'bg-slate-700 opacity-40 cursor-not-allowed'}`}>Accept &amp; Continue</button>
                 </div>
               )}
 
@@ -1421,6 +1447,66 @@
               )}
 
             </div>
+
+          {/* TERMS MODAL */}
+          {termsOpen && (
+            <div className="absolute inset-0 z-[300] bg-black/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-6 animate-in fade-in duration-200">
+              <div className="w-full sm:max-w-2xl bg-[#0c1422] border border-white/10 rounded-t-3xl sm:rounded-3xl shadow-2xl flex flex-col max-h-[90vh] sm:max-h-[85vh]">
+                <div className="flex items-center justify-between px-6 py-5 border-b border-white/5 flex-shrink-0">
+                  <div>
+                    <h2 className="text-xl font-extrabold text-white">Terms &amp; Conditions</h2>
+                    <p className="text-xs text-slate-500 mt-0.5">EventSpot Platform Agreement · Last updated March 2026</p>
+                  </div>
+                  <button onClick={() => setTermsOpen(false)} className="h-9 w-9 rounded-xl bg-slate-800/60 border border-white/10 flex items-center justify-center hover:bg-slate-700 transition-colors"><X className="h-4 w-4 text-slate-400"/></button>
+                </div>
+                <div className="flex-1 overflow-y-auto px-6 py-6 space-y-6 text-sm text-slate-300 leading-relaxed hide-scrollbar">
+                  <section>
+                    <h3 className="text-base font-bold text-white mb-2">1. Acceptance of Terms</h3>
+                    <p>By creating an account or using the EventSpot platform, you agree to be bound by these Terms &amp; Conditions and our Privacy Policy. If you do not agree, you may not use the platform. EventSpot reserves the right to update these terms at any time, with notice provided via email or in-app notification.</p>
+                  </section>
+                  <section>
+                    <h3 className="text-base font-bold text-white mb-2">2. User Accounts</h3>
+                    <p>You must be at least 18 years old to create an account. You are responsible for maintaining the confidentiality of your account credentials and for all activity that occurs under your account. EventSpot requires a valid university email address for student verification and may revoke access if fraudulent information is detected.</p>
+                  </section>
+                  <section>
+                    <h3 className="text-base font-bold text-white mb-2">3. Renters</h3>
+                    <p>Renters agree to use booked spaces solely for the purpose described at the time of booking. You are liable for any damage caused to a space during your booking period. EventSpot is not responsible for disputes between renters and leasers, though we will make reasonable efforts to mediate. Cancellations made less than 48 hours before a booking may be subject to a cancellation fee.</p>
+                  </section>
+                  <section>
+                    <h3 className="text-base font-bold text-white mb-2">4. Leasers</h3>
+                    <p>Leasers represent and warrant that they have the legal right to list and rent the spaces they post on EventSpot. All spaces must comply with applicable Alberta municipal bylaws, fire safety codes, and health regulations. EventSpot reserves the right to remove listings that violate community standards or receive repeated complaints.</p>
+                  </section>
+                  <section>
+                    <h3 className="text-base font-bold text-white mb-2">5. Sponsors</h3>
+                    <p>Sponsors must ensure all campaign content is accurate, truthful, and compliant with applicable Canadian advertising standards. Discriminatory, misleading, or otherwise harmful content is strictly prohibited and will result in immediate removal and potential account suspension.</p>
+                  </section>
+                  <section>
+                    <h3 className="text-base font-bold text-white mb-2">6. Payments &amp; Fees</h3>
+                    <p>All payments are processed securely through EventSpot's payment infrastructure. EventSpot collects a service fee on each transaction, disclosed at the time of booking. Payouts to leasers are processed within 3–5 business days following a completed booking. Disputes regarding charges must be raised within 7 days of the transaction.</p>
+                  </section>
+                  <section>
+                    <h3 className="text-base font-bold text-white mb-2">7. Privacy &amp; Data</h3>
+                    <p>EventSpot collects personal information (name, email, phone, location) solely to facilitate bookings, communications, and platform safety. We do not sell your data to third parties. Data is stored securely in compliance with PIPEDA (Personal Information Protection and Electronic Documents Act). You may request access to, correction of, or deletion of your personal data at any time by contacting support.</p>
+                  </section>
+                  <section>
+                    <h3 className="text-base font-bold text-white mb-2">8. Prohibited Conduct</h3>
+                    <p>Users may not use EventSpot for illegal activities, harassment of other users, fraudulent listings or bookings, or circumventing EventSpot's payment system by transacting directly to avoid fees. Violations may result in permanent account termination and reporting to relevant authorities.</p>
+                  </section>
+                  <section>
+                    <h3 className="text-base font-bold text-white mb-2">9. Limitation of Liability</h3>
+                    <p>EventSpot acts as a marketplace connecting renters, leasers, and sponsors. We are not a party to any agreement between users. To the fullest extent permitted by law, EventSpot is not liable for any indirect, incidental, or consequential damages arising from use of the platform, including property damage, personal injury, or lost revenue.</p>
+                  </section>
+                  <section>
+                    <h3 className="text-base font-bold text-white mb-2">10. Governing Law</h3>
+                    <p>These terms are governed by the laws of the Province of Alberta and the federal laws of Canada applicable therein. Any disputes shall be resolved in the courts of Edmonton, Alberta.</p>
+                  </section>
+                </div>
+                <div className="px-6 py-5 border-t border-white/5 flex-shrink-0">
+                  <button onClick={() => { setAgreedToTerms(true); setTermsOpen(false); }} className="w-full bg-gradient-to-r from-emerald-600 to-amber-600 text-white font-bold py-4 rounded-2xl hover:opacity-90 transition-opacity shadow-lg shadow-emerald-500/20">I Agree &amp; Close</button>
+                </div>
+              </div>
+            </div>
+          )}
           </div>
         );
       }
