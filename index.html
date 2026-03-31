@@ -22,7 +22,14 @@
   </script>
 </head>
 <body class="bg-[#0b130f] text-[#d7dfd0]">
-  <div id="root"></div>
+  <div id="root">
+    <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0b130f;color:#d7dfd0;font-family:Manrope,Segoe UI,sans-serif;padding:24px;text-align:center;">
+      <div>
+        <h1 style="margin:0 0 10px;font-size:30px;font-weight:800;">EventSpot</h1>
+        <p style="margin:0;font-size:14px;opacity:.8;">Loading experience...</p>
+      </div>
+    </div>
+  </div>
 
   <script type="text/babel" data-type="module">
     import React, { useState, useEffect } from 'react';
@@ -32,8 +39,7 @@
       Search, ShieldCheck, ChevronRight, PlayCircle, BarChart3, Building, Briefcase,
       Building2, Home, BookOpen, Monitor, Megaphone, LineChart, Sparkles, LayoutDashboard, Layers,
       Zap, Clock, Globe, ArrowRight, CheckCircle2, User, Lock, Mail, Bell, CreditCard, LogOut, Settings, 
-      ChevronLeft, X, SlidersHorizontal, Settings2, Camera, Star, Map, Plus, Image as ImageIcon,
-      Maximize2, Filter
+      ChevronLeft, X, SlidersHorizontal, Settings2, Camera, Star, Map, Plus, Maximize2
     } from 'lucide-react';
 
     const EventSpotLogo = ({ className = "w-8 h-8" }) => (
@@ -101,6 +107,7 @@
             @keyframes orbit-slow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
             @keyframes pulse-ring { 0%, 100% { transform: scale(1); opacity: 0.24; } 50% { transform: scale(1.09); opacity: 0.52; } }
             @keyframes bob { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-8px); } }
+            @keyframes aurora-shift { 0% { transform: translate3d(-4%, -3%, 0) scale(1); } 50% { transform: translate3d(4%, 3%, 0) scale(1.08); } 100% { transform: translate3d(-4%, -3%, 0) scale(1); } }
             .animate-float { animation: float 6s ease-in-out infinite; }
             .animate-float-delayed { animation: float-reverse 7s ease-in-out infinite; }
             .animate-glow { animation: pulse-glow 4s ease-in-out infinite; }
@@ -108,6 +115,9 @@
             .animate-orbit-slow { animation: orbit-slow 22s linear infinite; transform-origin: center; }
             .animate-pulse-ring { animation: pulse-ring 4.5s ease-in-out infinite; transform-origin: center; }
             .animate-bob { animation: bob 4.8s ease-in-out infinite; }
+            .aurora-bg { animation: aurora-shift 18s ease-in-out infinite; }
+            .tilt-card { transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease; transform-style: preserve-3d; will-change: transform; }
+            .tilt-card:hover { transform: perspective(1200px) rotateX(5deg) rotateY(-6deg) translateY(-6px); box-shadow: 0 24px 55px -35px rgba(52,211,153,0.65); border-color: rgba(52,211,153,0.45); }
 
             body { font-family: 'Manrope', 'Avenir Next', 'Segoe UI', sans-serif; background: #0b130f; color: #d7dfd0; }
             h1, h2, h3, .font-extrabold { font-family: 'Fraunces', Georgia, serif; letter-spacing: 0.01em; }
@@ -133,6 +143,7 @@
 
           <div className="fixed top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-emerald-900/20 blur-[120px] pointer-events-none"></div>
           <div className="fixed bottom-[-20%] right-[-10%] w-[40%] h-[50%] rounded-full bg-yellow-900/10 blur-[100px] pointer-events-none"></div>
+          <div className="fixed inset-0 pointer-events-none aurora-bg bg-[radial-gradient(circle_at_18%_24%,rgba(16,185,129,0.16),transparent_36%),radial-gradient(circle_at_84%_18%,rgba(245,158,11,0.14),transparent_38%),radial-gradient(circle_at_56%_84%,rgba(110,231,183,0.08),transparent_42%)]"></div>
           {!isDeepDiveActive && (
             <div className="fixed top-0 left-0 right-0 z-[80] h-1 bg-[#07120d]/85 backdrop-blur-sm pointer-events-none">
               <div className="h-full bg-gradient-to-r from-emerald-400 via-lime-300 to-amber-400 shadow-[0_0_18px_rgba(52,211,153,0.45)] transition-[width] duration-150" style={{ width: `${pageScrollProgress}%` }}></div>
@@ -276,7 +287,7 @@
           <section id="scene-hero" className="relative">
             <div className="relative min-h-[76vh] md:min-h-[84vh] rounded-[2.6rem] overflow-hidden border border-emerald-500/25 shadow-[0_30px_90px_-45px_rgba(16,185,129,0.55)]">
               <img
-                src="https://picsum.photos/seed/eventspot-cinematic-hero/2000/1200"
+                src="https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=2000&q=80"
                 alt="Night event setup overlooking downtown Edmonton"
                 className="absolute inset-0 h-full w-full object-cover"
                 style={{ transform: `translateY(${heroShift}px) scale(1.08)` }}
@@ -333,7 +344,7 @@
                     { icon: Building2, label: 'Spaces in Pipeline', value: '90+' },
                     { icon: DollarSign, label: 'Sponsor Interest', value: '$42k' },
                   ].map((item) => (
-                    <div key={item.label} className="w-72 rounded-2xl border border-white/15 bg-[#06100b]/70 backdrop-blur-sm p-4 animate-bob">
+                    <div key={item.label} className="w-72 rounded-2xl border border-white/15 bg-[#06100b]/70 backdrop-blur-sm p-4 animate-bob tilt-card">
                       <div className="flex items-center text-xs text-slate-300 mb-2 font-semibold uppercase tracking-[0.1em]"><item.icon className="h-4 w-4 mr-2 text-emerald-300" />{item.label}</div>
                       <div className="text-3xl font-extrabold text-white leading-none">{item.value}</div>
                     </div>
@@ -364,7 +375,7 @@
                   { label: 'Median Time To Book', value: '4.2m', note: 'from inquiry to confirmed payment flow' },
                   { label: 'Average Sponsor Fill', value: '61%', note: 'of funding goal before event day' },
                 ].map((metric) => (
-                  <div key={metric.label} className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                  <div key={metric.label} className="rounded-2xl border border-white/10 bg-black/20 p-4 tilt-card">
                     <p className="text-xs uppercase tracking-[0.12em] text-slate-400 font-bold">{metric.label}</p>
                     <div className="mt-1 text-3xl font-extrabold text-emerald-300">{metric.value}</div>
                     <p className="mt-1 text-xs text-slate-400">{metric.note}</p>
@@ -375,7 +386,7 @@
 
             <div className="grid sm:grid-cols-2 gap-4 auto-rows-[190px] sm:auto-rows-[210px]">
               <div className="relative sm:row-span-2 rounded-[1.6rem] overflow-hidden border border-white/10">
-                <img src="https://picsum.photos/seed/eventspot-market-wide/1200/1500" alt="Rooftop event overlooking city lights" className="h-full w-full object-cover" loading="lazy" />
+                <img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1200&q=80" alt="Rooftop event overlooking city lights" className="h-full w-full object-cover" loading="lazy" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
                 <div className="absolute bottom-4 left-4 right-4">
                   <p className="text-[11px] text-emerald-200 uppercase tracking-[0.12em] font-bold mb-1">High-Intent Listings</p>
@@ -384,7 +395,7 @@
               </div>
 
               <div className="relative rounded-[1.6rem] overflow-hidden border border-white/10">
-                <img src="https://picsum.photos/seed/eventspot-market-top/1200/900" alt="Creative community showcase" className="h-full w-full object-cover" loading="lazy" />
+                <img src="https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?auto=format&fit=crop&w=1200&q=80" alt="Creative community showcase" className="h-full w-full object-cover" loading="lazy" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
                 <div className="absolute bottom-4 left-4 right-4 text-white">
                   <p className="text-[11px] uppercase tracking-[0.12em] text-amber-200 font-bold">Culture + Commerce</p>
@@ -393,7 +404,7 @@
               </div>
 
               <div className="relative sm:col-span-2 rounded-[1.6rem] overflow-hidden border border-amber-500/25">
-                <img src="https://picsum.photos/seed/eventspot-market-bottom/1600/900" alt="Organizer discussing event plan" className="h-full w-full object-cover" loading="lazy" />
+                <img src="https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?auto=format&fit=crop&w=1600&q=80" alt="Organizer discussing event plan" className="h-full w-full object-cover" loading="lazy" />
                 <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/40 to-transparent"></div>
                 <div className="absolute inset-y-0 left-0 p-5 sm:p-6 flex flex-col justify-end">
                   <p className="text-[11px] uppercase tracking-[0.13em] text-emerald-200 font-bold">Cinematic Operations Layer</p>
@@ -419,7 +430,7 @@
                   { icon: Building2, title: 'Leaser Activates', copy: 'Accepts requests, manages space uptime, and tracks monthly earnings.' },
                   { icon: Briefcase, title: 'Sponsor Funds', copy: 'Finds aligned events and fills funding gaps with measurable reach.' },
                 ].map((step, i) => (
-                  <div key={step.title} className="rounded-2xl border border-white/10 bg-black/20 p-4 flex items-start gap-3">
+                  <div key={step.title} className="rounded-2xl border border-white/10 bg-black/20 p-4 flex items-start gap-3 tilt-card">
                     <div className="h-10 w-10 rounded-xl bg-emerald-500/15 border border-emerald-400/25 flex items-center justify-center flex-shrink-0">
                       <step.icon className="h-5 w-5 text-emerald-300" />
                     </div>
@@ -491,7 +502,7 @@
 
           <section id="scene-cta" className="relative">
             <div className="relative rounded-[2.6rem] overflow-hidden border border-emerald-500/30">
-              <img src="https://picsum.photos/seed/eventspot-grand-finale/2200/1200" alt="Event audience under warm stage lighting" className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
+              <img src="https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?auto=format&fit=crop&w=2200&q=80" alt="Event audience under warm stage lighting" className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
               <div className="absolute inset-0 bg-[linear-gradient(110deg,rgba(4,12,8,0.92)_15%,rgba(4,12,8,0.54)_52%,rgba(4,12,8,0.88)_100%)]"></div>
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_75%_30%,rgba(250,204,21,0.3),transparent_38%),radial-gradient(circle_at_25%_70%,rgba(52,211,153,0.22),transparent_45%)]"></div>
 
@@ -550,7 +561,7 @@
       const [selectedItem, setSelectedItem] = useState(null);
 
       const [upcomingBookings, setUpcomingBookings] = useState([
-        { id: 1, title: 'Strathcona Lounge', date: 'Oct 14, 2026', time: '6:00 PM - 10:00 PM', status: 'Confirmed', icon: Home, color: 'text-orange-400', bg: 'bg-orange-500/10' }
+        { id: 1, title: 'Strathcona Lounge', date: 'Oct 14, 2026', time: '6:00 PM - 10:00 PM', status: 'Confirmed', icon: Home, color: 'text-orange-400', bg: 'bg-orange-500/10', image: 'https://images.unsplash.com/photo-1551632436-cbf8dd35adfa?auto=format&fit=crop&w=600&q=80' }
       ]);
       const [myListings, setMyListings] = useState([]);
       const [newListingName, setNewListingName] = useState('');
@@ -562,20 +573,26 @@
       };
 
       const spaces = [
-        { id: 1, name: 'Downtown Balcony', type: 'Outdoor', price: '$45', rating: '4.8', icon: Building2, color: 'text-blue-400', bg: 'bg-blue-500/10' },
-        { id: 2, name: 'Strathcona Lounge', type: 'Indoor', price: '$80', rating: '5.0', icon: Home, color: 'text-orange-400', bg: 'bg-orange-500/10' },
-        { id: 3, name: 'Campus Study Hall', type: 'Academic', price: '$25', rating: '4.5', icon: BookOpen, color: 'text-green-400', bg: 'bg-green-500/10' },
+        { id: 1, name: 'Downtown Balcony', type: 'Outdoor', price: '$45', rating: '4.8', icon: Building2, color: 'text-blue-400', bg: 'bg-blue-500/10', image: 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&w=1200&q=80' },
+        { id: 2, name: 'Strathcona Lounge', type: 'Indoor', price: '$80', rating: '5.0', icon: Home, color: 'text-orange-400', bg: 'bg-orange-500/10', image: 'https://images.unsplash.com/photo-1551632436-cbf8dd35adfa?auto=format&fit=crop&w=1200&q=80' },
+        { id: 3, name: 'Campus Study Hall', type: 'Academic', price: '$25', rating: '4.5', icon: BookOpen, color: 'text-green-400', bg: 'bg-green-500/10', image: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1200&q=80' },
       ];
 
       const events = [
-        { id: 1, name: 'Economics Networking Mixer', attendees: '50-70', asking: '$150', niche: 'Academic' },
-        { id: 2, name: 'Local Art Pop-up', attendees: '100+', asking: '$300', niche: 'Culture' },
+        { id: 1, name: 'Economics Networking Mixer', attendees: '50-70', asking: '$150', niche: 'Academic', org: 'U of A Business Society', image: 'https://images.unsplash.com/photo-1515169067868-5387ec356754?auto=format&fit=crop&w=1200&q=80' },
+        { id: 2, name: 'Local Art Pop-up', attendees: '100+', asking: '$300', niche: 'Culture', org: 'YEG Arts Collective', image: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1200&q=80' },
       ];
+
+      const switchMiniRole = (nextRole) => {
+        setRole(nextRole);
+        setAppTab('hub');
+        setActiveModal(null);
+      };
 
       const openBookingModal = (space) => { setSelectedItem(space); setActiveModal('booking'); };
       const confirmBooking = () => {
         setUpcomingBookings([...upcomingBookings, {
-          id: Date.now(), title: selectedItem.name, date: 'Today', time: 'Pending Time', status: 'Payment Processed', icon: selectedItem.icon, color: selectedItem.color, bg: selectedItem.bg
+          id: Date.now(), title: selectedItem.name, date: 'Today', time: 'Pending Time', status: 'Payment Processed', icon: selectedItem.icon, color: selectedItem.color, bg: selectedItem.bg, image: selectedItem.image
         }]);
         setActiveModal(null);
         triggerToast(`Successfully booked ${selectedItem.name}!`);
@@ -585,7 +602,7 @@
       const publishListing = () => {
         if(!newListingName) return;
         setMyListings([...myListings, {
-          id: Date.now(), name: newListingName, price: `$${newListingPrice || '50'}`
+          id: Date.now(), name: newListingName, price: `$${newListingPrice || '50'}`, image: 'https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=1200&q=80'
         }]);
         setActiveModal(null);
         setNewListingName('');
@@ -620,15 +637,15 @@
                 </div>
               ) : (
                 <>
-                  <div className={`transition-all duration-500 ${role === 'renter' ? 'opacity-100 scale-100' : 'opacity-30 scale-95 cursor-pointer'}`} onClick={() => {setRole('renter'); setAppTab('hub');}}>
+                  <div className={`transition-all duration-500 ${role === 'renter' ? 'opacity-100 scale-100' : 'opacity-30 scale-95 cursor-pointer'}`} onClick={() => switchMiniRole('renter')}>
                     <h3 className="text-xl font-bold text-white mb-2 flex items-center"><Search className="mr-2 text-emerald-400 h-5 w-5"/> The Renter</h3>
                     <p className="text-sm text-slate-400">Click a space to open the booking details. Confirmed bookings will sync to your Booked tab instantly.</p>
                   </div>
-                  <div className={`transition-all duration-500 ${role === 'leaser' ? 'opacity-100 scale-100' : 'opacity-30 scale-95 cursor-pointer'}`} onClick={() => {setRole('leaser'); setAppTab('hub');}}>
+                  <div className={`transition-all duration-500 ${role === 'leaser' ? 'opacity-100 scale-100' : 'opacity-30 scale-95 cursor-pointer'}`} onClick={() => switchMiniRole('leaser')}>
                     <h3 className="text-xl font-bold text-white mb-2 flex items-center"><Building className="mr-2 text-emerald-400 h-5 w-5"/> The Leaser</h3>
                     <p className="text-sm text-slate-400">Click Create New Listing to launch the wizard. Your new property will appear on your dashboard.</p>
                   </div>
-                  <div className={`transition-all duration-500 ${role === 'sponsor' ? 'opacity-100 scale-100' : 'opacity-30 scale-95 cursor-pointer'}`} onClick={() => {setRole('sponsor'); setAppTab('hub');}}>
+                  <div className={`transition-all duration-500 ${role === 'sponsor' ? 'opacity-100 scale-100' : 'opacity-30 scale-95 cursor-pointer'}`} onClick={() => switchMiniRole('sponsor')}>
                     <h3 className="text-xl font-bold text-white mb-2 flex items-center"><Briefcase className="mr-2 text-amber-400 h-5 w-5"/> The Sponsor</h3>
                     <p className="text-sm text-slate-400">Select an event to open the funding proposal form and inject capital directly into local organizers.</p>
                   </div>
@@ -636,8 +653,9 @@
               )}
             </div>
 
-            <div className="order-1 md:order-2 relative w-[340px] h-[720px]">
-              <div className="absolute inset-0 bg-emerald-500/30 blur-[60px] rounded-[3rem]"></div>
+            <div className="order-1 md:order-2 relative w-[340px] h-[720px] tilt-card">
+              <div className="absolute inset-0 bg-emerald-500/30 blur-[60px] rounded-[3rem] animate-float"></div>
+              <div className="absolute -top-8 -right-8 h-24 w-24 rounded-full bg-amber-500/20 blur-2xl animate-float-delayed"></div>
               <div className="absolute inset-0 bg-slate-900 border-[10px] border-slate-800 rounded-[3.5rem] shadow-2xl overflow-hidden ring-1 ring-white/10 flex flex-col z-10">
                 <div className="absolute top-2 inset-x-0 h-7 flex justify-center z-50 pointer-events-none">
                   <div className="w-28 bg-black rounded-full shadow-inner flex items-center justify-between px-3">
@@ -682,8 +700,9 @@
                         <div className="absolute inset-0 z-[60] bg-[#0f1523] modal-slide-up flex flex-col">
                           {activeModal === 'booking' && selectedItem && (
                             <div className="flex flex-col h-full relative">
-                              <div className="relative h-48 bg-slate-800 flex items-center justify-center">
-                                <ImageIcon className="h-12 w-12 text-slate-600" />
+                              <div className="relative h-52 bg-slate-800 flex items-center justify-center overflow-hidden">
+                                <img src={selectedItem.image} alt={selectedItem.name} className="h-full w-full object-cover" loading="lazy" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/5 to-black/30"></div>
                                 <button onClick={() => setActiveModal(null)} className="absolute top-4 left-4 h-8 w-8 bg-black/50 rounded-full flex items-center justify-center backdrop-blur-sm"><X className="h-4 w-4 text-white"/></button>
                                 <div className="absolute bottom-4 right-4 bg-black/50 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-white flex items-center"><Star className="h-3 w-3 text-yellow-400 mr-1"/> {selectedItem.rating}</div>
                               </div>
@@ -743,7 +762,7 @@
                                 <button onClick={() => setActiveModal(null)} className="h-8 w-8 bg-slate-800 rounded-full flex items-center justify-center"><X className="h-4 w-4 text-white"/></button>
                               </div>
                               <div className="p-5 flex-1 overflow-y-auto space-y-5">
-                                <div className="h-32 bg-slate-800/50 border border-dashed border-white/20 rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:bg-slate-800 transition-colors">
+                                <div onClick={() => triggerToast('Photo uploader demo coming next build.')} className="h-32 bg-slate-800/50 border border-dashed border-white/20 rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:bg-slate-800 transition-colors">
                                   <Camera className="h-6 w-6 text-slate-500 mb-2"/>
                                   <span className="text-xs text-slate-400 font-bold">Upload Photos</span>
                                 </div>
@@ -770,8 +789,11 @@
                               </div>
                               <div className="p-5 flex-1 space-y-6">
                                 <div className="bg-slate-800/50 p-4 rounded-2xl border border-amber-500/30">
+                                  <div className="h-28 rounded-xl overflow-hidden border border-white/10 mb-3">
+                                    <img src={selectedItem.image} alt={selectedItem.name} className="h-full w-full object-cover" loading="lazy" />
+                                  </div>
                                   <h4 className="font-bold text-white text-sm mb-1">{selectedItem.name}</h4>
-                                  <p className="text-xs text-slate-400">Target Ask: {selectedItem.asking}</p>
+                                  <p className="text-xs text-slate-400">{selectedItem.org || 'Local Organizer'} · Target Ask: {selectedItem.asking}</p>
                                 </div>
                                 <div>
                                   <label className="text-xs font-bold text-amber-400 mb-2 block">YOUR OFFER AMOUNT ($)</label>
@@ -863,9 +885,9 @@
                           </div>
                           
                           <div className="flex bg-slate-800/50 rounded-xl p-1 border border-white/5">
-                            <button onClick={() => setRole('renter')} className={`flex-1 text-[11px] font-bold py-2 rounded-lg transition-all duration-300 ${role === 'renter' ? 'bg-emerald-600 text-white shadow-lg' : 'text-slate-400'}`}>RENTER</button>
-                            <button onClick={() => setRole('leaser')} className={`flex-1 text-[11px] font-bold py-2 rounded-lg transition-all duration-300 ${role === 'leaser' ? 'bg-emerald-600 text-white shadow-lg' : 'text-slate-400'}`}>LEASER</button>
-                            <button onClick={() => setRole('sponsor')} className={`flex-1 text-[11px] font-bold py-2 rounded-lg transition-all duration-300 ${role === 'sponsor' ? 'bg-amber-600 text-white shadow-lg' : 'text-slate-400'}`}>SPONSOR</button>
+                            <button onClick={() => switchMiniRole('renter')} className={`flex-1 text-[11px] font-bold py-2 rounded-lg transition-all duration-300 ${role === 'renter' ? 'bg-emerald-600 text-white shadow-lg' : 'text-slate-400'}`}>RENTER</button>
+                            <button onClick={() => switchMiniRole('leaser')} className={`flex-1 text-[11px] font-bold py-2 rounded-lg transition-all duration-300 ${role === 'leaser' ? 'bg-emerald-600 text-white shadow-lg' : 'text-slate-400'}`}>LEASER</button>
+                            <button onClick={() => switchMiniRole('sponsor')} className={`flex-1 text-[11px] font-bold py-2 rounded-lg transition-all duration-300 ${role === 'sponsor' ? 'bg-amber-600 text-white shadow-lg' : 'text-slate-400'}`}>SPONSOR</button>
                           </div>
                         </div>
                       )}
@@ -892,7 +914,9 @@
                               <div className="space-y-3">
                                 {spaces.map((space) => (
                                   <div key={space.id} onClick={() => openBookingModal(space)} className="bg-slate-800/40 rounded-2xl p-3 border border-white/5 flex items-center space-x-4 cursor-pointer hover:bg-slate-800/60 transition-colors">
-                                    <div className={`h-12 w-12 rounded-xl flex items-center justify-center ${space.bg}`}><space.icon className={`h-6 w-6 ${space.color}`} /></div>
+                                    <div className="h-12 w-12 rounded-xl overflow-hidden border border-white/10 flex-shrink-0">
+                                      <img src={space.image} alt={space.name} className="h-full w-full object-cover" loading="lazy" />
+                                    </div>
                                     <div className="flex-1">
                                       <h4 className="font-bold text-white text-sm">{space.name}</h4>
                                       <p className="text-[11px] text-slate-400 mt-0.5">{space.type} • Rating {space.rating}</p>
@@ -926,7 +950,7 @@
                                 <div className="space-y-3">
                                   {myListings.map(lst => (
                                     <div key={lst.id} className="bg-slate-800/40 rounded-2xl p-3 border border-emerald-500/30 flex items-center space-x-4">
-                                      <div className="h-10 w-10 rounded-lg bg-emerald-500/10 flex items-center justify-center"><Building2 className="h-5 w-5 text-emerald-400"/></div>
+                                      <div className="h-10 w-10 rounded-lg overflow-hidden border border-white/10"><img src={lst.image || 'https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=200&q=80'} alt={lst.name} className="h-full w-full object-cover" loading="lazy"/></div>
                                       <div className="flex-1"><h4 className="font-bold text-white text-sm">{lst.name}</h4><p className="text-[11px] text-emerald-400 mt-0.5">Active Listing</p></div>
                                       <div className="text-right"><p className="text-white font-bold text-sm">{lst.price}</p><p className="text-[10px] text-slate-500">/hr</p></div>
                                     </div>
@@ -945,10 +969,14 @@
                               <div className="space-y-4">
                                 {events.map((event) => (
                                   <div key={event.id} className="bg-slate-800/40 rounded-2xl p-4 border border-white/5">
+                                    <div className="h-24 rounded-xl overflow-hidden border border-white/10 mb-3">
+                                      <img src={event.image} alt={event.name} className="h-full w-full object-cover" loading="lazy" />
+                                    </div>
                                     <div className="flex justify-between items-start mb-3">
                                       <h4 className="font-bold text-white text-sm">{event.name}</h4>
                                       <span className="bg-amber-500/20 text-amber-300 text-[10px] font-bold px-2 py-1 rounded-md border border-amber-500/30">Asking {event.asking}</span>
                                     </div>
+                                    <p className="text-[11px] text-slate-400 mb-2">{event.org}</p>
                                     <div className="flex space-x-2 text-[10px] text-slate-400 mb-4">
                                       <span className="bg-slate-700/50 px-2 py-1 rounded">{event.attendees} attendees</span><span className="bg-slate-700/50 px-2 py-1 rounded">{event.niche}</span>
                                     </div>
@@ -971,7 +999,7 @@
                                   <div className="absolute top-0 left-0 w-1 h-full bg-emerald-500"></div>
                                   <div className="flex items-center justify-between mb-4 pb-4 border-b border-white/5 pl-2">
                                     <div className="flex items-center space-x-3">
-                                      <div className={`h-10 w-10 rounded-xl flex items-center justify-center ${bk.bg}`}><bk.icon className={`h-5 w-5 ${bk.color}`} /></div>
+                                      <div className="h-10 w-10 rounded-xl overflow-hidden border border-white/10"><img src={bk.image || 'https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=200&q=80'} alt={bk.title} className="h-full w-full object-cover" loading="lazy"/></div>
                                       <div><h4 className="font-bold text-white text-sm">{bk.title}</h4><p className="text-xs text-emerald-400 mt-0.5 font-medium">{bk.status}</p></div>
                                     </div>
                                   </div>
@@ -1043,39 +1071,41 @@
       const [selectedSpace, setSelectedSpace] = useState(null);
       const [selectedDate, setSelectedDate] = useState('Apr 18');
       const [selectedTime, setSelectedTime] = useState('6:00 PM');
-      const [bookings, setBookings] = useState([{ id:1, space:'Strathcona Lounge', image:'https://picsum.photos/seed/eventspot-lounge/420/280', date:'Apr 14, 2026', time:'6:00–10:00 PM', status:'Confirmed', amount:'$320' }]);
+      const [bookings, setBookings] = useState([{ id:1, space:'Strathcona Lounge', image:'https://images.unsplash.com/photo-1551632436-cbf8dd35adfa?auto=format&fit=crop&w=900&q=80', date:'Apr 14, 2026', time:'6:00–10:00 PM', status:'Confirmed', amount:'$320' }]);
       const [ddToast, setDdToast] = useState(null);
       const [createStep, setCreateStep] = useState(null);
       const [newListing, setNewListing] = useState({ name:'', price:'60', type:'Indoor', address:'' });
       const [myListings, setMyListings] = useState([
-        { id:1, name:'Glenora Loft', price:75, status:'Active', bookings:8, earned:'$2,400', image:'https://picsum.photos/seed/eventspot-glenora-loft/1200/800' },
-        { id:2, name:'Whyte Ave Studio', price:55, status:'Active', bookings:5, earned:'$1,100', image:'https://picsum.photos/seed/eventspot-whyte-studio/1200/800' },
+        { id:1, name:'Glenora Loft', price:75, status:'Active', bookings:8, earned:'$2,400', image:'https://images.unsplash.com/photo-1604328698692-f76ea9498e76?auto=format&fit=crop&w=1400&q=80' },
+        { id:2, name:'Whyte Ave Studio', price:55, status:'Active', bookings:5, earned:'$1,100', image:'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&w=1400&q=80' },
       ]);
       const [selectedEvent, setSelectedEvent] = useState(null);
       const [proposalOpen, setProposalOpen] = useState(false);
       const [proposalAmt, setProposalAmt] = useState('150');
       const [myCampaigns, setMyCampaigns] = useState([{ id:1, event:'Student Tech Summit', amount:200, status:'Active', impressions:'1.2K', reach:'850' }]);
+      const [spaceFilter, setSpaceFilter] = useState('All');
+      const [eventFilter, setEventFilter] = useState('All');
+      const [leaserRequests, setLeaserRequests] = useState([
+        { name:'Jordan M.', image:'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=500&q=80', space:'Glenora Loft', date:'Apr 20, 2026', time:'4:00–8:00 PM', guests:25, amount:'$300', msg:"Planning a small birthday dinner! We'll be very respectful of the space." },
+        { name:'Priya S.', image:'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=500&q=80', space:'Whyte Ave Studio', date:'Apr 22, 2026', time:'10:00 AM–2:00 PM', guests:12, amount:'$220', msg:'Photography session for a clothing brand shoot. Need good natural light.' },
+      ]);
 
       const showToast = (msg) => { setDdToast(msg); setTimeout(() => setDdToast(null), 3000); };
 
       const spaces = [
-        { id:1, name:'Downtown Balcony', type:'Outdoor Rooftop', price:45, rating:4.8, reviews:32, capacity:'Up to 40 guests', amenities:['WiFi','Bistro Lighting','Sound System'], color:'from-emerald-700/35 to-green-600/10', border:'border-emerald-500/25', accent:'text-emerald-300', badge:'bg-emerald-500/20 text-emerald-200', image:'https://picsum.photos/seed/eventspot-downtown-balcony/1200/800', area:'Downtown Core' },
-        { id:2, name:'Strathcona Lounge', type:'Indoor Venue', price:80, rating:5.0, reviews:58, capacity:'Up to 80 guests', amenities:['Full Kitchen','Bar Setup','AV System','Parking'], color:'from-amber-700/35 to-yellow-600/10', border:'border-amber-500/25', accent:'text-amber-300', badge:'bg-amber-500/20 text-amber-200', image:'https://picsum.photos/seed/eventspot-strathcona-lounge/1200/800', area:'Old Strathcona' },
-        { id:3, name:'Campus Study Hall', type:'Academic Space', price:25, rating:4.5, reviews:21, capacity:'Up to 30 guests', amenities:['4K Projector','Whiteboards','High-Speed WiFi'], color:'from-lime-700/35 to-emerald-600/10', border:'border-lime-500/25', accent:'text-lime-300', badge:'bg-lime-500/20 text-lime-200', image:'https://picsum.photos/seed/eventspot-study-hall/1200/800', area:'U of A Campus' },
-        { id:4, name:'Oliver Rooftop Garden', type:'Outdoor Garden', price:65, rating:4.7, reviews:44, capacity:'Up to 60 guests', amenities:['Patio Furniture','String Lights','City Views'], color:'from-green-700/35 to-amber-600/10', border:'border-green-500/25', accent:'text-green-300', badge:'bg-green-500/20 text-green-200', image:'https://picsum.photos/seed/eventspot-rooftop-garden/1200/800', area:'Oliver District' },
-        { id:5, name:'Warehouse Loft', type:'Industrial Venue', price:95, rating:4.9, reviews:67, capacity:'Up to 120 guests', amenities:['Full Stage','Pro Sound System','Bar Setup','Parking'], color:'from-emerald-800/35 to-amber-700/10', border:'border-yellow-500/25', accent:'text-yellow-300', badge:'bg-yellow-500/20 text-yellow-200', image:'https://picsum.photos/seed/eventspot-warehouse-loft/1200/800', area:'Boyle Street' },
+        { id:1, name:'Downtown Balcony', type:'Outdoor Rooftop', price:45, rating:4.8, reviews:32, capacity:'Up to 40 guests', amenities:['WiFi','Bistro Lighting','Sound System'], color:'from-emerald-700/35 to-green-600/10', border:'border-emerald-500/25', accent:'text-emerald-300', badge:'bg-emerald-500/20 text-emerald-200', image:'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&w=1400&q=80', area:'Downtown Core' },
+        { id:2, name:'Strathcona Lounge', type:'Indoor Venue', price:80, rating:5.0, reviews:58, capacity:'Up to 80 guests', amenities:['Full Kitchen','Bar Setup','AV System','Parking'], color:'from-amber-700/35 to-yellow-600/10', border:'border-amber-500/25', accent:'text-amber-300', badge:'bg-amber-500/20 text-amber-200', image:'https://images.unsplash.com/photo-1551632436-cbf8dd35adfa?auto=format&fit=crop&w=1400&q=80', area:'Old Strathcona' },
+        { id:3, name:'Campus Study Hall', type:'Academic Space', price:25, rating:4.5, reviews:21, capacity:'Up to 30 guests', amenities:['4K Projector','Whiteboards','High-Speed WiFi'], color:'from-lime-700/35 to-emerald-600/10', border:'border-lime-500/25', accent:'text-lime-300', badge:'bg-lime-500/20 text-lime-200', image:'https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1400&q=80', area:'U of A Campus' },
+        { id:4, name:'Oliver Rooftop Garden', type:'Outdoor Garden', price:65, rating:4.7, reviews:44, capacity:'Up to 60 guests', amenities:['Patio Furniture','String Lights','City Views'], color:'from-green-700/35 to-amber-600/10', border:'border-green-500/25', accent:'text-green-300', badge:'bg-green-500/20 text-green-200', image:'https://images.unsplash.com/photo-1505236858219-8359eb29e329?auto=format&fit=crop&w=1400&q=80', area:'Oliver District' },
+        { id:5, name:'Warehouse Loft', type:'Industrial Venue', price:95, rating:4.9, reviews:67, capacity:'Up to 120 guests', amenities:['Full Stage','Pro Sound System','Bar Setup','Parking'], color:'from-emerald-800/35 to-amber-700/10', border:'border-yellow-500/25', accent:'text-yellow-300', badge:'bg-yellow-500/20 text-yellow-200', image:'https://images.unsplash.com/photo-1489515217757-5fd1be406fef?auto=format&fit=crop&w=1400&q=80', area:'Boyle Street' },
       ];
 
       const events = [
-        { id:1, name:'Economics Networking Mixer', org:'U of A Business Society', attendees:'50–70', date:'Apr 22', asking:150, raised:75, niche:'Academic', desc:'A professional mixer for econ students and local professionals at a downtown venue.', image:'https://picsum.photos/seed/eventspot-econ-mixer/1400/900' },
-        { id:2, name:'Local Art Pop-up Exhibition', org:'YEG Arts Collective', attendees:'100+', date:'Apr 28', asking:300, raised:120, niche:'Culture', desc:'Multi-media art showcase featuring 15+ local YEG artists across one evening.', image:'https://picsum.photos/seed/eventspot-art-popup/1400/900' },
-        { id:3, name:'Tech Startup Pitch Night', org:'Startup Edmonton', attendees:'80–100', date:'May 3', asking:500, raised:200, niche:'Tech', desc:'Fast-format pitches from 8 early-stage Edmonton startups to investors and mentors.', image:'https://picsum.photos/seed/eventspot-tech-pitch/1400/900' },
-        { id:4, name:'Community Garden Festival', org:'Edmonton Green', attendees:'200+', date:'May 10', asking:800, raised:350, niche:'Community', desc:'Outdoor festival celebrating urban gardening, sustainability, and local food culture.', image:'https://picsum.photos/seed/eventspot-garden-festival/1400/900' },
-      ];
-
-      const leaserRequests = [
-        { name:'Jordan M.', image:'https://picsum.photos/seed/eventspot-request-jordan/300/300', space:'Glenora Loft', date:'Apr 20, 2026', time:'4:00–8:00 PM', guests:25, amount:'$300', msg:"Planning a small birthday dinner! We'll be very respectful of the space." },
-        { name:'Priya S.', image:'https://picsum.photos/seed/eventspot-request-priya/300/300', space:'Whyte Ave Studio', date:'Apr 22, 2026', time:'10:00 AM–2:00 PM', guests:12, amount:'$220', msg:'Photography session for a clothing brand shoot. Need good natural light.' },
+        { id:1, name:'Economics Networking Mixer', org:'U of A Business Society', attendees:'50–70', date:'Apr 22', asking:150, raised:75, niche:'Academic', desc:'A professional mixer for econ students and local professionals at a downtown venue.', image:'https://images.unsplash.com/photo-1515169067868-5387ec356754?auto=format&fit=crop&w=1400&q=80' },
+        { id:2, name:'Local Art Pop-up Exhibition', org:'YEG Arts Collective', attendees:'100+', date:'Apr 28', asking:300, raised:120, niche:'Culture', desc:'Multi-media art showcase featuring 15+ local YEG artists across one evening.', image:'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1400&q=80' },
+        { id:3, name:'Tech Startup Pitch Night', org:'Startup Edmonton', attendees:'80–100', date:'May 3', asking:500, raised:200, niche:'Tech', desc:'Fast-format pitches from 8 early-stage Edmonton startups to investors and mentors.', image:'https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1400&q=80' },
+        { id:4, name:'Community Garden Festival', org:'Edmonton Green', attendees:'200+', date:'May 10', asking:800, raised:350, niche:'Community', desc:'Outdoor festival celebrating urban gardening, sustainability, and local food culture.', image:'https://images.unsplash.com/photo-1469571486292-b53601010376?auto=format&fit=crop&w=1400&q=80' },
+        { id:5, name:'City Charity Run Kickoff', org:'Run YEG', attendees:'250+', date:'May 18', asking:450, raised:210, niche:'Sport', desc:'Community run launch and wellness expo connecting local brands with active audiences.', image:'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=1400&q=80' },
       ];
 
       const renterTabs = [{ id:'hub', label:'Hub', icon:LayoutDashboard }, { id:'booked', label:'Booked', icon:Calendar }, { id:'explore', label:'Explore', icon:Map }, { id:'profile', label:'Profile', icon:User }];
@@ -1083,12 +1113,44 @@
       const sponsorTabs = [{ id:'discover', label:'Discover', icon:Search }, { id:'campaigns', label:'Campaigns', icon:Briefcase }, { id:'analytics', label:'Analytics', icon:TrendingUp }, { id:'profile', label:'Profile', icon:User }];
       const tabs = ddRole === 'renter' ? renterTabs : ddRole === 'leaser' ? leaserTabs : sponsorTabs;
       const effectiveTab = tabs && tabs.find(t => t.id === appTab) ? appTab : (ddRole === 'renter' ? 'hub' : ddRole === 'leaser' ? 'dashboard' : 'discover');
+      const filteredSpaces = spaceFilter === 'All' ? spaces : spaces.filter((space) => {
+        if (spaceFilter === 'Rooftop') return space.type.includes('Rooftop');
+        return space.type.includes(spaceFilter);
+      });
+      const filteredEvents = eventFilter === 'All' ? events : events.filter((event) => event.niche === eventFilter);
+
+      const handleLeaserDecision = (requestName, accepted) => {
+        setLeaserRequests((prev) => prev.filter((request) => request.name !== requestName));
+        showToast(accepted ? `Accepted ${requestName}'s request.` : `Declined ${requestName}'s request.`);
+      };
+
+      const handleOfferClick = (event) => {
+        const existing = myCampaigns.find((campaign) => campaign.event === event.name);
+        if (existing) {
+          setAppTab('campaigns');
+          showToast('You already submitted an offer for this event.');
+          return;
+        }
+        setSelectedEvent(event);
+        setProposalOpen(true);
+      };
+
+      const switchDeepRole = (nextRole, defaultTab) => {
+        setDdRole(nextRole);
+        setAppTab(defaultTab);
+        setBookingFlow(null);
+        setSelectedSpace(null);
+        setCreateStep(null);
+        setProposalOpen(false);
+      };
 
       // ---- ONBOARDING ----
       if (step !== 'app') {
         const stepNum = { signin:0, onboard_name:1, onboard_contact:2, onboard_role:3, ready:4 }[step] || 0;
         return (
-          <div className="fixed inset-0 z-[200] bg-[#070c18] flex flex-col overflow-hidden">
+          <div className="fixed inset-0 z-[200] bg-[#040913] flex flex-col overflow-hidden">
+            <div className="absolute inset-0 aurora-bg pointer-events-none bg-[radial-gradient(circle_at_16%_24%,rgba(16,185,129,0.2),transparent_40%),radial-gradient(circle_at_88%_16%,rgba(245,158,11,0.16),transparent_38%),radial-gradient(circle_at_52%_78%,rgba(52,211,153,0.16),transparent_42%)]"></div>
+            <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(120deg,rgba(2,8,17,0.4)_0%,rgba(2,8,17,0.7)_100%)]"></div>
             <div className="absolute top-[-15%] left-[-10%] w-[40%] h-[40%] rounded-full bg-emerald-900/30 blur-[100px] pointer-events-none"></div>
             <div className="absolute bottom-[-15%] right-[-10%] w-[35%] h-[45%] rounded-full bg-yellow-900/20 blur-[100px] pointer-events-none"></div>
             <button onClick={onClose} className="absolute top-5 right-5 z-50 h-10 w-10 rounded-full bg-slate-800/60 border border-white/10 flex items-center justify-center hover:bg-slate-700 transition-colors"><X className="h-4 w-4 text-slate-400"/></button>
@@ -1176,7 +1238,9 @@
 
       // ---- FULL APP VIEW ----
       return (
-        <div className="fixed inset-0 z-[200] bg-[#070c18] flex flex-col overflow-hidden">
+        <div className="fixed inset-0 z-[200] bg-[#040913] flex flex-col overflow-hidden">
+          <div className="absolute inset-0 aurora-bg pointer-events-none bg-[radial-gradient(circle_at_18%_24%,rgba(16,185,129,0.16),transparent_40%),radial-gradient(circle_at_82%_20%,rgba(245,158,11,0.14),transparent_38%),radial-gradient(circle_at_52%_78%,rgba(52,211,153,0.16),transparent_42%)]"></div>
+          <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(135deg,rgba(4,9,19,0.42),rgba(4,9,19,0.78))]"></div>
           {/* Toast */}
           {ddToast && (
             <div className="fixed top-4 sm:top-5 left-1/2 -translate-x-1/2 z-[400] toast-enter pointer-events-none px-4">
@@ -1297,7 +1361,7 @@
               <div className="flex-1 flex items-center justify-center p-4 sm:p-6 md:p-8 overflow-y-auto">
                 {createStep===0 && (
                   <div className="w-full max-w-lg space-y-5">
-                    <div className="h-40 bg-slate-800/50 border-2 border-dashed border-white/10 rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:border-emerald-500/50 transition-colors"><Camera className="h-8 w-8 text-slate-500 mb-2"/><span className="text-sm text-slate-400 font-medium">Upload Photos</span></div>
+                    <div onClick={()=>showToast('Photo uploader will be available in production build.')} className="h-40 bg-slate-800/50 border-2 border-dashed border-white/10 rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:border-emerald-500/50 transition-colors"><Camera className="h-8 w-8 text-slate-500 mb-2"/><span className="text-sm text-slate-400 font-medium">Upload Photos</span></div>
                     <div><label className="text-xs font-bold text-slate-400 mb-2 block">SPACE NAME</label><input value={newListing.name} onChange={e=>setNewListing({...newListing,name:e.target.value})} placeholder="e.g. Sunny Studio Loft" className="w-full bg-slate-800/50 border border-white/10 rounded-2xl px-5 py-4 text-white outline-none focus:border-emerald-500 transition-colors"/></div>
                     <div><label className="text-xs font-bold text-slate-400 mb-2 block">TYPE</label><div className="flex flex-wrap gap-2">{['Indoor','Outdoor','Academic','Studio','Retail','Industrial'].map(t=><button key={t} onClick={()=>setNewListing({...newListing,type:t})} className={`px-4 py-2 rounded-full text-sm font-bold border transition-all ${newListing.type===t?'bg-emerald-600 border-emerald-500 text-white':'bg-slate-800/50 border-white/5 text-slate-400 hover:border-white/20'}`}>{t}</button>)}</div></div>
                     <div><label className="text-xs font-bold text-slate-400 mb-2 block">ADDRESS</label><input value={newListing.address} onChange={e=>setNewListing({...newListing,address:e.target.value})} placeholder="123 Jasper Ave, Edmonton, AB" className="w-full bg-slate-800/50 border border-white/10 rounded-2xl px-5 py-4 text-white outline-none focus:border-emerald-500 transition-colors"/></div>
@@ -1318,7 +1382,7 @@
                       <div className="h-40 bg-gradient-to-br from-emerald-900/40 to-slate-800 flex items-center justify-center"><Building2 className="h-12 w-12 text-white/30" /></div>
                       <div className="p-6"><div className="flex justify-between items-start mb-3"><div><h3 className="font-bold text-white text-xl">{newListing.name||'Untitled Space'}</h3><p className="text-slate-400 text-sm mt-1">{newListing.type} · Edmonton, AB</p></div><div className="text-right"><p className="text-emerald-400 font-extrabold text-2xl">${newListing.price||'60'}</p><p className="text-xs text-slate-500">/hr</p></div></div><div className="bg-emerald-500/10 border border-emerald-500/20 rounded-xl px-4 py-2 text-xs text-emerald-300 font-bold inline-flex items-center"><div className="h-2 w-2 rounded-full bg-emerald-400 mr-2 animate-pulse"></div>Ready to publish</div></div>
                     </div>
-                    <button onClick={() => { setMyListings([...myListings,{id:Date.now(),name:newListing.name||'New Space',price:Number(newListing.price)||60,status:'Active',bookings:0,earned:'$0',image:`https://picsum.photos/seed/eventspot-new-space-${Date.now()}/1200/800`}]); setCreateStep(null); setNewListing({name:'',price:'60',type:'Indoor',address:''}); showToast('Space published successfully!'); }} className="w-full bg-gradient-to-r from-emerald-600 to-green-600 text-white font-bold py-5 rounded-2xl text-lg hover:opacity-90 transition-opacity shadow-lg shadow-emerald-500/20 flex items-center justify-center">Publish Space <ArrowRight className="ml-3 h-5 w-5"/></button>
+                    <button onClick={() => { setMyListings([...myListings,{id:Date.now(),name:newListing.name||'New Space',price:Number(newListing.price)||60,status:'Active',bookings:0,earned:'$0',image:'https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=1200&q=80'}]); setCreateStep(null); setNewListing({name:'',price:'60',type:'Indoor',address:''}); showToast('Space published successfully!'); }} className="w-full bg-gradient-to-r from-emerald-600 to-green-600 text-white font-bold py-5 rounded-2xl text-lg hover:opacity-90 transition-opacity shadow-lg shadow-emerald-500/20 flex items-center justify-center">Publish Space <ArrowRight className="ml-3 h-5 w-5"/></button>
                   </div>
                 )}
               </div>
@@ -1345,22 +1409,22 @@
             </aside>
 
             {/* MAIN */}
-            <main className="flex-1 overflow-y-auto hide-scrollbar bg-[#070c18] pb-24 md:pb-0">
+            <main className="flex-1 overflow-y-auto hide-scrollbar bg-[radial-gradient(circle_at_14%_16%,rgba(16,185,129,0.08),transparent_34%),radial-gradient(circle_at_86%_20%,rgba(245,158,11,0.07),transparent_32%),#060b16] pb-24 md:pb-0">
 
               {/* RENTER: HUB */}
               {ddRole==='renter' && effectiveTab==='hub' && (
                 <div className="p-4 sm:p-6 md:p-8 max-w-5xl mx-auto">
                   <div className="mb-8"><h1 className="text-2xl sm:text-3xl font-extrabold text-white mb-1">Good evening, {form.firstName}</h1><p className="text-slate-400">Discover event spaces across Edmonton.</p></div>
-                  <div className="flex space-x-3 mb-8 overflow-x-auto hide-scrollbar pb-2">{['All','Outdoor','Indoor','Academic','Rooftop','Industrial'].map((cat,i)=><button key={cat} className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-bold border transition-all ${i===0?'bg-emerald-600 border-emerald-500 text-white':'bg-slate-800/50 border-white/5 text-slate-400 hover:border-emerald-500/50 hover:text-white'}`}>{cat}</button>)}</div>
-                  <h2 className="font-bold text-white mb-5 text-lg">Top Picks in YEG</h2>
-                  <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">{spaces.map(space=>(
-                    <div key={space.id} onClick={()=>{setSelectedSpace(space);setBookingFlow('detail');}} className={`bg-gradient-to-br ${space.color} border ${space.border} rounded-3xl overflow-hidden cursor-pointer hover:scale-[1.02] transition-transform duration-200 group`}>
+                  <div className="flex space-x-3 mb-8 overflow-x-auto hide-scrollbar pb-2">{['All','Outdoor','Indoor','Academic','Rooftop','Industrial'].map((cat)=><button key={cat} onClick={()=>setSpaceFilter(cat)} className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-bold border transition-all ${spaceFilter===cat?'bg-emerald-600 border-emerald-500 text-white':'bg-slate-800/50 border-white/5 text-slate-400 hover:border-emerald-500/50 hover:text-white'}`}>{cat}</button>)}</div>
+                  <h2 className="font-bold text-white mb-5 text-lg">Top Picks in YEG {spaceFilter!=='All' && <span className="text-sm text-emerald-300 font-semibold">· {spaceFilter}</span>}</h2>
+                  {filteredSpaces.length===0 ? <div className="text-slate-500 text-sm bg-slate-800/30 border border-white/5 rounded-2xl p-6">No spaces match this filter yet.</div> : <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">{filteredSpaces.map(space=>(
+                    <div key={space.id} onClick={()=>{setSelectedSpace(space);setBookingFlow('detail');}} className={`bg-gradient-to-br ${space.color} border ${space.border} rounded-3xl overflow-hidden cursor-pointer hover:scale-[1.02] transition-transform duration-200 group tilt-card`}>
                       <div className="h-40 bg-black/10 group-hover:bg-black/5 transition-colors overflow-hidden">
                         <img src={space.image} alt={space.name} className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" />
                       </div>
                       <div className="p-5"><div className="flex justify-between items-start mb-2"><h3 className="font-bold text-white text-base leading-tight">{space.name}</h3><span className={`text-xs font-bold px-2 py-1 rounded-lg ${space.badge} flex-shrink-0 ml-2`}>{space.type.split(' ')[0]}</span></div><p className="text-xs text-slate-400 flex items-center mb-4"><MapPin className="h-3 w-3 mr-1"/> {space.area}</p><div className="flex items-center justify-between"><div className="flex items-center text-xs text-slate-300"><Star className="h-3 w-3 text-yellow-400 mr-1"/> {space.rating} <span className="text-slate-500 ml-1">({space.reviews})</span></div><div><span className={`font-extrabold ${space.accent} text-lg`}>${space.price}</span><span className="text-xs text-slate-500">/hr</span></div></div></div>
                     </div>
-                  ))}</div>
+                  ))}</div>}
                 </div>
               )}
 
@@ -1386,10 +1450,10 @@
                   <h1 className="text-2xl font-extrabold text-white mb-6">Explore Edmonton</h1>
                   <div className="h-56 sm:h-72 bg-slate-800/30 rounded-3xl border border-white/5 flex items-center justify-center mb-8 relative overflow-hidden">
                     <div className="absolute inset-0 opacity-30" style={{backgroundImage:'radial-gradient(circle at 30% 50%, #22c55e40 0%, transparent 50%), radial-gradient(circle at 70% 50%, #f59e0b30 0%, transparent 50%)'}}></div>
-                    {spaces.map((s,i)=><button key={s.id} className="absolute h-10 w-10 rounded-full border border-emerald-300/50 overflow-hidden cursor-pointer hover:scale-110 transition-transform drop-shadow-lg" style={{left:`${15+i*17}%`,top:`${25+(i%3)*20}%`}} onClick={()=>{setSelectedSpace(s);setBookingFlow('detail');}} title={s.name}><img src={s.image} alt={s.name} className="h-full w-full object-cover" loading="lazy"/></button>)}
+                    {filteredSpaces.map((s,i)=><button key={s.id} className="absolute h-10 w-10 rounded-full border border-emerald-300/50 overflow-hidden cursor-pointer hover:scale-110 transition-transform drop-shadow-lg" style={{left:`${15+i*17}%`,top:`${25+(i%3)*20}%`}} onClick={()=>{setSelectedSpace(s);setBookingFlow('detail');}} title={s.name}><img src={s.image} alt={s.name} className="h-full w-full object-cover" loading="lazy"/></button>)}
                     <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/60 backdrop-blur-sm px-4 py-2 rounded-full text-xs text-slate-300">Click a pin to view space details</div>
                   </div>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">{spaces.map(s=><button key={s.id} onClick={()=>{setSelectedSpace(s);setBookingFlow('detail');}} className="flex items-center space-x-3 bg-slate-800/40 hover:bg-slate-800/70 border border-white/5 rounded-2xl p-3 text-left transition-colors"><img src={s.image} alt={s.name} className="h-10 w-10 rounded-lg object-cover flex-shrink-0" loading="lazy"/><div><p className="font-bold text-white text-sm">{s.name}</p><p className="text-xs text-slate-400">{s.area}</p></div></button>)}</div>
+                  {filteredSpaces.length===0 ? <div className="text-slate-500 text-sm bg-slate-800/30 border border-white/5 rounded-2xl p-6">No spaces match this filter right now.</div> : <div className="grid grid-cols-2 md:grid-cols-3 gap-4">{filteredSpaces.map(s=><button key={s.id} onClick={()=>{setSelectedSpace(s);setBookingFlow('detail');}} className="flex items-center space-x-3 bg-slate-800/40 hover:bg-slate-800/70 border border-white/5 rounded-2xl p-3 text-left transition-colors"><img src={s.image} alt={s.name} className="h-10 w-10 rounded-lg object-cover flex-shrink-0" loading="lazy"/><div><p className="font-bold text-white text-sm">{s.name}</p><p className="text-xs text-slate-400">{s.area}</p></div></button>)}</div>}
                 </div>
               )}
 
@@ -1397,18 +1461,18 @@
               {ddRole==='leaser' && effectiveTab==='dashboard' && (
                 <div className="p-4 sm:p-6 md:p-8 max-w-5xl mx-auto">
                   <div className="mb-8"><h1 className="text-2xl sm:text-3xl font-extrabold text-white mb-1">Dashboard</h1><p className="text-slate-400">Welcome back, {form.firstName}. Here's your snapshot.</p></div>
-                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">{[{label:'This Month',value:'$3,500',sub:'+18% vs last month',c:'text-emerald-400',bg:'bg-emerald-500/10',b:'border-emerald-500/20'},{label:'Active Spaces',value:String(myListings.length),sub:myListings.length+' live listings',c:'text-emerald-400',bg:'bg-emerald-500/10',b:'border-emerald-500/20'},{label:'Total Bookings',value:'13',sub:'2 pending approval',c:'text-orange-400',bg:'bg-orange-500/10',b:'border-orange-500/20'},{label:'Avg Rating',value:'4.85',sub:'Across all spaces',c:'text-yellow-400',bg:'bg-yellow-500/10',b:'border-yellow-500/20'}].map(s=><div key={s.label} className={`${s.bg} border ${s.b} rounded-2xl p-5`}><p className="text-xs font-bold text-slate-400 mb-1">{s.label}</p><p className={`text-2xl font-extrabold ${s.c} mb-1`}>{s.value}</p><p className="text-xs text-slate-500">{s.sub}</p></div>)}</div>
+                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">{[{label:'This Month',value:'$3,500',sub:'+18% vs last month',c:'text-emerald-400',bg:'bg-emerald-500/10',b:'border-emerald-500/20'},{label:'Active Spaces',value:String(myListings.length),sub:myListings.length+' live listings',c:'text-emerald-400',bg:'bg-emerald-500/10',b:'border-emerald-500/20'},{label:'Total Bookings',value:'13',sub:`${leaserRequests.length} pending approval${leaserRequests.length===1?'':'s'}`,c:'text-orange-400',bg:'bg-orange-500/10',b:'border-orange-500/20'},{label:'Avg Rating',value:'4.85',sub:'Across all spaces',c:'text-yellow-400',bg:'bg-yellow-500/10',b:'border-yellow-500/20'}].map(s=><div key={s.label} className={`${s.bg} border ${s.b} rounded-2xl p-5`}><p className="text-xs font-bold text-slate-400 mb-1">{s.label}</p><p className={`text-2xl font-extrabold ${s.c} mb-1`}>{s.value}</p><p className="text-xs text-slate-500">{s.sub}</p></div>)}</div>
                   <h2 className="font-bold text-white mb-4 text-lg">Incoming Requests</h2>
-                  <div className="space-y-3">{leaserRequests.map((req,i)=>(
+                  {leaserRequests.length===0 ? <div className="bg-slate-800/30 border border-white/5 rounded-2xl p-6 text-sm text-slate-400">No pending booking requests right now.</div> : <div className="space-y-3">{leaserRequests.map((req,i)=>(
                     <div key={i} className="bg-slate-800/40 border border-white/5 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
                       <div className="h-10 w-10 rounded-full border border-white/10 overflow-hidden flex-shrink-0">
                         <img src={req.image} alt={req.name} className="h-full w-full object-cover" loading="lazy" />
                       </div>
                       <div className="flex-1"><p className="font-bold text-white text-sm">{req.name} wants to book <span className="text-emerald-400">{req.space}</span></p><p className="text-xs text-slate-400">{req.date} · {req.time}</p></div>
                       <p className="font-bold text-white sm:mr-2">{req.amount}</p>
-                      <div className="flex space-x-2 w-full sm:w-auto"><button onClick={()=>showToast('Booking accepted!')} className="flex-1 sm:flex-none px-4 py-2 bg-emerald-600 text-white text-xs font-bold rounded-xl hover:bg-emerald-500 transition-colors">Accept</button><button onClick={()=>showToast('Booking declined.')} className="flex-1 sm:flex-none px-4 py-2 bg-slate-700 text-white text-xs font-bold rounded-xl hover:bg-slate-600 transition-colors">Decline</button></div>
+                      <div className="flex space-x-2 w-full sm:w-auto"><button onClick={()=>handleLeaserDecision(req.name,true)} className="flex-1 sm:flex-none px-4 py-2 bg-emerald-600 text-white text-xs font-bold rounded-xl hover:bg-emerald-500 transition-colors">Accept</button><button onClick={()=>handleLeaserDecision(req.name,false)} className="flex-1 sm:flex-none px-4 py-2 bg-slate-700 text-white text-xs font-bold rounded-xl hover:bg-slate-600 transition-colors">Decline</button></div>
                     </div>
-                  ))}</div>
+                  ))}</div>}
                 </div>
               )}
 
@@ -1417,7 +1481,7 @@
                 <div className="p-4 sm:p-6 md:p-8 max-w-5xl mx-auto">
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8"><h1 className="text-2xl font-extrabold text-white">My Spaces</h1><button onClick={()=>setCreateStep(0)} className="flex items-center justify-center bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-5 py-2.5 rounded-xl transition-colors shadow-lg shadow-emerald-500/20"><Plus className="h-4 w-4 mr-2"/> Add Space</button></div>
                   <div className="grid md:grid-cols-2 gap-5">{myListings.map(lst=>(
-                    <div key={lst.id} className="bg-slate-800/30 border border-white/5 hover:border-emerald-500/30 rounded-3xl overflow-hidden transition-colors">
+                    <div key={lst.id} className="bg-slate-800/30 border border-white/5 hover:border-emerald-500/30 rounded-3xl overflow-hidden transition-colors tilt-card">
                       <div className="h-36 bg-gradient-to-br from-emerald-900/30 to-slate-800 overflow-hidden"><img src={lst.image} alt={lst.name} className="h-full w-full object-cover" loading="lazy" /></div>
                       <div className="p-5"><div className="flex justify-between items-start mb-4"><h3 className="font-bold text-white text-lg">{lst.name}</h3><span className="bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-xs font-bold px-3 py-1 rounded-full flex items-center"><div className="h-1.5 w-1.5 rounded-full bg-emerald-400 mr-1.5 animate-pulse"></div>{lst.status}</span></div><div className="grid grid-cols-3 gap-3"><div className="text-center bg-slate-700/30 rounded-xl p-3"><p className="text-lg font-extrabold text-emerald-400">${lst.price}</p><p className="text-[10px] text-slate-500">/hr</p></div><div className="text-center bg-slate-700/30 rounded-xl p-3"><p className="text-lg font-extrabold text-white">{lst.bookings}</p><p className="text-[10px] text-slate-500">bookings</p></div><div className="text-center bg-slate-700/30 rounded-xl p-3"><p className="text-lg font-extrabold text-emerald-400">{lst.earned}</p><p className="text-[10px] text-slate-500">earned</p></div></div></div>
                     </div>
@@ -1429,14 +1493,14 @@
               {ddRole==='leaser' && effectiveTab==='requests' && (
                 <div className="p-4 sm:p-6 md:p-8 max-w-3xl mx-auto">
                   <h1 className="text-2xl font-extrabold text-white mb-6">Booking Requests</h1>
-                  <div className="space-y-4">{leaserRequests.map((req,i)=>(
+                  {leaserRequests.length===0 ? <div className="bg-slate-800/30 border border-white/5 rounded-2xl p-6 text-sm text-slate-400">You’re all caught up. No open requests.</div> : <div className="space-y-4">{leaserRequests.map((req,i)=>(
                     <div key={i} className="bg-slate-800/30 border border-white/5 rounded-2xl p-5">
                       <div className="flex items-start space-x-4 mb-4"><div className="h-12 w-12 rounded-full border border-white/10 overflow-hidden flex-shrink-0"><img src={req.image} alt={req.name} className="h-full w-full object-cover" loading="lazy" /></div><div className="flex-1"><div className="flex justify-between"><div><p className="font-bold text-white">{req.name}</p><p className="text-xs text-slate-400">{req.space}</p></div><span className="font-extrabold text-white text-lg">{req.amount}</span></div></div></div>
                       <div className="bg-slate-700/30 rounded-xl p-3 mb-4 text-sm text-slate-300 italic">"{req.msg}"</div>
                       <div className="flex flex-wrap items-center gap-3 text-xs text-slate-400 mb-4"><span><Calendar className="inline h-3 w-3 mr-1"/>{req.date}</span><span><Clock className="inline h-3 w-3 mr-1"/>{req.time}</span><span><Users className="inline h-3 w-3 mr-1"/>{req.guests} guests</span></div>
-                      <div className="flex space-x-3"><button onClick={()=>showToast('Booking accepted! '+req.name+' notified.')} className="flex-1 bg-emerald-600 text-white font-bold py-3 rounded-xl hover:bg-emerald-500 transition-colors">Accept</button><button onClick={()=>showToast('Booking declined.')} className="flex-1 bg-slate-700 text-slate-300 font-bold py-3 rounded-xl hover:bg-slate-600 transition-colors">Decline</button></div>
+                      <div className="flex space-x-3"><button onClick={()=>handleLeaserDecision(req.name,true)} className="flex-1 bg-emerald-600 text-white font-bold py-3 rounded-xl hover:bg-emerald-500 transition-colors">Accept</button><button onClick={()=>handleLeaserDecision(req.name,false)} className="flex-1 bg-slate-700 text-slate-300 font-bold py-3 rounded-xl hover:bg-slate-600 transition-colors">Decline</button></div>
                     </div>
-                  ))}</div>
+                  ))}</div>}
                 </div>
               )}
 
@@ -1444,9 +1508,9 @@
               {ddRole==='sponsor' && effectiveTab==='discover' && (
                 <div className="p-4 sm:p-6 md:p-8 max-w-5xl mx-auto">
                   <div className="mb-8"><h1 className="text-2xl sm:text-3xl font-extrabold text-white mb-1">Discover Events</h1><p className="text-slate-400">Find Edmonton events that align with your brand.</p></div>
-                  <div className="flex space-x-3 mb-6 overflow-x-auto hide-scrollbar pb-2">{['All','Academic','Culture','Tech','Community','Sport'].map((cat,i)=><button key={cat} className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-bold border transition-all ${i===0?'bg-amber-600 border-amber-500 text-white':'bg-slate-800/50 border-white/5 text-slate-400 hover:border-amber-500/50 hover:text-white'}`}>{cat}</button>)}</div>
-                  <div className="grid md:grid-cols-2 gap-5">{events.map(event=>(
-                    <div key={event.id} className="bg-slate-800/30 border border-white/5 hover:border-amber-500/30 rounded-3xl overflow-hidden transition-colors">
+                  <div className="flex space-x-3 mb-6 overflow-x-auto hide-scrollbar pb-2">{['All','Academic','Culture','Tech','Community','Sport'].map((cat)=><button key={cat} onClick={()=>setEventFilter(cat)} className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-bold border transition-all ${eventFilter===cat?'bg-amber-600 border-amber-500 text-white':'bg-slate-800/50 border-white/5 text-slate-400 hover:border-amber-500/50 hover:text-white'}`}>{cat}</button>)}</div>
+                  {filteredEvents.length===0 ? <div className="bg-slate-800/30 border border-white/5 rounded-2xl p-6 text-slate-400 text-sm">No events available in this category yet.</div> : <div className="grid md:grid-cols-2 gap-5">{filteredEvents.map(event=>(
+                    <div key={event.id} className="bg-slate-800/30 border border-white/5 hover:border-amber-500/30 rounded-3xl overflow-hidden transition-colors tilt-card">
                       <div className="h-44 overflow-hidden">
                         <img src={event.image} alt={event.name} className="h-full w-full object-cover" loading="lazy" />
                       </div>
@@ -1455,10 +1519,10 @@
                         <p className="text-sm text-slate-400 mb-4">{event.desc}</p>
                         <div className="flex flex-wrap gap-3 text-xs text-slate-400 mb-4"><span className="bg-slate-700/50 px-2 py-1 rounded"><Calendar className="inline h-3 w-3 mr-1"/>{event.date}</span><span className="bg-slate-700/50 px-2 py-1 rounded"><Users className="inline h-3 w-3 mr-1"/>{event.attendees}</span><span className="bg-slate-700/50 px-2 py-1 rounded"><DollarSign className="inline h-3 w-3 mr-1"/>Asking ${event.asking}</span></div>
                         <div className="mb-4"><div className="flex justify-between text-xs mb-1.5"><span className="text-slate-400">Funding Progress</span><span className="text-amber-300 font-bold">${event.raised} / ${event.asking}</span></div><div className="h-2 bg-slate-700 rounded-full overflow-hidden"><div className="h-full bg-gradient-to-r from-amber-500 to-emerald-500 rounded-full" style={{width:`${Math.min((event.raised/event.asking)*100,100)}%`}}></div></div></div>
-                        <button onClick={()=>{setSelectedEvent(event);setProposalOpen(true);}} className={`w-full py-3 rounded-xl text-sm font-bold transition-colors ${myCampaigns.find(c=>c.event===event.name)?'bg-amber-500/20 text-amber-300 border border-amber-500/30 cursor-default':'bg-amber-600 text-white hover:bg-amber-500'}`}>{myCampaigns.find(c=>c.event===event.name)?'Offer Submitted':'Make an Offer'}</button>
+                        <button onClick={()=>handleOfferClick(event)} className={`w-full py-3 rounded-xl text-sm font-bold transition-colors ${myCampaigns.find(c=>c.event===event.name)?'bg-amber-500/20 text-amber-300 border border-amber-500/30':'bg-amber-600 text-white hover:bg-amber-500'}`}>{myCampaigns.find(c=>c.event===event.name)?'Offer Submitted':'Make an Offer'}</button>
                       </div>
                     </div>
-                  ))}</div>
+                  ))}</div>}
                 </div>
               )}
 
@@ -1497,6 +1561,14 @@
                     <div className="flex items-center justify-center mt-4 space-x-2 flex-wrap gap-2">
                       <span className={`text-xs font-bold px-4 py-1.5 rounded-full border ${ddRole==='renter'?'bg-emerald-500/20 text-emerald-300 border-emerald-500/30':ddRole==='leaser'?'bg-emerald-500/20 text-emerald-300 border-emerald-500/30':'bg-amber-500/20 text-amber-300 border-amber-500/30'}`}>{ddRole==='renter'?'Space Renter':ddRole==='leaser'?'Space Leaser':'Event Sponsor'}</span>
                       <span className="text-xs font-bold px-4 py-1.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30"><Award className="inline h-3 w-3 mr-1"/>University Verified</span>
+                    </div>
+                    <div className="mt-5">
+                      <p className="text-[11px] uppercase tracking-[0.12em] text-slate-500 font-bold mb-2">Switch Demo Role</p>
+                      <div className="grid grid-cols-3 gap-2">
+                        <button onClick={()=>switchDeepRole('renter','hub')} className={`text-xs font-bold py-2 rounded-lg border transition-colors ${ddRole==='renter'?'bg-emerald-600/30 border-emerald-500/40 text-emerald-200':'bg-slate-800/50 border-white/10 text-slate-400 hover:text-white'}`}>Renter</button>
+                        <button onClick={()=>switchDeepRole('leaser','dashboard')} className={`text-xs font-bold py-2 rounded-lg border transition-colors ${ddRole==='leaser'?'bg-emerald-600/30 border-emerald-500/40 text-emerald-200':'bg-slate-800/50 border-white/10 text-slate-400 hover:text-white'}`}>Leaser</button>
+                        <button onClick={()=>switchDeepRole('sponsor','discover')} className={`text-xs font-bold py-2 rounded-lg border transition-colors ${ddRole==='sponsor'?'bg-amber-600/30 border-amber-500/40 text-amber-200':'bg-slate-800/50 border-white/10 text-slate-400 hover:text-white'}`}>Sponsor</button>
+                      </div>
                     </div>
                   </div>
                   <div className="space-y-3">{[{icon:User,label:'Full Name',value:form.firstName+' '+form.lastName},{icon:Mail,label:'Email',value:form.firstName.toLowerCase()[0]+form.lastName.toLowerCase()+'@ualberta.ca'},{icon:MapPin,label:'Phone',value:form.phone},{icon:MapPin,label:'Location',value:form.address}].map(row=><div key={row.label} className="bg-slate-800/30 border border-white/5 rounded-2xl p-4 flex items-center space-x-4"><row.icon className="h-5 w-5 text-slate-400 flex-shrink-0"/><div><p className="text-xs text-slate-500">{row.label}</p><p className="text-sm font-medium text-white">{row.value}</p></div></div>)}</div>
@@ -1933,8 +2005,29 @@
       );
     }
 
-    const root = createRoot(document.getElementById('root'));
-    root.render(<EventSpotApp />);
+    const mountNode = document.getElementById('root');
+    const showFatalError = (message) => {
+      mountNode.innerHTML = `
+        <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0b130f;color:#d7dfd0;font-family:Manrope,Segoe UI,sans-serif;padding:24px;text-align:center;">
+          <div style="max-width:560px">
+            <h1 style="margin:0 0 10px;font-size:30px;font-weight:800;">EventSpot</h1>
+            <p style="margin:0 0 10px;font-size:14px;opacity:.85;">The app hit a render error. Refresh once, then retry.</p>
+            <code style="display:block;font-size:12px;opacity:.65;line-height:1.4;">${message || 'Unknown render error'}</code>
+          </div>
+        </div>
+      `;
+    };
+
+    window.addEventListener('error', (event) => {
+      if (event?.message) showFatalError(event.message);
+    });
+
+    try {
+      const root = createRoot(mountNode);
+      root.render(<EventSpotApp />);
+    } catch (err) {
+      showFatalError(err?.message);
+    }
   </script>
 </body>
 </html>
