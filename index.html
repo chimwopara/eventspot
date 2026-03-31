@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>EventSpot - Pitch & Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -18,7 +21,7 @@
     }
   </script>
 </head>
-<body class="bg-[#0a0f1c] text-slate-300">
+<body class="bg-[#0b130f] text-[#d7dfd0]">
   <div id="root"></div>
 
   <script type="text/babel" data-type="module">
@@ -29,7 +32,8 @@
       Search, ShieldCheck, ChevronRight, PlayCircle, BarChart3, Building, Briefcase,
       Building2, Home, BookOpen, Monitor, Megaphone, LineChart, Sparkles, LayoutDashboard, Layers,
       Zap, Clock, Globe, ArrowRight, CheckCircle2, User, Lock, Mail, Bell, CreditCard, LogOut, Settings, 
-      ChevronLeft, X, SlidersHorizontal, Settings2, Camera, Star, Map, Plus, Image as ImageIcon
+      ChevronLeft, X, SlidersHorizontal, Settings2, Camera, Star, Map, Plus, Image as ImageIcon,
+      Maximize2, Filter
     } from 'lucide-react';
 
     const EventSpotLogo = ({ className = "w-8 h-8" }) => (
@@ -40,12 +44,12 @@
         <path d="M20 8C24.4183 8 28 11.5817 28 16L20 16L20 8Z" fill="#34d399"/>
         <defs>
           <linearGradient id="pin_gradient" x1="4" y1="0" x2="36" y2="40" gradientUnits="userSpaceOnUse">
-            <stop stopColor="#818cf8"/>
-            <stop offset="1" stopColor="#c084fc"/>
+            <stop stopColor="#34d399"/>
+            <stop offset="1" stopColor="#fbbf24"/>
           </linearGradient>
           <linearGradient id="pie_gradient" x1="12" y1="8" x2="28" y2="24" gradientUnits="userSpaceOnUse">
-            <stop stopColor="#f472b6"/>
-            <stop offset="1" stopColor="#c084fc"/>
+            <stop stopColor="#86efac"/>
+            <stop offset="1" stopColor="#f59e0b"/>
           </linearGradient>
         </defs>
       </svg>
@@ -54,12 +58,30 @@
     function EventSpotApp() {
       const [activeTab, setActiveTab] = useState('home');
       const [isScrolled, setIsScrolled] = useState(false);
+      const [pageScrollProgress, setPageScrollProgress] = useState(0);
+      const [isDeepDiveOpen, setIsDeepDiveOpen] = useState(false);
+      const isDeepDiveActive = activeTab === 'demo' && isDeepDiveOpen;
 
       useEffect(() => {
-        const handleScroll = () => setIsScrolled(window.scrollY > 20);
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-      }, []);
+        const handleScroll = () => {
+          setIsScrolled(window.scrollY > 20);
+          const doc = document.documentElement;
+          const scrollable = doc.scrollHeight - window.innerHeight;
+          const progress = scrollable > 0 ? (window.scrollY / scrollable) * 100 : 0;
+          setPageScrollProgress(Math.max(0, Math.min(progress, 100)));
+        };
+        handleScroll();
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        window.addEventListener('resize', handleScroll);
+        return () => {
+          window.removeEventListener('scroll', handleScroll);
+          window.removeEventListener('resize', handleScroll);
+        };
+      }, [activeTab, isDeepDiveActive]);
+
+      useEffect(() => {
+        if (activeTab !== 'demo') setIsDeepDiveOpen(false);
+      }, [activeTab]);
 
       const navItems = [
         { id: 'home', label: 'Overview' },
@@ -70,18 +92,29 @@
       ];
 
       return (
-        <div className="min-h-screen bg-[#0a0f1c] font-sans text-slate-300 overflow-hidden selection:bg-indigo-500/30 flex flex-col">
+        <div className="min-h-screen bg-[#0b130f] font-sans text-[#d7dfd0] overflow-hidden selection:bg-emerald-500/30 flex flex-col">
           <style>{`
             @keyframes float { 0%, 100% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-20px) rotate(2deg); } }
             @keyframes float-reverse { 0%, 100% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(20px) rotate(-2deg); } }
             @keyframes pulse-glow { 0%, 100% { opacity: 0.4; transform: scale(1); } 50% { opacity: 0.7; transform: scale(1.05); } }
+            @keyframes dash-flow { to { stroke-dashoffset: -360; } }
+            @keyframes orbit-slow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+            @keyframes pulse-ring { 0%, 100% { transform: scale(1); opacity: 0.24; } 50% { transform: scale(1.09); opacity: 0.52; } }
+            @keyframes bob { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-8px); } }
             .animate-float { animation: float 6s ease-in-out infinite; }
             .animate-float-delayed { animation: float-reverse 7s ease-in-out infinite; }
             .animate-glow { animation: pulse-glow 4s ease-in-out infinite; }
+            .flow-dash { stroke-dasharray: 12 12; animation: dash-flow 12s linear infinite; }
+            .animate-orbit-slow { animation: orbit-slow 22s linear infinite; transform-origin: center; }
+            .animate-pulse-ring { animation: pulse-ring 4.5s ease-in-out infinite; transform-origin: center; }
+            .animate-bob { animation: bob 4.8s ease-in-out infinite; }
+
+            body { font-family: 'Manrope', 'Avenir Next', 'Segoe UI', sans-serif; background: #0b130f; color: #d7dfd0; }
+            h1, h2, h3, .font-extrabold { font-family: 'Fraunces', Georgia, serif; letter-spacing: 0.01em; }
             
-            .glass-panel { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); }
-            .glass-panel-hover:hover { background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(99, 102, 241, 0.3); transform: translateY(-4px); box-shadow: 0 10px 40px -10px rgba(99, 102, 241, 0.2); }
-            .text-gradient { background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-image: linear-gradient(90deg, #818cf8, #c084fc); }
+            .glass-panel { background: rgba(12, 27, 18, 0.72); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(217, 171, 70, 0.16); }
+            .glass-panel-hover:hover { background: rgba(18, 35, 24, 0.9); border: 1px solid rgba(217, 171, 70, 0.4); transform: translateY(-3px); box-shadow: 0 12px 36px -18px rgba(6, 95, 70, 0.85); }
+            .text-gradient { background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-image: linear-gradient(110deg, #4ade80, #fbbf24); }
             
             .hide-scrollbar::-webkit-scrollbar { display: none; }
             .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -92,32 +125,45 @@
             .modal-slide-up { animation: modalSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
             @keyframes modalSlideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
             
-            .toggle-checkbox:checked { right: 0; border-color: #6366f1; }
-            .toggle-checkbox:checked + .toggle-label { background-color: #6366f1; }
+            .toggle-checkbox:checked { right: 0; border-color: #059669; }
+            .toggle-checkbox:checked + .toggle-label { background-color: #059669; }
             .toggle-checkbox { right: 0; z-index: 1; border-color: #e2e8f0; transition: all 0.3s; }
             .toggle-label { width: 3rem; height: 1.5rem; background-color: #334155; border-radius: 9999px; transition: all 0.3s; }
           `}</style>
 
-          <div className="fixed top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-indigo-900/20 blur-[120px] pointer-events-none"></div>
-          <div className="fixed bottom-[-20%] right-[-10%] w-[40%] h-[50%] rounded-full bg-fuchsia-900/10 blur-[100px] pointer-events-none"></div>
-
-          <nav className={`fixed w-full z-50 transition-all duration-300 ${isScrolled ? 'glass-panel border-b-white/10 py-3' : 'bg-transparent py-5'}`}>
-            <div className="max-w-7xl mx-auto px-6 lg:px-12 flex justify-between items-center">
-              <div className="flex items-center space-x-3 cursor-pointer group" onClick={() => setActiveTab('home')}>
-                <EventSpotLogo className="w-10 h-10 group-hover:scale-110 transition-transform duration-300 drop-shadow-[0_0_15px_rgba(99,102,241,0.5)]" />
-                <span className="font-extrabold text-xl tracking-tight text-white group-hover:text-indigo-200 transition-colors">EventSpot</span>
-              </div>
-              <div className="hidden md:flex bg-slate-900/50 p-1.5 rounded-full border border-white/5 backdrop-blur-md overflow-x-auto">
-                {navItems.map((item) => (
-                  <button key={item.id} onClick={() => setActiveTab(item.id)} className={`px-5 py-2 text-sm font-medium rounded-full transition-all duration-300 whitespace-nowrap ${ activeTab === item.id ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-md' : 'text-slate-400 hover:text-white hover:bg-white/5' }`}>{item.label}</button>
-                ))}
-              </div>
+          <div className="fixed top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-emerald-900/20 blur-[120px] pointer-events-none"></div>
+          <div className="fixed bottom-[-20%] right-[-10%] w-[40%] h-[50%] rounded-full bg-yellow-900/10 blur-[100px] pointer-events-none"></div>
+          {!isDeepDiveActive && (
+            <div className="fixed top-0 left-0 right-0 z-[80] h-1 bg-[#07120d]/85 backdrop-blur-sm pointer-events-none">
+              <div className="h-full bg-gradient-to-r from-emerald-400 via-lime-300 to-amber-400 shadow-[0_0_18px_rgba(52,211,153,0.45)] transition-[width] duration-150" style={{ width: `${pageScrollProgress}%` }}></div>
             </div>
-          </nav>
+          )}
 
-          <main className="relative z-10 pt-32 pb-24 flex-grow max-w-7xl mx-auto px-6 lg:px-12 flex flex-col justify-center w-full">
+          {!isDeepDiveActive && (
+            <nav className={`fixed w-full z-50 transition-all duration-300 ${isScrolled ? 'glass-panel border-b-white/10 py-3' : 'bg-transparent py-5'}`}>
+              <div className="max-w-7xl mx-auto px-6 lg:px-12 flex justify-between items-center">
+                <div className="flex items-center space-x-3 cursor-pointer group" onClick={() => setActiveTab('home')}>
+                  <EventSpotLogo className="w-10 h-10 group-hover:scale-110 transition-transform duration-300 drop-shadow-[0_0_15px_rgba(16,185,129,0.5)]" />
+                  <span className="font-extrabold text-xl tracking-tight text-white group-hover:text-emerald-200 transition-colors">EventSpot</span>
+                </div>
+                <div className="hidden md:flex bg-slate-900/50 p-1.5 rounded-full border border-white/5 backdrop-blur-md overflow-x-auto">
+                  {navItems.map((item) => (
+                    <button key={item.id} onClick={() => setActiveTab(item.id)} className={`px-5 py-2 text-sm font-medium rounded-full transition-all duration-300 whitespace-nowrap ${ activeTab === item.id ? 'bg-gradient-to-r from-emerald-500 to-amber-600 text-white shadow-md' : 'text-slate-400 hover:text-white hover:bg-white/5' }`}>{item.label}</button>
+                  ))}
+                </div>
+              </div>
+            </nav>
+          )}
+
+          <main className={`relative z-10 flex-grow w-full ${isDeepDiveActive ? 'max-w-none px-0 py-0' : 'pt-32 pb-24 max-w-7xl mx-auto px-6 lg:px-12 flex flex-col justify-center'}`}>
             {activeTab === 'home' && <HomeView setActiveTab={setActiveTab} />}
-            {activeTab === 'demo' && <DemoView />}
+            {activeTab === 'demo' && (
+              <DemoView
+                isDeepDiveOpen={isDeepDiveOpen}
+                onOpenDeepDive={() => setIsDeepDiveOpen(true)}
+                onCloseDeepDive={() => setIsDeepDiveOpen(false)}
+              />
+            )}
             {activeTab === 'business' && <BusinessCaseView />}
             {activeTab === 'financials' && <FinancialsView />}
             {activeTab === 'team' && <TeamView />}
@@ -125,25 +171,27 @@
             {activeTab === 'terms' && <TermsView />}
           </main>
 
-          <footer className="relative z-10 border-t border-white/5 bg-slate-900/50 backdrop-blur-md pt-10 pb-8 mt-auto">
-            <div className="max-w-7xl mx-auto px-6 lg:px-12">
-              <div className="flex flex-col md:flex-row justify-between items-center mb-6 space-y-4 md:space-y-0">
-                <div className="flex items-center space-x-2 cursor-pointer" onClick={() => setActiveTab('home')}>
-                  <EventSpotLogo className="h-6 w-6 grayscale opacity-70 hover:grayscale-0 hover:opacity-100 transition-all" />
-                  <span className="font-bold text-white tracking-wide">EventSpot Inc.</span>
+          {!isDeepDiveActive && (
+            <footer className="relative z-10 border-t border-white/5 bg-slate-900/50 backdrop-blur-md pt-10 pb-8 mt-auto">
+              <div className="max-w-7xl mx-auto px-6 lg:px-12">
+                <div className="flex flex-col md:flex-row justify-between items-center mb-6 space-y-4 md:space-y-0">
+                  <div className="flex items-center space-x-2 cursor-pointer" onClick={() => setActiveTab('home')}>
+                    <EventSpotLogo className="h-6 w-6 grayscale opacity-70 hover:grayscale-0 hover:opacity-100 transition-all" />
+                    <span className="font-bold text-white tracking-wide">EventSpot Inc.</span>
+                  </div>
+                  <div className="flex space-x-8 text-sm font-medium">
+                    <a href="#" onClick={(e) => { e.preventDefault(); setActiveTab('privacy'); }} className="text-slate-400 hover:text-emerald-400 transition-colors">Privacy Policy</a>
+                    <a href="#" onClick={(e) => { e.preventDefault(); setActiveTab('terms'); }} className="text-slate-400 hover:text-emerald-400 transition-colors">Terms & Conditions</a>
+                    <a href="#" className="text-slate-400 hover:text-emerald-400 transition-colors">Contact Us</a>
+                  </div>
                 </div>
-                <div className="flex space-x-8 text-sm font-medium">
-                  <a href="#" onClick={(e) => { e.preventDefault(); setActiveTab('privacy'); }} className="text-slate-400 hover:text-indigo-400 transition-colors">Privacy Policy</a>
-                  <a href="#" onClick={(e) => { e.preventDefault(); setActiveTab('terms'); }} className="text-slate-400 hover:text-indigo-400 transition-colors">Terms & Conditions</a>
-                  <a href="#" className="text-slate-400 hover:text-indigo-400 transition-colors">Contact Us</a>
+                <div className="text-center md:text-left text-xs text-slate-500 flex flex-col md:flex-row justify-between items-center border-t border-white/5 pt-6">
+                  <p>&copy; {new Date().getFullYear()} EventSpot Inc. All rights reserved.</p>
+                  <p className="mt-2 md:mt-0">Headquartered in Edmonton, Alberta, Canada.</p>
                 </div>
               </div>
-              <div className="text-center md:text-left text-xs text-slate-500 flex flex-col md:flex-row justify-between items-center border-t border-white/5 pt-6">
-                <p>&copy; {new Date().getFullYear()} EventSpot Inc. All rights reserved.</p>
-                <p className="mt-2 md:mt-0">Headquartered in Edmonton, Alberta, Canada.</p>
-              </div>
-            </div>
-          </footer>
+            </footer>
+          )}
         </div>
       );
     }
@@ -152,171 +200,340 @@
        1. HOME VIEW
     ========================================= */
     function HomeView({ setActiveTab }) {
+      const scenes = [
+        { id: 'hero', label: 'Opening Frame' },
+        { id: 'market', label: 'City Pulse' },
+        { id: 'flow', label: 'Platform Flow' },
+        { id: 'cta', label: 'Launch Moment' },
+      ];
+      const [heroShift, setHeroShift] = useState(0);
+      const [scrollPct, setScrollPct] = useState(0);
+      const [activeScene, setActiveScene] = useState('hero');
+      const activeLabel = scenes.find((scene) => scene.id === activeScene)?.label || scenes[0].label;
+
+      useEffect(() => {
+        const handleScroll = () => {
+          const y = window.scrollY || 0;
+          const totalScrollable = document.documentElement.scrollHeight - window.innerHeight;
+          const pct = totalScrollable > 0 ? (y / totalScrollable) * 100 : 0;
+          setScrollPct(Math.max(0, Math.min(pct, 100)));
+          setHeroShift(Math.min(y * 0.12, 120));
+
+          let closestScene = 'hero';
+          let bestDistance = Number.POSITIVE_INFINITY;
+
+          scenes.forEach((scene) => {
+            const el = document.getElementById(`scene-${scene.id}`);
+            if (!el) return;
+            const rect = el.getBoundingClientRect();
+            const distance = Math.abs(rect.top - window.innerHeight * 0.28);
+            if (distance < bestDistance) {
+              bestDistance = distance;
+              closestScene = scene.id;
+            }
+          });
+
+          setActiveScene((prev) => (prev === closestScene ? prev : closestScene));
+        };
+
+        handleScroll();
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        window.addEventListener('resize', handleScroll);
+        return () => {
+          window.removeEventListener('scroll', handleScroll);
+          window.removeEventListener('resize', handleScroll);
+        };
+      }, []);
+
       return (
-        <div className="space-y-32 animate-in fade-in zoom-in-95 duration-700">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <div className="space-y-8 relative z-10">
-              <div className="inline-flex items-center space-x-2 glass-panel px-4 py-2 rounded-full border-indigo-500/30 border">
-                <Sparkles className="h-4 w-4 text-indigo-400" />
-                <span className="text-sm font-medium text-indigo-200">EventSpot Platform • Edmonton</span>
+        <div className="space-y-20 md:space-y-28 animate-in fade-in zoom-in-95 duration-700">
+          <div className="hidden xl:flex fixed right-6 top-1/2 -translate-y-1/2 z-40 items-start gap-3">
+            <div className="h-44 w-[3px] rounded-full bg-white/15 overflow-hidden">
+              <div className="w-full bg-gradient-to-b from-emerald-300 to-amber-400 transition-[height] duration-150" style={{ height: `${scrollPct}%` }}></div>
+            </div>
+            <div className="space-y-2">
+              {scenes.map((scene) => (
+                <button
+                  key={scene.id}
+                  onClick={() => document.getElementById(`scene-${scene.id}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+                  className={`block text-left text-[11px] uppercase tracking-[0.12em] font-bold transition-colors ${activeScene === scene.id ? 'text-amber-200' : 'text-slate-500 hover:text-slate-300'}`}
+                >
+                  {scene.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="xl:hidden sticky top-[5.2rem] z-30">
+            <div className="rounded-2xl border border-white/10 bg-[#0b1611]/85 backdrop-blur p-3">
+              <div className="h-1.5 rounded-full bg-white/10 overflow-hidden mb-2">
+                <div className="h-full bg-gradient-to-r from-emerald-400 to-amber-400 transition-[width] duration-150" style={{ width: `${scrollPct}%` }}></div>
               </div>
-              <h1 className="text-5xl md:text-7xl font-extrabold text-white tracking-tight leading-[1.1]">
-                Unlock spaces.<br />
-                <span className="text-gradient">Fund your event.</span>
-              </h1>
-              <p className="text-lg text-slate-400 max-w-xl leading-relaxed">
-                The all‑in‑one ecosystem for Edmonton. Stop juggling emails and rigid venue contracts. Find underused spaces instantly and connect with local sponsors to bring your vision to life.
-              </p>
-              <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-6 pt-4">
-                <button onClick={() => setActiveTab('demo')} className="relative group overflow-hidden rounded-full p-[1px]">
-                  <span className="absolute inset-0 bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-500 rounded-full animate-glow"></span>
-                  <div className="relative bg-[#0a0f1c] px-8 py-4 rounded-full flex items-center justify-center transition-all duration-300 group-hover:bg-opacity-0 group-hover:text-white">
-                    <Smartphone className="mr-3 h-5 w-5 text-indigo-400 group-hover:text-white transition-colors" /> 
-                    <span className="font-bold text-slate-200">Interactive Demo</span>
+              <p className="text-[11px] uppercase tracking-[0.12em] text-amber-200 font-bold">Now Viewing: {activeLabel}</p>
+            </div>
+          </div>
+
+          <section id="scene-hero" className="relative">
+            <div className="relative min-h-[76vh] md:min-h-[84vh] rounded-[2.6rem] overflow-hidden border border-emerald-500/25 shadow-[0_30px_90px_-45px_rgba(16,185,129,0.55)]">
+              <img
+                src="https://picsum.photos/seed/eventspot-cinematic-hero/2000/1200"
+                alt="Night event setup overlooking downtown Edmonton"
+                className="absolute inset-0 h-full w-full object-cover"
+                style={{ transform: `translateY(${heroShift}px) scale(1.08)` }}
+                loading="eager"
+              />
+              <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(3,11,8,0.88)_12%,rgba(3,11,8,0.48)_44%,rgba(3,11,8,0.84)_100%)]"></div>
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_78%_26%,rgba(250,204,21,0.25),transparent_34%),radial-gradient(circle_at_18%_72%,rgba(52,211,153,0.24),transparent_40%)]"></div>
+
+              <svg className="absolute inset-0 h-full w-full opacity-70" viewBox="0 0 1200 700" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="heroFlow" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stopColor="#34d399" />
+                    <stop offset="55%" stopColor="#86efac" />
+                    <stop offset="100%" stopColor="#fbbf24" />
+                  </linearGradient>
+                </defs>
+                <path d="M-30 540 C 180 470, 320 560, 540 470 S 930 320, 1230 420" fill="none" stroke="url(#heroFlow)" strokeWidth="2.5" className="flow-dash"></path>
+                <path d="M-40 610 C 160 560, 360 640, 620 560 S 970 450, 1260 510" fill="none" stroke="url(#heroFlow)" strokeWidth="1.5" opacity="0.6" className="flow-dash"></path>
+                <circle r="6" fill="#fbbf24">
+                  <animateMotion dur="11s" repeatCount="indefinite" path="M-30 540 C 180 470, 320 560, 540 470 S 930 320, 1230 420"></animateMotion>
+                </circle>
+                <circle r="5" fill="#6ee7b7">
+                  <animateMotion dur="13s" repeatCount="indefinite" path="M-40 610 C 160 560, 360 640, 620 560 S 970 450, 1260 510"></animateMotion>
+                </circle>
+              </svg>
+
+              <div className="relative z-10 h-full grid lg:grid-cols-[1.15fr_0.85fr] gap-8 p-7 sm:p-10 lg:p-14">
+                <div className="flex flex-col justify-center">
+                  <div className="inline-flex w-fit items-center gap-2 rounded-full border border-emerald-300/45 bg-emerald-400/15 px-4 py-2 text-xs uppercase tracking-[0.14em] text-emerald-100 font-bold">
+                    <Sparkles className="h-3.5 w-3.5" />
+                    Edmonton Event Infrastructure
                   </div>
-                </button>
-                <button onClick={() => setActiveTab('business')} className="px-8 py-4 rounded-full font-bold text-slate-300 border border-slate-700 hover:border-slate-500 hover:bg-slate-800 transition-all flex items-center justify-center">
-                  Business Pitch <ChevronRight className="ml-2 h-4 w-4" />
-                </button>
+                  <h1 className="mt-6 text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-[1.02] tracking-tight max-w-3xl">
+                    Built for nights that feel bigger than the room.
+                  </h1>
+                  <p className="mt-6 max-w-2xl text-base sm:text-lg text-slate-200 leading-relaxed">
+                    EventSpot connects hidden venues, fast booking, and micro-sponsorship in one cinematic workflow. Organizers move from idea to funded event without the usual spreadsheet chaos.
+                  </p>
+
+                  <div className="mt-8 flex flex-col sm:flex-row gap-3">
+                    <button onClick={() => setActiveTab('demo')} className="px-7 py-4 rounded-2xl bg-gradient-to-r from-emerald-600 to-amber-600 text-white font-bold hover:opacity-90 transition-opacity flex items-center justify-center">
+                      <PlayCircle className="mr-2 h-5 w-5" />
+                      Enter Interactive Demo
+                    </button>
+                    <button onClick={() => setActiveTab('business')} className="px-7 py-4 rounded-2xl border border-amber-400/45 text-amber-100 font-bold hover:bg-amber-400/10 transition-colors flex items-center justify-center">
+                      Explore Business Case <ChevronRight className="ml-2 h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
+
+                <div className="hidden lg:flex flex-col justify-end items-end gap-4 pb-2">
+                  {[
+                    { icon: Calendar, label: 'Bookings Simulated', value: '250+' },
+                    { icon: Building2, label: 'Spaces in Pipeline', value: '90+' },
+                    { icon: DollarSign, label: 'Sponsor Interest', value: '$42k' },
+                  ].map((item) => (
+                    <div key={item.label} className="w-72 rounded-2xl border border-white/15 bg-[#06100b]/70 backdrop-blur-sm p-4 animate-bob">
+                      <div className="flex items-center text-xs text-slate-300 mb-2 font-semibold uppercase tracking-[0.1em]"><item.icon className="h-4 w-4 mr-2 text-emerald-300" />{item.label}</div>
+                      <div className="text-3xl font-extrabold text-white leading-none">{item.value}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="absolute bottom-5 right-6 hidden md:flex items-center gap-2 text-[11px] uppercase tracking-[0.13em] font-bold text-amber-100">
+                <Globe className="h-3.5 w-3.5" />
+                Scroll to continue
               </div>
             </div>
-            <div className="relative h-[500px] hidden lg:block perspective-1000">
-               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="absolute z-20 top-10 right-10 glass-panel p-6 rounded-2xl animate-float shadow-2xl shadow-indigo-500/20 border-t border-l border-white/20 transform rotate-12">
-                  <div className="flex items-center space-x-4 mb-4">
-                    <div className="h-10 w-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center"><DollarSign className="h-5 w-5 text-white" /></div>
-                    <div><div className="h-2 w-20 bg-slate-600 rounded-full mb-2"></div><div className="h-2 w-12 bg-slate-700 rounded-full"></div></div>
+          </section>
+
+          <section id="scene-market" className="grid lg:grid-cols-[0.88fr_1.12fr] gap-6 md:gap-8 items-stretch">
+            <div className="rounded-[2rem] border border-emerald-500/20 bg-[#0d1a14]/80 p-7 md:p-9 flex flex-col">
+              <p className="text-xs uppercase tracking-[0.14em] text-emerald-300 font-bold mb-4">City Pulse</p>
+              <h2 className="text-3xl md:text-4xl font-extrabold text-white leading-tight mb-4">
+                Big spaces, local stories, one booking layer.
+              </h2>
+              <p className="text-slate-300 leading-relaxed mb-7">
+                Instead of generic venue grids, EventSpot frames each listing like a production-ready location with sponsor readiness built in. The result is less friction and stronger event outcomes.
+              </p>
+
+              <div className="space-y-4 mt-auto">
+                {[
+                  { label: 'Campus & Community Venues', value: '43', note: 'photo-verified listings in rollout' },
+                  { label: 'Median Time To Book', value: '4.2m', note: 'from inquiry to confirmed payment flow' },
+                  { label: 'Average Sponsor Fill', value: '61%', note: 'of funding goal before event day' },
+                ].map((metric) => (
+                  <div key={metric.label} className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                    <p className="text-xs uppercase tracking-[0.12em] text-slate-400 font-bold">{metric.label}</p>
+                    <div className="mt-1 text-3xl font-extrabold text-emerald-300">{metric.value}</div>
+                    <p className="mt-1 text-xs text-slate-400">{metric.note}</p>
                   </div>
-                  <div className="h-2 w-32 bg-indigo-500/50 rounded-full"></div>
+                ))}
+              </div>
+            </div>
+
+            <div className="grid sm:grid-cols-2 gap-4 auto-rows-[190px] sm:auto-rows-[210px]">
+              <div className="relative sm:row-span-2 rounded-[1.6rem] overflow-hidden border border-white/10">
+                <img src="https://picsum.photos/seed/eventspot-market-wide/1200/1500" alt="Rooftop event overlooking city lights" className="h-full w-full object-cover" loading="lazy" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+                <div className="absolute bottom-4 left-4 right-4">
+                  <p className="text-[11px] text-emerald-200 uppercase tracking-[0.12em] font-bold mb-1">High-Intent Listings</p>
+                  <p className="text-white font-bold text-lg leading-tight">Downtown rooftops, converted studios, and campus-ready halls.</p>
                 </div>
-                <div className="absolute z-10 bottom-20 left-10 glass-panel p-5 rounded-2xl animate-float-delayed shadow-2xl shadow-purple-500/20 border-t border-l border-white/20 transform -rotate-6">
-                  <EventSpotLogo className="h-10 w-10 mb-4 drop-shadow-lg" />
-                  <div className="h-2 w-24 bg-slate-600 rounded-full mb-2"></div><div className="h-2 w-16 bg-slate-700 rounded-full"></div>
+              </div>
+
+              <div className="relative rounded-[1.6rem] overflow-hidden border border-white/10">
+                <img src="https://picsum.photos/seed/eventspot-market-top/1200/900" alt="Creative community showcase" className="h-full w-full object-cover" loading="lazy" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+                <div className="absolute bottom-4 left-4 right-4 text-white">
+                  <p className="text-[11px] uppercase tracking-[0.12em] text-amber-200 font-bold">Culture + Commerce</p>
+                  <p className="font-bold">Events attract audiences that sponsors actually care about.</p>
                 </div>
-                <svg viewBox="0 0 200 200" className="absolute w-80 h-80 animate-[spin_60s_linear_infinite] opacity-30">
+              </div>
+
+              <div className="relative sm:col-span-2 rounded-[1.6rem] overflow-hidden border border-amber-500/25">
+                <img src="https://picsum.photos/seed/eventspot-market-bottom/1600/900" alt="Organizer discussing event plan" className="h-full w-full object-cover" loading="lazy" />
+                <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/40 to-transparent"></div>
+                <div className="absolute inset-y-0 left-0 p-5 sm:p-6 flex flex-col justify-end">
+                  <p className="text-[11px] uppercase tracking-[0.13em] text-emerald-200 font-bold">Cinematic Operations Layer</p>
+                  <p className="text-lg sm:text-xl font-bold text-white max-w-md leading-tight mt-1">Every event scene carries availability, rates, and sponsor-readiness without leaving the booking flow.</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section id="scene-flow" className="grid lg:grid-cols-[0.92fr_1.08fr] gap-6 md:gap-8 items-stretch">
+            <div className="rounded-[2rem] border border-emerald-500/20 bg-[#0d1a14]/70 p-7 md:p-9">
+              <p className="text-xs uppercase tracking-[0.14em] text-emerald-300 font-bold mb-3">Platform Flow</p>
+              <h2 className="text-3xl md:text-4xl font-extrabold text-white leading-tight mb-5">
+                Three roles, one continuous motion.
+              </h2>
+              <p className="text-slate-300 mb-8 leading-relaxed">
+                The renter, leaser, and sponsor journey is intentionally stitched into one line. No context-switching, no broken handoffs, and no dead-end pages.
+              </p>
+
+              <div className="space-y-4">
+                {[
+                  { icon: Search, title: 'Renter Discovers', copy: 'Searches visual listings, checks availability, and books instantly.' },
+                  { icon: Building2, title: 'Leaser Activates', copy: 'Accepts requests, manages space uptime, and tracks monthly earnings.' },
+                  { icon: Briefcase, title: 'Sponsor Funds', copy: 'Finds aligned events and fills funding gaps with measurable reach.' },
+                ].map((step, i) => (
+                  <div key={step.title} className="rounded-2xl border border-white/10 bg-black/20 p-4 flex items-start gap-3">
+                    <div className="h-10 w-10 rounded-xl bg-emerald-500/15 border border-emerald-400/25 flex items-center justify-center flex-shrink-0">
+                      <step.icon className="h-5 w-5 text-emerald-300" />
+                    </div>
+                    <div>
+                      <p className="text-white font-bold">{i + 1}. {step.title}</p>
+                      <p className="text-sm text-slate-400 mt-1">{step.copy}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="relative rounded-[2rem] border border-amber-500/25 bg-[#0c1712]/85 p-4 sm:p-6 overflow-hidden">
+              <div className="absolute -top-20 -right-20 h-48 w-48 rounded-full bg-amber-400/10 blur-3xl"></div>
+              <div className="absolute -bottom-20 -left-20 h-48 w-48 rounded-full bg-emerald-400/10 blur-3xl"></div>
+
+              <div className="relative h-[300px] sm:h-[360px] rounded-[1.4rem] border border-white/10 bg-[#07100c]/70 overflow-hidden">
+                <svg viewBox="0 0 640 420" className="absolute inset-0 h-full w-full">
                   <defs>
-                    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#818cf8" />
-                      <stop offset="100%" stopColor="#c084fc" />
+                    <linearGradient id="flowMapStroke" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stopColor="#34d399"></stop>
+                      <stop offset="52%" stopColor="#86efac"></stop>
+                      <stop offset="100%" stopColor="#fbbf24"></stop>
                     </linearGradient>
                   </defs>
-                  <circle cx="100" cy="100" r="90" fill="none" stroke="url(#grad1)" strokeWidth="1" strokeDasharray="10 5" />
-                  <circle cx="100" cy="100" r="70" fill="none" stroke="url(#grad1)" strokeWidth="2" strokeDasharray="20 10" opacity="0.5" />
+                  <circle cx="118" cy="92" r="64" fill="none" stroke="#34d399" strokeWidth="1.2" className="animate-pulse-ring"></circle>
+                  <circle cx="528" cy="116" r="66" fill="none" stroke="#34d399" strokeWidth="1.2" className="animate-pulse-ring"></circle>
+                  <circle cx="468" cy="306" r="62" fill="none" stroke="#fbbf24" strokeWidth="1.2" className="animate-pulse-ring"></circle>
+                  <circle cx="178" cy="300" r="58" fill="none" stroke="#fbbf24" strokeWidth="1.2" className="animate-pulse-ring"></circle>
+
+                  <path d="M118 92 C 246 30, 392 34, 528 116" fill="none" stroke="url(#flowMapStroke)" strokeWidth="2.4" className="flow-dash"></path>
+                  <path d="M528 116 C 560 180, 548 250, 468 306" fill="none" stroke="url(#flowMapStroke)" strokeWidth="2.4" className="flow-dash"></path>
+                  <path d="M468 306 C 380 350, 270 356, 178 300" fill="none" stroke="url(#flowMapStroke)" strokeWidth="2.4" className="flow-dash"></path>
+                  <path d="M178 300 C 96 230, 80 170, 118 92" fill="none" stroke="url(#flowMapStroke)" strokeWidth="2.4" className="flow-dash"></path>
+
+                  <circle r="6" fill="#fbbf24">
+                    <animateMotion dur="9s" repeatCount="indefinite" path="M118 92 C 246 30, 392 34, 528 116"></animateMotion>
+                  </circle>
+                  <circle r="5" fill="#6ee7b7">
+                    <animateMotion dur="10s" repeatCount="indefinite" path="M528 116 C 560 180, 548 250, 468 306"></animateMotion>
+                  </circle>
+                  <circle r="5" fill="#6ee7b7">
+                    <animateMotion dur="11s" repeatCount="indefinite" path="M178 300 C 96 230, 80 170, 118 92"></animateMotion>
+                  </circle>
                 </svg>
+
+                <div className="absolute top-[13%] left-[7%] rounded-xl border border-white/15 bg-[#07140f]/80 px-3 py-2 text-xs font-bold uppercase tracking-[0.11em] text-emerald-200">Renter</div>
+                <div className="absolute top-[15%] right-[7%] rounded-xl border border-white/15 bg-[#07140f]/80 px-3 py-2 text-xs font-bold uppercase tracking-[0.11em] text-emerald-200">Leaser</div>
+                <div className="absolute bottom-[13%] right-[10%] rounded-xl border border-white/15 bg-[#07140f]/80 px-3 py-2 text-xs font-bold uppercase tracking-[0.11em] text-amber-200">Sponsor</div>
+                <div className="absolute bottom-[14%] left-[12%] rounded-xl border border-white/15 bg-[#07140f]/80 px-3 py-2 text-xs font-bold uppercase tracking-[0.11em] text-amber-200">Event</div>
+              </div>
+
+              <div className="relative mt-5 grid sm:grid-cols-3 gap-3">
+                <div className="rounded-xl border border-white/10 bg-black/25 p-3">
+                  <p className="text-xs text-slate-400 uppercase tracking-[0.1em] font-bold">Loop Time</p>
+                  <p className="text-2xl font-extrabold text-white mt-1">2m 14s</p>
+                </div>
+                <div className="rounded-xl border border-white/10 bg-black/25 p-3">
+                  <p className="text-xs text-slate-400 uppercase tracking-[0.1em] font-bold">Funding Velocity</p>
+                  <p className="text-2xl font-extrabold text-emerald-300 mt-1">+38%</p>
+                </div>
+                <div className="rounded-xl border border-white/10 bg-black/25 p-3">
+                  <p className="text-xs text-slate-400 uppercase tracking-[0.1em] font-bold">Cross-Role Match</p>
+                  <p className="text-2xl font-extrabold text-amber-300 mt-1">91%</p>
+                </div>
               </div>
             </div>
-          </div>
-          
-          <div className="glass-panel rounded-[2rem] p-8 md:p-12 border border-white/10">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center divide-x divide-white/10">
-              <div><p className="text-4xl font-extrabold text-white mb-2">250+</p><p className="text-sm text-slate-400 font-medium">Projected Bookings</p></div>
-              <div><p className="text-4xl font-extrabold text-indigo-400 mb-2">30+</p><p className="text-sm text-slate-400 font-medium">Local Sponsors</p></div>
-              <div><p className="text-4xl font-extrabold text-emerald-400 mb-2">10%</p><p className="text-sm text-slate-400 font-medium">Flat Commission</p></div>
-              <div><p className="text-4xl font-extrabold text-purple-400 mb-2">0</p><p className="text-sm text-slate-400 font-medium">Upfront Listing Fees</p></div>
-            </div>
-          </div>
+          </section>
 
-          <div className="py-10">
-            <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-5xl font-extrabold text-white mb-4">How EventSpot Works</h2>
-              <p className="text-slate-400 max-w-2xl mx-auto">A seamless experience designed to bring event organizers, property owners, and local businesses together into one unified ecosystem.</p>
-            </div>
+          <section id="scene-cta" className="relative">
+            <div className="relative rounded-[2.6rem] overflow-hidden border border-emerald-500/30">
+              <img src="https://picsum.photos/seed/eventspot-grand-finale/2200/1200" alt="Event audience under warm stage lighting" className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
+              <div className="absolute inset-0 bg-[linear-gradient(110deg,rgba(4,12,8,0.92)_15%,rgba(4,12,8,0.54)_52%,rgba(4,12,8,0.88)_100%)]"></div>
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_75%_30%,rgba(250,204,21,0.3),transparent_38%),radial-gradient(circle_at_25%_70%,rgba(52,211,153,0.22),transparent_45%)]"></div>
 
-            <div className="grid md:grid-cols-3 gap-8 relative">
-              <div className="hidden md:block absolute top-1/2 left-0 w-full h-0.5 bg-gradient-to-r from-indigo-500/0 via-indigo-500/50 to-purple-500/0 -translate-y-1/2 z-0"></div>
+              <div className="relative z-10 p-8 md:p-12 lg:p-14 grid lg:grid-cols-[1.1fr_0.9fr] gap-8 items-end min-h-[430px]">
+                <div>
+                  <p className="text-xs uppercase tracking-[0.14em] text-emerald-200 font-bold mb-4">Launch Moment</p>
+                  <h2 className="text-4xl md:text-5xl font-extrabold text-white leading-[1.03] mb-5">
+                    Make every event pitch look inevitable.
+                  </h2>
+                  <p className="text-slate-200 text-base md:text-lg max-w-2xl leading-relaxed mb-8">
+                    Step into the live demo to experience the renter, leaser, and sponsor views as one connected product story.
+                  </p>
 
-              <div className="relative z-10 glass-panel p-8 rounded-3xl text-center flex flex-col items-center glass-panel-hover">
-                <div className="w-16 h-16 rounded-full bg-indigo-900/50 border border-indigo-500/50 flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(99,102,241,0.3)]">
-                  <Search className="h-7 w-7 text-indigo-400" />
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <button onClick={() => setActiveTab('demo')} className="px-7 py-4 rounded-2xl bg-white text-emerald-900 font-bold hover:scale-[1.02] transition-transform flex items-center justify-center">
+                      <Smartphone className="mr-2 h-5 w-5" />
+                      Launch Demo App
+                    </button>
+                    <button onClick={() => setActiveTab('financials')} className="px-7 py-4 rounded-2xl border border-white/30 text-white font-bold hover:bg-white/10 transition-colors flex items-center justify-center">
+                      View Projections <ArrowRight className="ml-2 h-5 w-5" />
+                    </button>
+                  </div>
                 </div>
-                <h3 className="text-xl font-bold text-white mb-3">1. Discover Spaces</h3>
-                <p className="text-slate-400 text-sm leading-relaxed">
-                  Browse a curated list of non-traditional spaces in Edmonton. From vacant lofts to large balconies, find the perfect hourly rental.
-                </p>
-              </div>
 
-              <div className="relative z-10 glass-panel p-8 rounded-3xl text-center flex flex-col items-center glass-panel-hover">
-                <div className="w-16 h-16 rounded-full bg-emerald-900/50 border border-emerald-500/50 flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(52,211,153,0.3)]">
-                  <Zap className="h-7 w-7 text-emerald-400" />
+                <div className="rounded-2xl border border-white/20 bg-[#08140f]/70 backdrop-blur p-5 sm:p-6">
+                  <p className="text-xs uppercase tracking-[0.12em] text-amber-200 font-bold mb-3">Pitch Snapshot</p>
+                  <div className="space-y-3">
+                    {[
+                      { icon: Users, label: 'Target Early Users', value: '1,200' },
+                      { icon: LineChart, label: '12-Month Revenue', value: '$486k' },
+                      { icon: CheckCircle2, label: 'Go-To-Market Readiness', value: 'Live Prototype' },
+                    ].map((item) => (
+                      <div key={item.label} className="flex items-center justify-between border-b border-white/10 pb-2 last:border-b-0 last:pb-0">
+                        <div className="text-slate-200 text-sm font-medium flex items-center"><item.icon className="h-4 w-4 mr-2 text-emerald-300" />{item.label}</div>
+                        <div className="text-white font-bold">{item.value}</div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                <h3 className="text-xl font-bold text-white mb-3">2. Book Instantly</h3>
-                <p className="text-slate-400 text-sm leading-relaxed">
-                  Say goodbye to lengthy email chains. Lock in your dates, agree to terms, and process payments securely in under two minutes.
-                </p>
-              </div>
-
-              <div className="relative z-10 glass-panel p-8 rounded-3xl text-center flex flex-col items-center glass-panel-hover">
-                <div className="w-16 h-16 rounded-full bg-purple-900/50 border border-purple-500/50 flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(192,132,252,0.3)]">
-                  <Briefcase className="h-7 w-7 text-purple-400" />
-                </div>
-                <h3 className="text-xl font-bold text-white mb-3">3. Secure Sponsorships</h3>
-                <p className="text-slate-400 text-sm leading-relaxed">
-                  List your upcoming event on the marketplace. Local businesses can offer micro-sponsorships to cover costs in exchange for brand exposure.
-                </p>
               </div>
             </div>
-          </div>
-
-          <div className="py-10">
-            <h2 className="text-3xl font-extrabold text-white mb-8">Why Choose EventSpot</h2>
-            <div className="grid md:grid-cols-3 gap-6">
-              <div className="glass-panel p-8 rounded-3xl glass-panel-hover transition-all duration-500">
-                <div className="w-12 h-12 rounded-xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center mb-6">
-                  <ShieldCheck className="h-6 w-6 text-rose-400" />
-                </div>
-                <h3 className="text-xl font-bold text-white mb-3">The Problem</h3>
-                <p className="text-slate-400 text-sm leading-relaxed">
-                  Students and organizers waste hours juggling phone calls, emails, and restrictive policies just to find space and funding.
-                </p>
-              </div>
-              
-              <div className="glass-panel p-8 rounded-3xl glass-panel-hover transition-all duration-500 relative overflow-hidden group">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl group-hover:bg-emerald-500/20 transition-all"></div>
-                <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-6 relative z-10">
-                  <Layers className="h-6 w-6 text-emerald-400" />
-                </div>
-                <h3 className="text-xl font-bold text-white mb-3 relative z-10">Our Solution</h3>
-                <p className="text-slate-400 text-sm leading-relaxed relative z-10">
-                  A frictionless marketplace. Rent underused spaces by the hour, book instantly, and secure micro-sponsorships seamlessly.
-                </p>
-              </div>
-              
-              <div className="glass-panel p-8 rounded-3xl glass-panel-hover transition-all duration-500">
-                <div className="w-12 h-12 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center mb-6">
-                  <Award className="h-6 w-6 text-indigo-400" />
-                </div>
-                <h3 className="text-xl font-bold text-white mb-3">The Advantage</h3>
-                <p className="text-slate-400 text-sm leading-relaxed">
-                  Loyalty rewards, highly-targeted awareness for local vendors, and a modern mobile experience that legacy competitors lack.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="relative rounded-[2.5rem] overflow-hidden border border-indigo-500/30">
-            <div className="absolute inset-0 bg-gradient-to-br from-indigo-900 via-purple-900 to-[#0a0f1c] opacity-80"></div>
-            <div className="absolute top-0 right-0 w-full h-full bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCI+CgkJPGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjEiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4wNSkiLz4KPC9zdmc+')] opacity-50"></div>
-            
-            <div className="relative z-10 p-10 md:p-16 text-center max-w-3xl mx-auto">
-              <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-6">Ready to change how you host?</h2>
-              <p className="text-indigo-200 text-lg mb-10">Join the waiting list today and be the first to access Edmonton's premier booking and sponsorship marketplace.</p>
-              
-              <div className="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4">
-                <button 
-                  onClick={() => setActiveTab('demo')}
-                  className="bg-white text-indigo-900 px-8 py-4 rounded-full font-bold shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:scale-105 transition-all flex items-center"
-                >
-                  <Smartphone className="mr-2 h-5 w-5" /> Launch Demo App
-                </button>
-                <button 
-                  onClick={() => setActiveTab('financials')}
-                  className="glass-panel px-8 py-4 rounded-full font-bold text-white hover:bg-white/10 transition-all flex items-center"
-                >
-                  View Projections <ArrowRight className="ml-2 h-5 w-5" />
-                </button>
-              </div>
-            </div>
-          </div>
+          </section>
         </div>
       );
     }
@@ -324,7 +541,7 @@
     /* =========================================
        2. FULLY INTERACTIVE APP DEMO VIEW
     ========================================= */
-    function DemoView() {
+    function DemoView({ isDeepDiveOpen, onOpenDeepDive, onCloseDeepDive }) {
       const [isLoggedIn, setIsLoggedIn] = useState(false);
       const [appTab, setAppTab] = useState('hub');
       const [role, setRole] = useState('renter');
@@ -378,9 +595,18 @@
 
       return (
         <div className="animate-in slide-in-from-bottom-8 duration-700">
+          {isDeepDiveOpen && <DeepDiveView onClose={onCloseDeepDive} />}
           <div className="text-center mb-12">
             <h2 className="text-4xl font-extrabold text-white mb-4 tracking-tight">Experience EventSpot</h2>
             <p className="text-slate-400">Interact with the prototype below. Data is saved for your session.</p>
+            <div className="mt-8">
+              <button onClick={onOpenDeepDive} className="inline-flex items-center space-x-3 bg-gradient-to-r from-emerald-600 to-amber-600 hover:opacity-90 transition-all text-white font-bold px-8 py-4 rounded-2xl shadow-lg shadow-emerald-500/30 group border border-emerald-500/30">
+                <Maximize2 className="h-5 w-5"/>
+                <span>Deep Dive</span>
+                <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform"/>
+              </button>
+              <p className="text-xs text-slate-500 mt-3">Fullscreen onboarding · complete role simulation · booking flow</p>
+            </div>
           </div>
 
           <div className="flex flex-col md:flex-row items-center justify-center gap-12">
@@ -395,7 +621,7 @@
               ) : (
                 <>
                   <div className={`transition-all duration-500 ${role === 'renter' ? 'opacity-100 scale-100' : 'opacity-30 scale-95 cursor-pointer'}`} onClick={() => {setRole('renter'); setAppTab('hub');}}>
-                    <h3 className="text-xl font-bold text-white mb-2 flex items-center"><Search className="mr-2 text-indigo-400 h-5 w-5"/> The Renter</h3>
+                    <h3 className="text-xl font-bold text-white mb-2 flex items-center"><Search className="mr-2 text-emerald-400 h-5 w-5"/> The Renter</h3>
                     <p className="text-sm text-slate-400">Click a space to open the booking details. Confirmed bookings will sync to your Booked tab instantly.</p>
                   </div>
                   <div className={`transition-all duration-500 ${role === 'leaser' ? 'opacity-100 scale-100' : 'opacity-30 scale-95 cursor-pointer'}`} onClick={() => {setRole('leaser'); setAppTab('hub');}}>
@@ -403,7 +629,7 @@
                     <p className="text-sm text-slate-400">Click Create New Listing to launch the wizard. Your new property will appear on your dashboard.</p>
                   </div>
                   <div className={`transition-all duration-500 ${role === 'sponsor' ? 'opacity-100 scale-100' : 'opacity-30 scale-95 cursor-pointer'}`} onClick={() => {setRole('sponsor'); setAppTab('hub');}}>
-                    <h3 className="text-xl font-bold text-white mb-2 flex items-center"><Briefcase className="mr-2 text-purple-400 h-5 w-5"/> The Sponsor</h3>
+                    <h3 className="text-xl font-bold text-white mb-2 flex items-center"><Briefcase className="mr-2 text-amber-400 h-5 w-5"/> The Sponsor</h3>
                     <p className="text-sm text-slate-400">Select an event to open the funding proposal form and inject capital directly into local organizers.</p>
                   </div>
                 </>
@@ -411,18 +637,18 @@
             </div>
 
             <div className="order-1 md:order-2 relative w-[340px] h-[720px]">
-              <div className="absolute inset-0 bg-indigo-500/30 blur-[60px] rounded-[3rem]"></div>
+              <div className="absolute inset-0 bg-emerald-500/30 blur-[60px] rounded-[3rem]"></div>
               <div className="absolute inset-0 bg-slate-900 border-[10px] border-slate-800 rounded-[3.5rem] shadow-2xl overflow-hidden ring-1 ring-white/10 flex flex-col z-10">
                 <div className="absolute top-2 inset-x-0 h-7 flex justify-center z-50 pointer-events-none">
                   <div className="w-28 bg-black rounded-full shadow-inner flex items-center justify-between px-3">
-                    <div className="w-2 h-2 rounded-full bg-indigo-500/20"></div>
+                    <div className="w-2 h-2 rounded-full bg-emerald-500/20"></div>
                     <div className="w-2 h-2 rounded-full bg-emerald-500/20"></div>
                   </div>
                 </div>
 
                 {toastMsg && (
                   <div className="absolute top-12 left-0 w-full z-50 px-4 toast-enter pointer-events-none">
-                    <div className="bg-[#1e293b]/95 backdrop-blur border border-indigo-500/50 text-white text-xs font-bold py-3 px-4 rounded-2xl shadow-xl flex items-center justify-between">
+                    <div className="bg-[#1e293b]/95 backdrop-blur border border-emerald-500/50 text-white text-xs font-bold py-3 px-4 rounded-2xl shadow-xl flex items-center justify-between">
                       <span className="flex items-center"><CheckCircle2 className="h-4 w-4 text-emerald-400 mr-2"/> {toastMsg}</span>
                     </div>
                   </div>
@@ -431,19 +657,19 @@
                 <div className="flex-1 bg-[#0f1523] text-slate-200 overflow-hidden flex flex-col relative mt-8 rounded-t-3xl">
                   {!isLoggedIn && (
                     <div className="flex-1 flex flex-col items-center justify-center p-6 bg-gradient-to-b from-[#0a0f1c] to-[#0f1523] relative z-20">
-                      <EventSpotLogo className="h-16 w-16 mb-6 drop-shadow-[0_0_15px_rgba(99,102,241,0.5)]" />
+                      <EventSpotLogo className="h-16 w-16 mb-6 drop-shadow-[0_0_15px_rgba(16,185,129,0.5)]" />
                       <h2 className="text-2xl font-extrabold text-white mb-2">Welcome Back</h2>
                       <p className="text-slate-400 text-sm mb-8 text-center">Sign in to continue to EventSpot.</p>
                       <div className="w-full space-y-4">
                         <div className="relative">
                           <Mail className="absolute left-4 top-3.5 h-5 w-5 text-slate-500" />
-                          <input type="email" value="cwopara@ualberta.ca" readOnly className="w-full bg-slate-800/50 pl-12 pr-4 py-3.5 rounded-2xl border border-white/10 text-sm text-white focus:border-indigo-500 outline-none transition-colors" />
+                          <input type="email" value="cwopara@ualberta.ca" readOnly className="w-full bg-slate-800/50 pl-12 pr-4 py-3.5 rounded-2xl border border-white/10 text-sm text-white focus:border-emerald-500 outline-none transition-colors" />
                         </div>
                         <div className="relative">
                           <Lock className="absolute left-4 top-3.5 h-5 w-5 text-slate-500" />
-                          <input type="password" value="••••••••••••" readOnly className="w-full bg-slate-800/50 pl-12 pr-4 py-3.5 rounded-2xl border border-white/10 text-sm text-white focus:border-indigo-500 outline-none transition-colors" />
+                          <input type="password" value="••••••••••••" readOnly className="w-full bg-slate-800/50 pl-12 pr-4 py-3.5 rounded-2xl border border-white/10 text-sm text-white focus:border-emerald-500 outline-none transition-colors" />
                         </div>
-                        <button onClick={() => { triggerToast("Logged in successfully!"); setIsLoggedIn(true); }} className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3.5 rounded-2xl transition-all shadow-lg shadow-indigo-500/20 mt-2">
+                        <button onClick={() => { triggerToast("Logged in successfully!"); setIsLoggedIn(true); }} className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-2xl transition-all shadow-lg shadow-emerald-500/20 mt-2">
                           Sign In
                         </button>
                       </div>
@@ -465,7 +691,7 @@
                                 <div className="flex justify-between items-start mb-2">
                                   <h2 className="text-xl font-extrabold text-white">{selectedItem.name}</h2>
                                   <div className="text-right">
-                                    <span className="text-indigo-400 font-bold text-lg">{selectedItem.price}</span>
+                                    <span className="text-emerald-400 font-bold text-lg">{selectedItem.price}</span>
                                     <span className="text-xs text-slate-500 block">per hour</span>
                                   </div>
                                 </div>
@@ -473,12 +699,12 @@
                                 
                                 <h3 className="font-bold text-white text-sm mb-3">Select Time</h3>
                                 <div className="flex space-x-2 mb-6">
-                                  <div className="flex-1 bg-slate-800/50 border border-white/5 rounded-xl p-3 text-center cursor-pointer border-indigo-500/50"><div className="text-xs text-slate-400">Date</div><div className="text-sm text-white font-bold">Today</div></div>
+                                  <div className="flex-1 bg-slate-800/50 border border-white/5 rounded-xl p-3 text-center cursor-pointer border-emerald-500/50"><div className="text-xs text-slate-400">Date</div><div className="text-sm text-white font-bold">Today</div></div>
                                   <div className="flex-1 bg-slate-800/50 border border-white/5 rounded-xl p-3 text-center cursor-pointer"><div className="text-xs text-slate-400">Start</div><div className="text-sm text-white font-bold">6:00 PM</div></div>
                                 </div>
                               </div>
                               <div className="p-5 border-t border-white/5 bg-[#0a0f1c]">
-                                <button onClick={confirmBooking} className="w-full bg-indigo-600 text-white font-bold py-4 rounded-2xl shadow-lg shadow-indigo-500/20">Confirm & Pay</button>
+                                <button onClick={confirmBooking} className="w-full bg-emerald-600 text-white font-bold py-4 rounded-2xl shadow-lg shadow-emerald-500/20">Confirm & Pay</button>
                               </div>
                             </div>
                           )}
@@ -494,18 +720,18 @@
                                   <label className="text-xs font-bold text-slate-400 mb-3 block">SPACE TYPE</label>
                                   <div className="flex flex-wrap gap-2">
                                     {['Indoor', 'Outdoor', 'Academic', 'Studio', 'Retail'].map(t => (
-                                      <span key={t} className={`px-3 py-1.5 rounded-full text-xs font-bold border ${t==='Indoor' ? 'bg-indigo-600 border-indigo-500 text-white' : 'bg-slate-800/50 border-white/5 text-slate-400'}`}>{t}</span>
+                                      <span key={t} className={`px-3 py-1.5 rounded-full text-xs font-bold border ${t==='Indoor' ? 'bg-emerald-600 border-emerald-500 text-white' : 'bg-slate-800/50 border-white/5 text-slate-400'}`}>{t}</span>
                                     ))}
                                   </div>
                                 </div>
                                 <div>
                                   <label className="text-xs font-bold text-slate-400 mb-3 block">MAX PRICE PER HOUR</label>
-                                  <input type="range" min="10" max="200" defaultValue="100" className="w-full accent-indigo-500" />
+                                  <input type="range" min="10" max="200" defaultValue="100" className="w-full accent-emerald-500" />
                                   <div className="flex justify-between text-xs text-slate-400 mt-2"><span>$10</span><span>$200+</span></div>
                                 </div>
                               </div>
                               <div className="p-5 border-t border-white/5">
-                                <button onClick={() => {setActiveModal(null); triggerToast("Filters applied.");}} className="w-full bg-indigo-600 text-white font-bold py-3.5 rounded-2xl">Apply Filters</button>
+                                <button onClick={() => {setActiveModal(null); triggerToast("Filters applied.");}} className="w-full bg-emerald-600 text-white font-bold py-3.5 rounded-2xl">Apply Filters</button>
                               </div>
                             </div>
                           )}
@@ -537,27 +763,27 @@
                           )}
 
                           {activeModal === 'sponsor' && selectedItem && (
-                            <div className="flex flex-col h-full bg-gradient-to-b from-purple-900/20 to-[#0f1523]">
+                            <div className="flex flex-col h-full bg-gradient-to-b from-amber-900/20 to-[#0f1523]">
                               <div className="pt-12 pb-4 px-5 border-b border-white/5 flex items-center justify-between">
                                 <h3 className="font-bold text-white text-lg">Funding Proposal</h3>
                                 <button onClick={() => setActiveModal(null)} className="h-8 w-8 bg-slate-800 rounded-full flex items-center justify-center"><X className="h-4 w-4 text-white"/></button>
                               </div>
                               <div className="p-5 flex-1 space-y-6">
-                                <div className="bg-slate-800/50 p-4 rounded-2xl border border-purple-500/30">
+                                <div className="bg-slate-800/50 p-4 rounded-2xl border border-amber-500/30">
                                   <h4 className="font-bold text-white text-sm mb-1">{selectedItem.name}</h4>
                                   <p className="text-xs text-slate-400">Target Ask: {selectedItem.asking}</p>
                                 </div>
                                 <div>
-                                  <label className="text-xs font-bold text-purple-400 mb-2 block">YOUR OFFER AMOUNT ($)</label>
-                                  <input type="number" defaultValue="150" className="w-full bg-slate-800/80 px-4 py-4 rounded-xl border border-white/10 text-xl font-bold text-white text-center outline-none focus:border-purple-500" />
+                                  <label className="text-xs font-bold text-amber-400 mb-2 block">YOUR OFFER AMOUNT ($)</label>
+                                  <input type="number" defaultValue="150" className="w-full bg-slate-800/80 px-4 py-4 rounded-xl border border-white/10 text-xl font-bold text-white text-center outline-none focus:border-amber-500" />
                                 </div>
                                 <div>
                                   <label className="text-xs font-bold text-slate-400 mb-2 block">MESSAGE TO ORGANIZER</label>
-                                  <textarea rows="3" defaultValue="We would love to provide banners and fund the catering for this event in exchange for logo placement." className="w-full bg-slate-800/50 px-4 py-3 rounded-xl border border-white/5 text-sm text-white outline-none focus:border-purple-500"></textarea>
+                                  <textarea rows="3" defaultValue="We would love to provide banners and fund the catering for this event in exchange for logo placement." className="w-full bg-slate-800/50 px-4 py-3 rounded-xl border border-white/5 text-sm text-white outline-none focus:border-amber-500"></textarea>
                                 </div>
                               </div>
                               <div className="p-5 border-t border-white/5">
-                                <button onClick={() => {setActiveModal(null); triggerToast("Proposal sent to organizer!");}} className="w-full bg-purple-600 text-white font-bold py-3.5 rounded-2xl shadow-lg shadow-purple-500/20 flex justify-center items-center"><Briefcase className="w-4 h-4 mr-2"/> Submit Offer</button>
+                                <button onClick={() => {setActiveModal(null); triggerToast("Proposal sent to organizer!");}} className="w-full bg-amber-600 text-white font-bold py-3.5 rounded-2xl shadow-lg shadow-amber-500/20 flex justify-center items-center"><Briefcase className="w-4 h-4 mr-2"/> Submit Offer</button>
                               </div>
                             </div>
                           )}
@@ -631,15 +857,15 @@
                             <span className="font-extrabold text-lg flex items-center tracking-tight text-white">
                               <EventSpotLogo className="h-5 w-5 mr-2 drop-shadow-sm"/> EventSpot
                             </span>
-                            <div className="h-8 w-8 rounded-full bg-indigo-500/20 flex items-center justify-center border border-indigo-500/30 cursor-pointer" onClick={() => triggerToast("No new notifications.")}>
-                              <Bell className="h-4 w-4 text-indigo-300"/>
+                            <div className="h-8 w-8 rounded-full bg-emerald-500/20 flex items-center justify-center border border-emerald-500/30 cursor-pointer" onClick={() => triggerToast("No new notifications.")}>
+                              <Bell className="h-4 w-4 text-emerald-300"/>
                             </div>
                           </div>
                           
                           <div className="flex bg-slate-800/50 rounded-xl p-1 border border-white/5">
-                            <button onClick={() => setRole('renter')} className={`flex-1 text-[11px] font-bold py-2 rounded-lg transition-all duration-300 ${role === 'renter' ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-400'}`}>RENTER</button>
+                            <button onClick={() => setRole('renter')} className={`flex-1 text-[11px] font-bold py-2 rounded-lg transition-all duration-300 ${role === 'renter' ? 'bg-emerald-600 text-white shadow-lg' : 'text-slate-400'}`}>RENTER</button>
                             <button onClick={() => setRole('leaser')} className={`flex-1 text-[11px] font-bold py-2 rounded-lg transition-all duration-300 ${role === 'leaser' ? 'bg-emerald-600 text-white shadow-lg' : 'text-slate-400'}`}>LEASER</button>
-                            <button onClick={() => setRole('sponsor')} className={`flex-1 text-[11px] font-bold py-2 rounded-lg transition-all duration-300 ${role === 'sponsor' ? 'bg-purple-600 text-white shadow-lg' : 'text-slate-400'}`}>SPONSOR</button>
+                            <button onClick={() => setRole('sponsor')} className={`flex-1 text-[11px] font-bold py-2 rounded-lg transition-all duration-300 ${role === 'sponsor' ? 'bg-amber-600 text-white shadow-lg' : 'text-slate-400'}`}>SPONSOR</button>
                           </div>
                         </div>
                       )}
@@ -669,10 +895,10 @@
                                     <div className={`h-12 w-12 rounded-xl flex items-center justify-center ${space.bg}`}><space.icon className={`h-6 w-6 ${space.color}`} /></div>
                                     <div className="flex-1">
                                       <h4 className="font-bold text-white text-sm">{space.name}</h4>
-                                      <p className="text-[11px] text-slate-400 mt-0.5">{space.type} • ⭐ {space.rating}</p>
+                                      <p className="text-[11px] text-slate-400 mt-0.5">{space.type} • Rating {space.rating}</p>
                                     </div>
                                     <div className="text-right">
-                                      <p className="text-indigo-400 font-bold text-sm">{space.price}</p><p className="text-[10px] text-slate-500">/hr</p>
+                                      <p className="text-emerald-400 font-bold text-sm">{space.price}</p><p className="text-[10px] text-slate-500">/hr</p>
                                     </div>
                                   </div>
                                 ))}
@@ -711,8 +937,8 @@
 
                             {/* SPONSOR VIEW */}
                             <div className={`transition-all duration-500 absolute w-full px-5 left-0 top-5 ${role === 'sponsor' ? 'opacity-100 translate-x-0 pointer-events-auto' : 'opacity-0 translate-x-8 pointer-events-none'}`}>
-                               <div className="bg-gradient-to-br from-purple-900/40 to-slate-900 border border-purple-500/20 rounded-3xl p-6 mb-6">
-                                <div className="flex items-center space-x-3 mb-2"><Briefcase className="h-5 w-5 text-purple-400" /><h3 className="font-bold text-white text-sm">Grow Your Reach</h3></div>
+                               <div className="bg-gradient-to-br from-amber-900/40 to-slate-900 border border-amber-500/20 rounded-3xl p-6 mb-6">
+                                <div className="flex items-center space-x-3 mb-2"><Briefcase className="h-5 w-5 text-amber-400" /><h3 className="font-bold text-white text-sm">Grow Your Reach</h3></div>
                                 <p className="text-xs text-slate-400 leading-relaxed">Sponsor local events to get hyper-targeted brand awareness exactly where your customers are.</p>
                               </div>
                               <h3 className="font-bold text-white mb-4 text-sm tracking-wide">SEEKING SPONSORS</h3>
@@ -721,12 +947,12 @@
                                   <div key={event.id} className="bg-slate-800/40 rounded-2xl p-4 border border-white/5">
                                     <div className="flex justify-between items-start mb-3">
                                       <h4 className="font-bold text-white text-sm">{event.name}</h4>
-                                      <span className="bg-purple-500/20 text-purple-300 text-[10px] font-bold px-2 py-1 rounded-md border border-purple-500/30">Asking {event.asking}</span>
+                                      <span className="bg-amber-500/20 text-amber-300 text-[10px] font-bold px-2 py-1 rounded-md border border-amber-500/30">Asking {event.asking}</span>
                                     </div>
                                     <div className="flex space-x-2 text-[10px] text-slate-400 mb-4">
                                       <span className="bg-slate-700/50 px-2 py-1 rounded">{event.attendees} attendees</span><span className="bg-slate-700/50 px-2 py-1 rounded">{event.niche}</span>
                                     </div>
-                                    <button onClick={() => { setSelectedItem(event); setActiveModal('sponsor'); }} className="w-full bg-white/5 border border-white/10 text-white text-xs font-bold py-2.5 rounded-xl hover:bg-purple-600 transition-colors">
+                                    <button onClick={() => { setSelectedItem(event); setActiveModal('sponsor'); }} className="w-full bg-white/5 border border-white/10 text-white text-xs font-bold py-2.5 rounded-xl hover:bg-amber-600 transition-colors">
                                       Offer Funding
                                     </button>
                                   </div>
@@ -742,7 +968,7 @@
                             <div className="space-y-4">
                               {upcomingBookings.map((bk) => (
                                 <div key={bk.id} className="bg-slate-800/50 rounded-2xl p-4 border border-white/5 relative overflow-hidden">
-                                  <div className="absolute top-0 left-0 w-1 h-full bg-indigo-500"></div>
+                                  <div className="absolute top-0 left-0 w-1 h-full bg-emerald-500"></div>
                                   <div className="flex items-center justify-between mb-4 pb-4 border-b border-white/5 pl-2">
                                     <div className="flex items-center space-x-3">
                                       <div className={`h-10 w-10 rounded-xl flex items-center justify-center ${bk.bg}`}><bk.icon className={`h-5 w-5 ${bk.color}`} /></div>
@@ -761,12 +987,12 @@
                         {appTab === 'profile' && (
                           <div className="p-5 animate-in fade-in duration-300 space-y-6">
                             <div className="bg-slate-800/50 rounded-3xl p-6 border border-white/5 flex flex-col items-center text-center">
-                              <div className="h-20 w-20 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 p-1 mb-4 shadow-lg">
+                              <div className="h-20 w-20 rounded-full bg-gradient-to-tr from-emerald-500 to-amber-500 p-1 mb-4 shadow-lg">
                                 <div className="bg-[#0a0f1c] w-full h-full rounded-full flex items-center justify-center"><span className="text-2xl font-extrabold text-white">CW</span></div>
                               </div>
                               <h3 className="text-xl font-bold text-white">Chim Wopara</h3>
                               <p className="text-sm text-slate-400">cwopara@ualberta.ca</p>
-                              <div className="mt-4 flex items-center bg-indigo-500/20 text-indigo-300 text-xs px-3 py-1.5 rounded-full border border-indigo-500/30">
+                              <div className="mt-4 flex items-center bg-emerald-500/20 text-emerald-300 text-xs px-3 py-1.5 rounded-full border border-emerald-500/30">
                                 <Award className="h-3.5 w-3.5 mr-1"/> verified student
                               </div>
                             </div>
@@ -791,15 +1017,510 @@
                       </div>
 
                       <div className="absolute bottom-0 w-full bg-[#0f1523]/90 backdrop-blur-xl border-t border-white/5 p-4 pb-8 flex justify-around z-50">
-                        <div onClick={() => {setAppTab('hub'); setActiveModal(null);}} className={`flex flex-col items-center cursor-pointer transition-colors ${appTab === 'hub' ? 'text-indigo-400' : 'text-slate-500 hover:text-slate-300'}`}><LayoutDashboard className="h-6 w-6 mb-1" /><span className="text-[9px] font-bold tracking-wider">HUB</span></div>
-                        <div onClick={() => {setAppTab('booked'); setActiveModal(null);}} className={`flex flex-col items-center cursor-pointer transition-colors ${appTab === 'booked' ? 'text-indigo-400' : 'text-slate-500 hover:text-slate-300'}`}><Calendar className="h-6 w-6 mb-1" /><span className="text-[9px] font-bold tracking-wider">BOOKED</span></div>
-                        <div onClick={() => {setAppTab('profile'); setActiveModal(null);}} className={`flex flex-col items-center cursor-pointer transition-colors ${appTab === 'profile' ? 'text-indigo-400' : 'text-slate-500 hover:text-slate-300'}`}><User className="h-6 w-6 mb-1" /><span className="text-[9px] font-bold tracking-wider">PROFILE</span></div>
+                        <div onClick={() => {setAppTab('hub'); setActiveModal(null);}} className={`flex flex-col items-center cursor-pointer transition-colors ${appTab === 'hub' ? 'text-emerald-400' : 'text-slate-500 hover:text-slate-300'}`}><LayoutDashboard className="h-6 w-6 mb-1" /><span className="text-[9px] font-bold tracking-wider">HUB</span></div>
+                        <div onClick={() => {setAppTab('booked'); setActiveModal(null);}} className={`flex flex-col items-center cursor-pointer transition-colors ${appTab === 'booked' ? 'text-emerald-400' : 'text-slate-500 hover:text-slate-300'}`}><Calendar className="h-6 w-6 mb-1" /><span className="text-[9px] font-bold tracking-wider">BOOKED</span></div>
+                        <div onClick={() => {setAppTab('profile'); setActiveModal(null);}} className={`flex flex-col items-center cursor-pointer transition-colors ${appTab === 'profile' ? 'text-emerald-400' : 'text-slate-500 hover:text-slate-300'}`}><User className="h-6 w-6 mb-1" /><span className="text-[9px] font-bold tracking-wider">PROFILE</span></div>
                       </div>
                     </>
                   )}
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      );
+    }
+
+    /* =========================================
+       2b. DEEP DIVE — FULLSCREEN EXPERIENCE
+    ========================================= */
+    function DeepDiveView({ onClose }) {
+      const [step, setStep] = useState('signin');
+      const [ddRole, setDdRole] = useState(null);
+      const [form, setForm] = useState({ firstName:'Chim', lastName:'Wopara', phone:'+1 (780) 555-0192', address:'Edmonton, AB T6G 2H1' });
+      const [appTab, setAppTab] = useState('hub');
+      const [bookingFlow, setBookingFlow] = useState(null);
+      const [selectedSpace, setSelectedSpace] = useState(null);
+      const [selectedDate, setSelectedDate] = useState('Apr 18');
+      const [selectedTime, setSelectedTime] = useState('6:00 PM');
+      const [bookings, setBookings] = useState([{ id:1, space:'Strathcona Lounge', image:'https://picsum.photos/seed/eventspot-lounge/420/280', date:'Apr 14, 2026', time:'6:00–10:00 PM', status:'Confirmed', amount:'$320' }]);
+      const [ddToast, setDdToast] = useState(null);
+      const [createStep, setCreateStep] = useState(null);
+      const [newListing, setNewListing] = useState({ name:'', price:'60', type:'Indoor', address:'' });
+      const [myListings, setMyListings] = useState([
+        { id:1, name:'Glenora Loft', price:75, status:'Active', bookings:8, earned:'$2,400', image:'https://picsum.photos/seed/eventspot-glenora-loft/1200/800' },
+        { id:2, name:'Whyte Ave Studio', price:55, status:'Active', bookings:5, earned:'$1,100', image:'https://picsum.photos/seed/eventspot-whyte-studio/1200/800' },
+      ]);
+      const [selectedEvent, setSelectedEvent] = useState(null);
+      const [proposalOpen, setProposalOpen] = useState(false);
+      const [proposalAmt, setProposalAmt] = useState('150');
+      const [myCampaigns, setMyCampaigns] = useState([{ id:1, event:'Student Tech Summit', amount:200, status:'Active', impressions:'1.2K', reach:'850' }]);
+
+      const showToast = (msg) => { setDdToast(msg); setTimeout(() => setDdToast(null), 3000); };
+
+      const spaces = [
+        { id:1, name:'Downtown Balcony', type:'Outdoor Rooftop', price:45, rating:4.8, reviews:32, capacity:'Up to 40 guests', amenities:['WiFi','Bistro Lighting','Sound System'], color:'from-emerald-700/35 to-green-600/10', border:'border-emerald-500/25', accent:'text-emerald-300', badge:'bg-emerald-500/20 text-emerald-200', image:'https://picsum.photos/seed/eventspot-downtown-balcony/1200/800', area:'Downtown Core' },
+        { id:2, name:'Strathcona Lounge', type:'Indoor Venue', price:80, rating:5.0, reviews:58, capacity:'Up to 80 guests', amenities:['Full Kitchen','Bar Setup','AV System','Parking'], color:'from-amber-700/35 to-yellow-600/10', border:'border-amber-500/25', accent:'text-amber-300', badge:'bg-amber-500/20 text-amber-200', image:'https://picsum.photos/seed/eventspot-strathcona-lounge/1200/800', area:'Old Strathcona' },
+        { id:3, name:'Campus Study Hall', type:'Academic Space', price:25, rating:4.5, reviews:21, capacity:'Up to 30 guests', amenities:['4K Projector','Whiteboards','High-Speed WiFi'], color:'from-lime-700/35 to-emerald-600/10', border:'border-lime-500/25', accent:'text-lime-300', badge:'bg-lime-500/20 text-lime-200', image:'https://picsum.photos/seed/eventspot-study-hall/1200/800', area:'U of A Campus' },
+        { id:4, name:'Oliver Rooftop Garden', type:'Outdoor Garden', price:65, rating:4.7, reviews:44, capacity:'Up to 60 guests', amenities:['Patio Furniture','String Lights','City Views'], color:'from-green-700/35 to-amber-600/10', border:'border-green-500/25', accent:'text-green-300', badge:'bg-green-500/20 text-green-200', image:'https://picsum.photos/seed/eventspot-rooftop-garden/1200/800', area:'Oliver District' },
+        { id:5, name:'Warehouse Loft', type:'Industrial Venue', price:95, rating:4.9, reviews:67, capacity:'Up to 120 guests', amenities:['Full Stage','Pro Sound System','Bar Setup','Parking'], color:'from-emerald-800/35 to-amber-700/10', border:'border-yellow-500/25', accent:'text-yellow-300', badge:'bg-yellow-500/20 text-yellow-200', image:'https://picsum.photos/seed/eventspot-warehouse-loft/1200/800', area:'Boyle Street' },
+      ];
+
+      const events = [
+        { id:1, name:'Economics Networking Mixer', org:'U of A Business Society', attendees:'50–70', date:'Apr 22', asking:150, raised:75, niche:'Academic', desc:'A professional mixer for econ students and local professionals at a downtown venue.', image:'https://picsum.photos/seed/eventspot-econ-mixer/1400/900' },
+        { id:2, name:'Local Art Pop-up Exhibition', org:'YEG Arts Collective', attendees:'100+', date:'Apr 28', asking:300, raised:120, niche:'Culture', desc:'Multi-media art showcase featuring 15+ local YEG artists across one evening.', image:'https://picsum.photos/seed/eventspot-art-popup/1400/900' },
+        { id:3, name:'Tech Startup Pitch Night', org:'Startup Edmonton', attendees:'80–100', date:'May 3', asking:500, raised:200, niche:'Tech', desc:'Fast-format pitches from 8 early-stage Edmonton startups to investors and mentors.', image:'https://picsum.photos/seed/eventspot-tech-pitch/1400/900' },
+        { id:4, name:'Community Garden Festival', org:'Edmonton Green', attendees:'200+', date:'May 10', asking:800, raised:350, niche:'Community', desc:'Outdoor festival celebrating urban gardening, sustainability, and local food culture.', image:'https://picsum.photos/seed/eventspot-garden-festival/1400/900' },
+      ];
+
+      const leaserRequests = [
+        { name:'Jordan M.', image:'https://picsum.photos/seed/eventspot-request-jordan/300/300', space:'Glenora Loft', date:'Apr 20, 2026', time:'4:00–8:00 PM', guests:25, amount:'$300', msg:"Planning a small birthday dinner! We'll be very respectful of the space." },
+        { name:'Priya S.', image:'https://picsum.photos/seed/eventspot-request-priya/300/300', space:'Whyte Ave Studio', date:'Apr 22, 2026', time:'10:00 AM–2:00 PM', guests:12, amount:'$220', msg:'Photography session for a clothing brand shoot. Need good natural light.' },
+      ];
+
+      const renterTabs = [{ id:'hub', label:'Hub', icon:LayoutDashboard }, { id:'booked', label:'Booked', icon:Calendar }, { id:'explore', label:'Explore', icon:Map }, { id:'profile', label:'Profile', icon:User }];
+      const leaserTabs = [{ id:'dashboard', label:'Dashboard', icon:BarChart3 }, { id:'listings', label:'My Spaces', icon:Building2 }, { id:'requests', label:'Requests', icon:Bell }, { id:'profile', label:'Profile', icon:User }];
+      const sponsorTabs = [{ id:'discover', label:'Discover', icon:Search }, { id:'campaigns', label:'Campaigns', icon:Briefcase }, { id:'analytics', label:'Analytics', icon:TrendingUp }, { id:'profile', label:'Profile', icon:User }];
+      const tabs = ddRole === 'renter' ? renterTabs : ddRole === 'leaser' ? leaserTabs : sponsorTabs;
+      const effectiveTab = tabs && tabs.find(t => t.id === appTab) ? appTab : (ddRole === 'renter' ? 'hub' : ddRole === 'leaser' ? 'dashboard' : 'discover');
+
+      // ---- ONBOARDING ----
+      if (step !== 'app') {
+        const stepNum = { signin:0, onboard_name:1, onboard_contact:2, onboard_role:3, ready:4 }[step] || 0;
+        return (
+          <div className="fixed inset-0 z-[200] bg-[#070c18] flex flex-col overflow-hidden">
+            <div className="absolute top-[-15%] left-[-10%] w-[40%] h-[40%] rounded-full bg-emerald-900/30 blur-[100px] pointer-events-none"></div>
+            <div className="absolute bottom-[-15%] right-[-10%] w-[35%] h-[45%] rounded-full bg-yellow-900/20 blur-[100px] pointer-events-none"></div>
+            <button onClick={onClose} className="absolute top-5 right-5 z-50 h-10 w-10 rounded-full bg-slate-800/60 border border-white/10 flex items-center justify-center hover:bg-slate-700 transition-colors"><X className="h-4 w-4 text-slate-400"/></button>
+            {step !== 'signin' && step !== 'ready' && (
+              <div className="absolute top-0 left-0 right-0 h-1 bg-slate-800/60">
+                <div className="h-full bg-gradient-to-r from-emerald-500 to-amber-600 transition-all duration-700" style={{width:`${((stepNum-1)/3)*100}%`}}></div>
+              </div>
+            )}
+            <div className="flex-1 flex items-center justify-center p-6 overflow-y-auto">
+
+              {step === 'signin' && (
+                <div className="w-full max-w-md animate-in fade-in zoom-in-95 duration-500">
+                  <div className="text-center mb-10">
+                    <EventSpotLogo className="h-16 w-16 mx-auto mb-5 drop-shadow-[0_0_20px_rgba(16,185,129,0.6)]"/>
+                    <h1 className="text-4xl font-extrabold text-white mb-2">Welcome back.</h1>
+                    <p className="text-slate-400">Sign in to your EventSpot account.</p>
+                  </div>
+                  <div className="space-y-4">
+                    <div className="relative"><Mail className="absolute left-4 top-3.5 h-5 w-5 text-slate-500"/><input readOnly value="cwopara@ualberta.ca" type="email" className="w-full bg-slate-800/50 border border-white/10 rounded-2xl pl-12 pr-4 py-4 text-white text-sm outline-none"/></div>
+                    <div className="relative"><Lock className="absolute left-4 top-3.5 h-5 w-5 text-slate-500"/><input readOnly value="••••••••••••" type="password" className="w-full bg-slate-800/50 border border-white/10 rounded-2xl pl-12 pr-4 py-4 text-white text-sm outline-none"/></div>
+                    <button onClick={() => setStep('onboard_name')} className="w-full mt-2 bg-gradient-to-r from-emerald-600 to-amber-600 text-white font-bold py-4 rounded-2xl hover:opacity-90 transition-opacity shadow-lg shadow-emerald-500/20 flex items-center justify-center">Sign In <ArrowRight className="ml-2 h-4 w-4"/></button>
+                  </div>
+                  <p className="text-center text-xs text-slate-500 mt-8">University email required for student verification.</p>
+                </div>
+              )}
+
+              {step === 'onboard_name' && (
+                <div className="w-full max-w-md animate-in fade-in slide-in-from-right-8 duration-500">
+                  <div className="mb-8"><p className="text-xs font-bold text-emerald-400 tracking-widest mb-2">STEP 1 OF 3</p><h2 className="text-3xl font-extrabold text-white mb-2">Tell us your name</h2><p className="text-slate-400">This is how you'll appear on EventSpot.</p></div>
+                  <div className="space-y-4">
+                    <div><label className="text-xs font-bold text-slate-400 mb-2 block">FIRST NAME</label><input value={form.firstName} onChange={e => setForm({...form, firstName: e.target.value})} className="w-full bg-slate-800/50 border border-white/10 rounded-2xl px-5 py-4 text-white text-lg font-bold outline-none focus:border-emerald-500 transition-colors"/></div>
+                    <div><label className="text-xs font-bold text-slate-400 mb-2 block">LAST NAME</label><input value={form.lastName} onChange={e => setForm({...form, lastName: e.target.value})} className="w-full bg-slate-800/50 border border-white/10 rounded-2xl px-5 py-4 text-white text-lg font-bold outline-none focus:border-emerald-500 transition-colors"/></div>
+                    <button onClick={() => setStep('onboard_contact')} className="w-full mt-2 bg-gradient-to-r from-emerald-600 to-amber-600 text-white font-bold py-4 rounded-2xl hover:opacity-90 transition-opacity shadow-lg shadow-emerald-500/20">Continue</button>
+                  </div>
+                </div>
+              )}
+
+              {step === 'onboard_contact' && (
+                <div className="w-full max-w-md animate-in fade-in slide-in-from-right-8 duration-500">
+                  <div className="mb-8"><p className="text-xs font-bold text-emerald-400 tracking-widest mb-2">STEP 2 OF 3</p><h2 className="text-3xl font-extrabold text-white mb-2">Contact info</h2><p className="text-slate-400">Help organizers and hosts reach you.</p></div>
+                  <div className="space-y-4">
+                    <div><label className="text-xs font-bold text-slate-400 mb-2 block">PHONE NUMBER</label><input value={form.phone} onChange={e => setForm({...form, phone: e.target.value})} className="w-full bg-slate-800/50 border border-white/10 rounded-2xl px-5 py-4 text-white font-medium outline-none focus:border-emerald-500 transition-colors"/></div>
+                    <div><label className="text-xs font-bold text-slate-400 mb-2 block">CITY / ADDRESS</label><input value={form.address} onChange={e => setForm({...form, address: e.target.value})} className="w-full bg-slate-800/50 border border-white/10 rounded-2xl px-5 py-4 text-white font-medium outline-none focus:border-emerald-500 transition-colors"/></div>
+                    <button onClick={() => setStep('onboard_role')} className="w-full mt-2 bg-gradient-to-r from-emerald-600 to-amber-600 text-white font-bold py-4 rounded-2xl hover:opacity-90 transition-opacity shadow-lg shadow-emerald-500/20">Continue</button>
+                  </div>
+                </div>
+              )}
+
+              {step === 'onboard_role' && (
+                <div className="w-full max-w-lg animate-in fade-in slide-in-from-right-8 duration-500">
+                  <div className="mb-8 text-center"><p className="text-xs font-bold text-emerald-400 tracking-widest mb-2">STEP 3 OF 3</p><h2 className="text-3xl font-extrabold text-white mb-2">How will you use EventSpot?</h2><p className="text-slate-400">You can switch anytime inside the app.</p></div>
+                  <div className="grid gap-4">
+                    {[
+                      { id:'renter', icon:Search, label:'Renter', sub:'Find and book event spaces across Edmonton for any occasion.', sel:'border-emerald-500 bg-emerald-500/10', dot:'bg-emerald-500' },
+                      { id:'leaser', icon:Building2, label:'Leaser', sub:'List your underused space and earn hourly income with zero upfront cost.', sel:'border-emerald-500 bg-emerald-500/10', dot:'bg-emerald-500' },
+                      { id:'sponsor', icon:Megaphone, label:'Sponsor', sub:'Fund local events to grow your brand with hyper-targeted community reach.', sel:'border-amber-500 bg-amber-500/10', dot:'bg-amber-500' },
+                    ].map(r => (
+                      <div key={r.id} onClick={() => setDdRole(r.id)} className={`p-5 rounded-2xl border-2 cursor-pointer transition-all duration-300 ${ddRole === r.id ? r.sel : 'border-white/10 bg-slate-800/30 hover:border-white/20'}`}>
+                        <div className="flex items-center space-x-4">
+                          <div className="h-10 w-10 rounded-xl bg-black/20 border border-white/10 flex items-center justify-center"><r.icon className="h-5 w-5 text-slate-200" /></div>
+                          <div className="flex-1"><div className="font-bold text-white text-lg">{r.label}</div><div className="text-sm text-slate-400 mt-0.5">{r.sub}</div></div>
+                          <div className={`h-5 w-5 rounded-full border-2 flex items-center justify-center ${ddRole === r.id ? r.dot+' border-transparent' : 'border-slate-600'}`}>{ddRole === r.id && <div className="h-2 w-2 bg-white rounded-full"></div>}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <button disabled={!ddRole} onClick={() => setStep('ready')} className={`w-full mt-6 text-white font-bold py-4 rounded-2xl transition-all shadow-lg ${ddRole ? 'bg-gradient-to-r from-emerald-600 to-amber-600 hover:opacity-90 shadow-emerald-500/20' : 'bg-slate-700 opacity-40 cursor-not-allowed'}`}>Continue</button>
+                </div>
+              )}
+
+              {step === 'ready' && (
+                <div className="w-full max-w-md animate-in fade-in zoom-in-95 duration-700 text-center">
+                  <div className="h-24 w-24 rounded-full bg-gradient-to-br from-emerald-500 to-amber-600 flex items-center justify-center mx-auto mb-8 shadow-2xl shadow-emerald-500/30"><CheckCircle2 className="h-12 w-12 text-white"/></div>
+                  <h1 className="text-4xl font-extrabold text-white mb-3">You're all set, {form.firstName}!</h1>
+                  <p className="text-slate-400 mb-4 text-lg">Your EventSpot account is ready.</p>
+                  <div className={`inline-flex items-center px-5 py-2.5 rounded-full text-sm font-bold mb-10 ${ddRole==='renter'?'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30':ddRole==='leaser'?'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30':'bg-amber-500/20 text-amber-300 border border-amber-500/30'}`}>{ddRole==='renter'?'Space Renter':ddRole==='leaser'?'Space Leaser':'Event Sponsor'} · Edmonton, AB</div>
+                  <button onClick={() => { setStep('app'); setAppTab(ddRole==='renter'?'hub':ddRole==='leaser'?'dashboard':'discover'); }} className="w-full bg-gradient-to-r from-emerald-600 to-amber-600 text-white font-bold py-5 rounded-2xl hover:opacity-90 transition-opacity shadow-lg shadow-emerald-500/20 text-lg flex items-center justify-center">Explore EventSpot <ArrowRight className="ml-3 h-5 w-5"/></button>
+                </div>
+              )}
+
+            </div>
+          </div>
+        );
+      }
+
+      // ---- FULL APP VIEW ----
+      return (
+        <div className="fixed inset-0 z-[200] bg-[#070c18] flex flex-col overflow-hidden">
+          {/* Toast */}
+          {ddToast && (
+            <div className="fixed top-4 sm:top-5 left-1/2 -translate-x-1/2 z-[400] toast-enter pointer-events-none px-4">
+              <div className="bg-[#1e293b] border border-emerald-500/40 text-white text-xs sm:text-sm font-bold px-4 sm:px-6 py-3 sm:py-3.5 rounded-2xl shadow-2xl flex items-center whitespace-nowrap"><CheckCircle2 className="h-4 w-4 text-emerald-400 mr-2"/> {ddToast}</div>
+            </div>
+          )}
+
+          {/* BOOKING FLOW */}
+          {bookingFlow && selectedSpace && (
+            <div className="absolute inset-0 z-[300] bg-[#070c18] flex flex-col animate-in slide-in-from-right duration-300">
+              <div className="h-14 sm:h-16 bg-[#0c1220] border-b border-white/5 flex items-center px-4 sm:px-6 flex-shrink-0">
+                <button onClick={() => { if(bookingFlow==='detail'){setBookingFlow(null);setSelectedSpace(null);}else if(bookingFlow==='calendar')setBookingFlow('detail');else if(bookingFlow==='payment')setBookingFlow('calendar'); }} className="mr-3 sm:mr-4 h-8 w-8 sm:h-9 sm:w-9 rounded-xl bg-slate-800/60 border border-white/10 flex items-center justify-center hover:bg-slate-700 transition-colors"><ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5 text-white"/></button>
+                <span className="font-bold text-sm sm:text-base text-white truncate pr-2">{bookingFlow==='detail'?selectedSpace.name:bookingFlow==='calendar'?'Select Date & Time':bookingFlow==='payment'?'Payment':'Booking Confirmed!'}</span>
+                {bookingFlow!=='confirm' && <span className="ml-auto text-xs text-slate-500 hidden sm:block">{bookingFlow==='detail'?'1 / 3':bookingFlow==='calendar'?'2 / 3':'3 / 3'}</span>}
+              </div>
+              <div className="flex-1 overflow-y-auto hide-scrollbar">
+                {bookingFlow==='detail' && (
+                  <div className="max-w-2xl mx-auto p-4 sm:p-6 md:p-8">
+                    <div className={`h-44 sm:h-56 rounded-3xl bg-gradient-to-br ${selectedSpace.color} border ${selectedSpace.border} mb-6 sm:mb-8 overflow-hidden`}>
+                      <img src={selectedSpace.image} alt={selectedSpace.name} className="h-full w-full object-cover" loading="lazy" />
+                    </div>
+                    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
+                      <div><h2 className="text-2xl sm:text-3xl font-extrabold text-white mb-1">{selectedSpace.name}</h2><p className="text-slate-400 flex items-center"><MapPin className="h-4 w-4 mr-1"/> {selectedSpace.area} · {selectedSpace.type}</p></div>
+                      <div className="text-right"><p className={`text-3xl font-extrabold ${selectedSpace.accent}`}>${selectedSpace.price}</p><p className="text-xs text-slate-500">per hour</p></div>
+                    </div>
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6 mb-8 pb-8 border-b border-white/5">
+                      <div className="flex items-center"><Star className="h-4 w-4 text-yellow-400 mr-1.5"/><span className="font-bold text-white">{selectedSpace.rating}</span><span className="text-slate-400 ml-1 text-sm">({selectedSpace.reviews} reviews)</span></div>
+                      <div className="flex items-center"><Users className="h-4 w-4 text-slate-400 mr-1.5"/><span className="text-slate-300 text-sm">{selectedSpace.capacity}</span></div>
+                    </div>
+                    <div className="mb-10"><h3 className="font-bold text-white mb-4 text-lg">Amenities</h3><div className="flex flex-wrap gap-3">{selectedSpace.amenities.map(a => <span key={a} className="bg-slate-800/60 border border-white/5 text-slate-300 text-sm px-4 py-2 rounded-full inline-flex items-center"><CheckCircle2 className="h-3.5 w-3.5 mr-1.5 text-emerald-400" />{a}</span>)}</div></div>
+                    <button onClick={() => setBookingFlow('calendar')} className="w-full bg-gradient-to-r from-emerald-600 to-amber-600 text-white font-bold py-4 sm:py-5 rounded-2xl text-base sm:text-lg hover:opacity-90 transition-opacity shadow-lg shadow-emerald-500/20 flex items-center justify-center">Book This Space <ArrowRight className="ml-3 h-5 w-5"/></button>
+                  </div>
+                )}
+                {bookingFlow==='calendar' && (
+                  <div className="max-w-lg mx-auto p-4 sm:p-6 md:p-8">
+                    <h3 className="font-bold text-white text-lg sm:text-xl mb-6">Choose a Date — April 2026</h3>
+                    <div className="grid grid-cols-7 gap-1.5 sm:gap-2 mb-8">
+                      {['S','M','T','W','T','F','S'].map((d,i) => <div key={i} className="text-center text-xs text-slate-500 font-bold py-2">{d}</div>)}
+                      {[...Array(30)].map((_,i) => { const day=i+1; const isPast=day<15; const isSel=selectedDate===`Apr ${day}`; return <button key={day} disabled={isPast} onClick={()=>setSelectedDate(`Apr ${day}`)} className={`aspect-square rounded-xl text-sm font-bold transition-all ${isSel?'bg-emerald-600 text-white shadow-lg':isPast?'text-slate-700 cursor-not-allowed':'text-slate-300 hover:bg-slate-800'}`}>{day}</button>; })}
+                    </div>
+                    <h3 className="font-bold text-white text-lg sm:text-xl mb-4">Start Time</h3>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-8">{['10:00 AM','12:00 PM','2:00 PM','4:00 PM','6:00 PM','8:00 PM'].map(t => <button key={t} onClick={()=>setSelectedTime(t)} className={`py-3 rounded-xl text-sm font-bold border transition-all ${selectedTime===t?'bg-emerald-600 border-emerald-500 text-white':'bg-slate-800/50 border-white/5 text-slate-300 hover:border-emerald-500/50'}`}>{t}</button>)}</div>
+                    <div className="bg-slate-800/50 rounded-2xl p-4 border border-white/5 mb-6">
+                      <div className="flex justify-between text-sm mb-2"><span className="text-slate-400">Duration</span><span className="text-white font-bold">3 hours</span></div>
+                      <div className="flex justify-between text-sm"><span className="text-slate-400">Estimated Total</span><span className={`font-bold ${selectedSpace.accent}`}>${selectedSpace.price*3} + tax</span></div>
+                    </div>
+                    <button onClick={() => setBookingFlow('payment')} className="w-full bg-gradient-to-r from-emerald-600 to-amber-600 text-white font-bold py-4 sm:py-5 rounded-2xl text-base sm:text-lg hover:opacity-90 transition-opacity shadow-lg shadow-emerald-500/20">Next: Payment</button>
+                  </div>
+                )}
+                {bookingFlow==='payment' && (
+                  <div className="max-w-lg mx-auto p-4 sm:p-6 md:p-8">
+                    <div className="bg-slate-800/40 rounded-2xl p-5 border border-white/5 mb-8">
+                      <div className="text-xs text-slate-400 font-bold mb-4">BOOKING SUMMARY</div>
+                      <div className="flex justify-between mb-2"><span className="text-slate-300 font-medium">{selectedSpace.name}</span><span className={`font-bold ${selectedSpace.accent}`}>${selectedSpace.price}/hr</span></div>
+                      <div className="text-sm text-slate-400 mb-3">{selectedDate}, 2026 · {selectedTime} · 3 hrs</div>
+                      <div className="border-t border-white/5 pt-4 flex justify-between"><span className="font-bold text-white">Total</span><span className="font-extrabold text-emerald-400 text-xl">${Math.round(selectedSpace.price*3*1.1)}</span></div>
+                    </div>
+                    <h3 className="font-bold text-white text-xl mb-5">Payment Method</h3>
+                    <div className="bg-gradient-to-br from-slate-800 to-slate-700/80 rounded-2xl p-5 sm:p-6 border border-white/10 mb-6 relative overflow-hidden">
+                      <CreditCard className="absolute top-4 right-5 h-10 w-10 text-white/10" />
+                      <p className="text-slate-400 text-xs font-bold tracking-widest mb-4">VISA</p>
+                      <p className="text-white text-xl tracking-widest font-mono mb-5">**** **** **** 4242</p>
+                      <div className="flex justify-between text-sm text-slate-300"><span>{form.firstName} {form.lastName}</span><span>12/28</span></div>
+                    </div>
+                    <button onClick={() => { setBookings([...bookings,{id:Date.now(),space:selectedSpace.name,image:selectedSpace.image,date:selectedDate+', 2026',time:selectedTime+' · 3 hrs',status:'Confirmed',amount:'$'+Math.round(selectedSpace.price*3*1.1)}]); setBookingFlow('confirm'); }} className="w-full bg-gradient-to-r from-emerald-600 to-amber-600 text-white font-bold py-4 sm:py-5 rounded-2xl text-base sm:text-lg hover:opacity-90 transition-opacity shadow-lg shadow-emerald-500/20 flex items-center justify-center">Confirm & Pay <DollarSign className="ml-2 h-5 w-5"/></button>
+                  </div>
+                )}
+                {bookingFlow==='confirm' && (
+                  <div className="max-w-lg mx-auto p-4 sm:p-6 md:p-8 text-center">
+                    <div className="h-20 w-20 sm:h-24 sm:w-24 rounded-full bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center mx-auto mb-6 shadow-2xl shadow-emerald-500/30"><CheckCircle2 className="h-10 w-10 sm:h-12 sm:w-12 text-white"/></div>
+                    <h2 className="text-2xl sm:text-3xl font-extrabold text-white mb-2">Booking Confirmed!</h2>
+                    <p className="text-slate-400 mb-8">{selectedSpace.name} is locked in for you.</p>
+                    <div className="bg-slate-800/40 rounded-2xl p-5 sm:p-6 border border-emerald-500/20 text-left mb-8 space-y-4">
+                      <div className="flex justify-between"><span className="text-slate-400">Space</span><span className="text-white font-bold">{selectedSpace.name}</span></div>
+                      <div className="flex justify-between"><span className="text-slate-400">Date</span><span className="text-white font-bold">{selectedDate}, 2026</span></div>
+                      <div className="flex justify-between"><span className="text-slate-400">Time</span><span className="text-white font-bold">{selectedTime} · 3 hrs</span></div>
+                      <div className="flex justify-between"><span className="text-slate-400">Total Charged</span><span className="font-bold text-emerald-400">${Math.round(selectedSpace.price*3*1.1)}</span></div>
+                    </div>
+                    <button onClick={() => { setBookingFlow(null); setSelectedSpace(null); setAppTab('booked'); }} className="w-full bg-gradient-to-r from-emerald-600 to-amber-600 text-white font-bold py-4 rounded-2xl hover:opacity-90 transition-opacity shadow-lg shadow-emerald-500/20">View My Bookings</button>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* SPONSOR PROPOSAL */}
+          {proposalOpen && selectedEvent && (
+            <div className="absolute inset-0 z-[300] bg-[#070c18]/95 backdrop-blur flex items-center justify-center p-4 sm:p-6 animate-in fade-in duration-200">
+              <div className="w-full max-w-lg bg-[#0c1220] rounded-3xl border border-amber-500/20 overflow-hidden shadow-2xl">
+                <div className="p-4 sm:p-6 border-b border-white/5 flex items-center justify-between"><h3 className="font-bold text-white text-lg sm:text-xl">Submit Sponsorship Offer</h3><button onClick={() => setProposalOpen(false)} className="h-8 w-8 rounded-full bg-slate-800 flex items-center justify-center"><X className="h-4 w-4 text-white"/></button></div>
+                <div className="p-4 sm:p-6 space-y-5">
+                  <div className="bg-amber-500/10 border border-amber-500/20 rounded-2xl overflow-hidden">
+                    <div className="h-32 sm:h-36 overflow-hidden">
+                      <img src={selectedEvent.image} alt={selectedEvent.name} className="h-full w-full object-cover" loading="lazy" />
+                    </div>
+                    <div className="p-4">
+                      <div className="font-bold text-white mb-1">{selectedEvent.name}</div>
+                      <div className="text-sm text-slate-400 mb-3">By {selectedEvent.org} · {selectedEvent.date}</div>
+                      <div className="flex items-center space-x-3"><div className="flex-1 bg-slate-700/50 rounded-full h-2 overflow-hidden"><div className="h-full bg-amber-500 rounded-full" style={{width:`${(selectedEvent.raised/selectedEvent.asking)*100}%`}}></div></div><span className="text-xs text-amber-300 font-bold">${selectedEvent.raised}/${selectedEvent.asking}</span></div>
+                    </div>
+                  </div>
+                  <div><label className="text-xs font-bold text-slate-400 mb-2 block">YOUR OFFER (CAD)</label><div className="relative"><DollarSign className="absolute left-4 top-3.5 h-5 w-5 text-slate-500"/><input type="number" value={proposalAmt} onChange={e=>setProposalAmt(e.target.value)} className="w-full bg-slate-800/50 border border-white/10 rounded-2xl pl-12 pr-4 py-4 text-white text-xl font-bold outline-none focus:border-amber-500 transition-colors"/></div></div>
+                  <div><label className="text-xs font-bold text-slate-400 mb-2 block">MESSAGE TO ORGANIZER</label><textarea rows={3} defaultValue={`Hi ${selectedEvent.org},\n\nWe'd love to sponsor ${selectedEvent.name} in exchange for logo placement and a shoutout at the event.\n\n— ${form.firstName} ${form.lastName}`} className="w-full bg-slate-800/50 border border-white/10 rounded-2xl px-4 py-3 text-sm text-slate-300 outline-none focus:border-amber-500 transition-colors resize-none"/></div>
+                  <button onClick={() => { setMyCampaigns([...myCampaigns,{id:Date.now(),event:selectedEvent.name,amount:Number(proposalAmt),status:'Pending',impressions:'Est. '+selectedEvent.attendees,reach:'TBD'}]); setProposalOpen(false); showToast('Offer sent to '+selectedEvent.org+'!'); setAppTab('campaigns'); }} className="w-full bg-gradient-to-r from-amber-600 to-emerald-600 text-white font-bold py-4 rounded-2xl hover:opacity-90 transition-opacity shadow-lg shadow-amber-500/20">Submit Offer</button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* CREATE LISTING */}
+          {createStep !== null && (
+            <div className="absolute inset-0 z-[300] bg-[#070c18] flex flex-col animate-in slide-in-from-bottom duration-300">
+              <div className="h-14 sm:h-16 bg-[#0c1220] border-b border-white/5 flex items-center px-4 sm:px-6 flex-shrink-0">
+                <button onClick={() => { if(createStep>0)setCreateStep(createStep-1);else setCreateStep(null); }} className="mr-3 sm:mr-4 h-8 w-8 sm:h-9 sm:w-9 rounded-xl bg-slate-800/60 border border-white/10 flex items-center justify-center"><ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5 text-white"/></button>
+                <span className="font-bold text-sm sm:text-base text-white">{['Space Details','Pricing & Rules','Review & Publish'][createStep]}</span>
+                <span className="ml-auto text-xs text-slate-500 hidden sm:block">Step {createStep+1} of 3</span>
+              </div>
+              <div className="flex-1 flex items-center justify-center p-4 sm:p-6 md:p-8 overflow-y-auto">
+                {createStep===0 && (
+                  <div className="w-full max-w-lg space-y-5">
+                    <div className="h-40 bg-slate-800/50 border-2 border-dashed border-white/10 rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:border-emerald-500/50 transition-colors"><Camera className="h-8 w-8 text-slate-500 mb-2"/><span className="text-sm text-slate-400 font-medium">Upload Photos</span></div>
+                    <div><label className="text-xs font-bold text-slate-400 mb-2 block">SPACE NAME</label><input value={newListing.name} onChange={e=>setNewListing({...newListing,name:e.target.value})} placeholder="e.g. Sunny Studio Loft" className="w-full bg-slate-800/50 border border-white/10 rounded-2xl px-5 py-4 text-white outline-none focus:border-emerald-500 transition-colors"/></div>
+                    <div><label className="text-xs font-bold text-slate-400 mb-2 block">TYPE</label><div className="flex flex-wrap gap-2">{['Indoor','Outdoor','Academic','Studio','Retail','Industrial'].map(t=><button key={t} onClick={()=>setNewListing({...newListing,type:t})} className={`px-4 py-2 rounded-full text-sm font-bold border transition-all ${newListing.type===t?'bg-emerald-600 border-emerald-500 text-white':'bg-slate-800/50 border-white/5 text-slate-400 hover:border-white/20'}`}>{t}</button>)}</div></div>
+                    <div><label className="text-xs font-bold text-slate-400 mb-2 block">ADDRESS</label><input value={newListing.address} onChange={e=>setNewListing({...newListing,address:e.target.value})} placeholder="123 Jasper Ave, Edmonton, AB" className="w-full bg-slate-800/50 border border-white/10 rounded-2xl px-5 py-4 text-white outline-none focus:border-emerald-500 transition-colors"/></div>
+                    <button onClick={()=>setCreateStep(1)} className="w-full bg-gradient-to-r from-emerald-600 to-green-600 text-white font-bold py-4 rounded-2xl hover:opacity-90 transition-opacity shadow-lg shadow-emerald-500/20">Continue</button>
+                  </div>
+                )}
+                {createStep===1 && (
+                  <div className="w-full max-w-lg space-y-5">
+                    <div><label className="text-xs font-bold text-slate-400 mb-2 block">HOURLY RATE (CAD)</label><div className="relative"><DollarSign className="absolute left-4 top-3.5 h-5 w-5 text-slate-500"/><input type="number" value={newListing.price} onChange={e=>setNewListing({...newListing,price:e.target.value})} placeholder="60" className="w-full bg-slate-800/50 border border-white/10 rounded-2xl pl-12 pr-4 py-4 text-white text-xl font-bold outline-none focus:border-emerald-500 transition-colors"/></div></div>
+                    <div className="bg-slate-800/30 rounded-2xl p-5 border border-white/5"><div className="font-bold text-white mb-1 text-sm">EventSpot Commission</div><p className="text-sm text-slate-400">We take a flat <span className="text-emerald-400 font-bold">10%</span> per confirmed booking. No monthly fees, no surprises.</p></div>
+                    <div><label className="text-xs font-bold text-slate-400 mb-2 block">HOUSE RULES (OPTIONAL)</label><textarea rows={3} placeholder="e.g. No smoking, max 30 guests, shoes off inside..." className="w-full bg-slate-800/50 border border-white/10 rounded-2xl px-4 py-3 text-sm text-white outline-none focus:border-emerald-500 transition-colors resize-none"/></div>
+                    <button onClick={()=>setCreateStep(2)} className="w-full bg-gradient-to-r from-emerald-600 to-green-600 text-white font-bold py-4 rounded-2xl hover:opacity-90 transition-opacity shadow-lg shadow-emerald-500/20">Review Listing</button>
+                  </div>
+                )}
+                {createStep===2 && (
+                  <div className="w-full max-w-lg">
+                    <div className="bg-slate-800/40 rounded-3xl border border-white/5 overflow-hidden mb-6">
+                      <div className="h-40 bg-gradient-to-br from-emerald-900/40 to-slate-800 flex items-center justify-center"><Building2 className="h-12 w-12 text-white/30" /></div>
+                      <div className="p-6"><div className="flex justify-between items-start mb-3"><div><h3 className="font-bold text-white text-xl">{newListing.name||'Untitled Space'}</h3><p className="text-slate-400 text-sm mt-1">{newListing.type} · Edmonton, AB</p></div><div className="text-right"><p className="text-emerald-400 font-extrabold text-2xl">${newListing.price||'60'}</p><p className="text-xs text-slate-500">/hr</p></div></div><div className="bg-emerald-500/10 border border-emerald-500/20 rounded-xl px-4 py-2 text-xs text-emerald-300 font-bold inline-flex items-center"><div className="h-2 w-2 rounded-full bg-emerald-400 mr-2 animate-pulse"></div>Ready to publish</div></div>
+                    </div>
+                    <button onClick={() => { setMyListings([...myListings,{id:Date.now(),name:newListing.name||'New Space',price:Number(newListing.price)||60,status:'Active',bookings:0,earned:'$0',image:`https://picsum.photos/seed/eventspot-new-space-${Date.now()}/1200/800`}]); setCreateStep(null); setNewListing({name:'',price:'60',type:'Indoor',address:''}); showToast('Space published successfully!'); }} className="w-full bg-gradient-to-r from-emerald-600 to-green-600 text-white font-bold py-5 rounded-2xl text-lg hover:opacity-90 transition-opacity shadow-lg shadow-emerald-500/20 flex items-center justify-center">Publish Space <ArrowRight className="ml-3 h-5 w-5"/></button>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* TOP HEADER */}
+          <header className="h-14 sm:h-16 bg-[#0c1220] border-b border-white/5 flex items-center px-3 sm:px-6 gap-2 flex-shrink-0 z-40">
+            <div className="flex items-center space-x-2 sm:space-x-3 mr-2 sm:mr-6 shrink-0"><EventSpotLogo className="h-7 w-7 sm:h-8 sm:w-8 drop-shadow-[0_0_10px_rgba(16,185,129,0.5)]"/><span className="font-extrabold text-white text-base sm:text-lg tracking-tight">EventSpot</span></div>
+            {ddRole==='renter' && <div className="hidden md:flex flex-1 max-w-md relative"><Search className="absolute left-3.5 top-2.5 h-4 w-4 text-slate-500"/><input readOnly placeholder="Search spaces in Edmonton..." className="w-full bg-slate-800/50 border border-white/5 rounded-xl pl-10 pr-4 py-2.5 text-sm text-slate-300 outline-none placeholder:text-slate-500 cursor-pointer"/></div>}
+            <div className="ml-auto flex items-center space-x-2 sm:space-x-3">
+              <button onClick={()=>showToast('No new notifications.')} className="hidden sm:flex relative h-9 w-9 rounded-xl bg-slate-800/50 border border-white/5 items-center justify-center hover:bg-slate-700 transition-colors"><Bell className="h-4 w-4 text-slate-400"/><div className="absolute top-1.5 right-1.5 h-2 w-2 bg-emerald-500 rounded-full"></div></button>
+              <div className="flex items-center space-x-2 bg-slate-800/50 border border-white/5 rounded-xl px-2 sm:px-3 py-1.5"><div className="h-6 w-6 rounded-full bg-gradient-to-br from-emerald-500 to-amber-500 flex items-center justify-center text-xs font-bold text-white">{form.firstName[0]}{form.lastName[0]}</div><span className="hidden sm:inline text-sm font-medium text-slate-300">{form.firstName}</span></div>
+              <button onClick={onClose} className="h-8 w-8 sm:h-9 sm:w-9 rounded-xl bg-slate-800/50 border border-white/5 flex items-center justify-center hover:bg-red-500/10 hover:border-red-500/30 transition-colors" title="Exit Deep Dive"><X className="h-4 w-4 text-slate-400"/></button>
+            </div>
+          </header>
+
+          <div className="flex flex-1 overflow-hidden">
+            {/* SIDEBAR */}
+            <aside className="hidden md:flex w-56 bg-[#080d18] border-r border-white/5 flex-col flex-shrink-0 py-4">
+              <div className="px-4 mb-4"><div className="bg-slate-800/40 rounded-xl p-3 border border-white/5 flex items-center space-x-2"><div className={`h-8 w-8 rounded-full bg-gradient-to-br ${ddRole==='renter'?'from-emerald-500 to-amber-500':ddRole==='leaser'?'from-emerald-500 to-green-600':'from-amber-500 to-pink-500'} flex items-center justify-center text-xs font-bold text-white`}>{form.firstName[0]}{form.lastName[0]}</div><div><p className="text-xs font-bold text-white leading-tight">{form.firstName} {form.lastName}</p><p className={`text-[10px] font-bold ${ddRole==='renter'?'text-emerald-400':ddRole==='leaser'?'text-emerald-400':'text-amber-400'}`}>{ddRole==='renter'?'Renter':ddRole==='leaser'?'Leaser':'Sponsor'}</p></div></div></div>
+              <nav className="flex-1 px-3 space-y-1">{tabs.map(t => { const isActive=effectiveTab===t.id; return <button key={t.id} onClick={()=>setAppTab(t.id)} className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${isActive?(ddRole==='renter'?'bg-emerald-600/20 text-emerald-300 border border-emerald-500/20':ddRole==='leaser'?'bg-emerald-600/20 text-emerald-300 border border-emerald-500/20':'bg-amber-600/20 text-amber-300 border border-amber-500/20'):'text-slate-400 hover:text-white hover:bg-slate-800/50'}`}><t.icon className="h-4 w-4 flex-shrink-0"/><span>{t.label}</span></button>; })}</nav>
+              <div className="px-3 border-t border-white/5 pt-4"><button onClick={onClose} className="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-sm font-medium text-rose-400 hover:bg-rose-500/10 transition-colors"><LogOut className="h-4 w-4"/><span>Exit Demo</span></button></div>
+            </aside>
+
+            {/* MAIN */}
+            <main className="flex-1 overflow-y-auto hide-scrollbar bg-[#070c18] pb-24 md:pb-0">
+
+              {/* RENTER: HUB */}
+              {ddRole==='renter' && effectiveTab==='hub' && (
+                <div className="p-4 sm:p-6 md:p-8 max-w-5xl mx-auto">
+                  <div className="mb-8"><h1 className="text-2xl sm:text-3xl font-extrabold text-white mb-1">Good evening, {form.firstName}</h1><p className="text-slate-400">Discover event spaces across Edmonton.</p></div>
+                  <div className="flex space-x-3 mb-8 overflow-x-auto hide-scrollbar pb-2">{['All','Outdoor','Indoor','Academic','Rooftop','Industrial'].map((cat,i)=><button key={cat} className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-bold border transition-all ${i===0?'bg-emerald-600 border-emerald-500 text-white':'bg-slate-800/50 border-white/5 text-slate-400 hover:border-emerald-500/50 hover:text-white'}`}>{cat}</button>)}</div>
+                  <h2 className="font-bold text-white mb-5 text-lg">Top Picks in YEG</h2>
+                  <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">{spaces.map(space=>(
+                    <div key={space.id} onClick={()=>{setSelectedSpace(space);setBookingFlow('detail');}} className={`bg-gradient-to-br ${space.color} border ${space.border} rounded-3xl overflow-hidden cursor-pointer hover:scale-[1.02] transition-transform duration-200 group`}>
+                      <div className="h-40 bg-black/10 group-hover:bg-black/5 transition-colors overflow-hidden">
+                        <img src={space.image} alt={space.name} className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" />
+                      </div>
+                      <div className="p-5"><div className="flex justify-between items-start mb-2"><h3 className="font-bold text-white text-base leading-tight">{space.name}</h3><span className={`text-xs font-bold px-2 py-1 rounded-lg ${space.badge} flex-shrink-0 ml-2`}>{space.type.split(' ')[0]}</span></div><p className="text-xs text-slate-400 flex items-center mb-4"><MapPin className="h-3 w-3 mr-1"/> {space.area}</p><div className="flex items-center justify-between"><div className="flex items-center text-xs text-slate-300"><Star className="h-3 w-3 text-yellow-400 mr-1"/> {space.rating} <span className="text-slate-500 ml-1">({space.reviews})</span></div><div><span className={`font-extrabold ${space.accent} text-lg`}>${space.price}</span><span className="text-xs text-slate-500">/hr</span></div></div></div>
+                    </div>
+                  ))}</div>
+                </div>
+              )}
+
+              {/* RENTER: BOOKED */}
+              {ddRole==='renter' && effectiveTab==='booked' && (
+                <div className="p-4 sm:p-6 md:p-8 max-w-3xl mx-auto">
+                  <h1 className="text-2xl font-extrabold text-white mb-6">My Bookings</h1>
+                  <div className="space-y-4">{bookings.map(b=>(
+                    <div key={b.id} className="bg-slate-800/30 rounded-2xl border border-white/5 p-5 flex items-center space-x-5">
+                      <div className="h-14 w-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center flex-shrink-0 overflow-hidden">
+                        <img src={b.image} alt={b.space} className="h-full w-full object-cover" loading="lazy" />
+                      </div>
+                      <div className="flex-1"><h3 className="font-bold text-white">{b.space}</h3><p className="text-xs text-slate-400 mt-1">{b.date} · {b.time}</p></div>
+                      <div className="text-right"><div className="text-xs font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-full mb-1">{b.status}</div><div className="text-sm font-bold text-white">{b.amount}</div></div>
+                    </div>
+                  ))}</div>
+                </div>
+              )}
+
+              {/* RENTER: EXPLORE */}
+              {ddRole==='renter' && effectiveTab==='explore' && (
+                <div className="p-4 sm:p-6 md:p-8 max-w-5xl mx-auto">
+                  <h1 className="text-2xl font-extrabold text-white mb-6">Explore Edmonton</h1>
+                  <div className="h-56 sm:h-72 bg-slate-800/30 rounded-3xl border border-white/5 flex items-center justify-center mb-8 relative overflow-hidden">
+                    <div className="absolute inset-0 opacity-30" style={{backgroundImage:'radial-gradient(circle at 30% 50%, #22c55e40 0%, transparent 50%), radial-gradient(circle at 70% 50%, #f59e0b30 0%, transparent 50%)'}}></div>
+                    {spaces.map((s,i)=><button key={s.id} className="absolute h-10 w-10 rounded-full border border-emerald-300/50 overflow-hidden cursor-pointer hover:scale-110 transition-transform drop-shadow-lg" style={{left:`${15+i*17}%`,top:`${25+(i%3)*20}%`}} onClick={()=>{setSelectedSpace(s);setBookingFlow('detail');}} title={s.name}><img src={s.image} alt={s.name} className="h-full w-full object-cover" loading="lazy"/></button>)}
+                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/60 backdrop-blur-sm px-4 py-2 rounded-full text-xs text-slate-300">Click a pin to view space details</div>
+                  </div>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">{spaces.map(s=><button key={s.id} onClick={()=>{setSelectedSpace(s);setBookingFlow('detail');}} className="flex items-center space-x-3 bg-slate-800/40 hover:bg-slate-800/70 border border-white/5 rounded-2xl p-3 text-left transition-colors"><img src={s.image} alt={s.name} className="h-10 w-10 rounded-lg object-cover flex-shrink-0" loading="lazy"/><div><p className="font-bold text-white text-sm">{s.name}</p><p className="text-xs text-slate-400">{s.area}</p></div></button>)}</div>
+                </div>
+              )}
+
+              {/* LEASER: DASHBOARD */}
+              {ddRole==='leaser' && effectiveTab==='dashboard' && (
+                <div className="p-4 sm:p-6 md:p-8 max-w-5xl mx-auto">
+                  <div className="mb-8"><h1 className="text-2xl sm:text-3xl font-extrabold text-white mb-1">Dashboard</h1><p className="text-slate-400">Welcome back, {form.firstName}. Here's your snapshot.</p></div>
+                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">{[{label:'This Month',value:'$3,500',sub:'+18% vs last month',c:'text-emerald-400',bg:'bg-emerald-500/10',b:'border-emerald-500/20'},{label:'Active Spaces',value:String(myListings.length),sub:myListings.length+' live listings',c:'text-emerald-400',bg:'bg-emerald-500/10',b:'border-emerald-500/20'},{label:'Total Bookings',value:'13',sub:'2 pending approval',c:'text-orange-400',bg:'bg-orange-500/10',b:'border-orange-500/20'},{label:'Avg Rating',value:'4.85',sub:'Across all spaces',c:'text-yellow-400',bg:'bg-yellow-500/10',b:'border-yellow-500/20'}].map(s=><div key={s.label} className={`${s.bg} border ${s.b} rounded-2xl p-5`}><p className="text-xs font-bold text-slate-400 mb-1">{s.label}</p><p className={`text-2xl font-extrabold ${s.c} mb-1`}>{s.value}</p><p className="text-xs text-slate-500">{s.sub}</p></div>)}</div>
+                  <h2 className="font-bold text-white mb-4 text-lg">Incoming Requests</h2>
+                  <div className="space-y-3">{leaserRequests.map((req,i)=>(
+                    <div key={i} className="bg-slate-800/40 border border-white/5 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+                      <div className="h-10 w-10 rounded-full border border-white/10 overflow-hidden flex-shrink-0">
+                        <img src={req.image} alt={req.name} className="h-full w-full object-cover" loading="lazy" />
+                      </div>
+                      <div className="flex-1"><p className="font-bold text-white text-sm">{req.name} wants to book <span className="text-emerald-400">{req.space}</span></p><p className="text-xs text-slate-400">{req.date} · {req.time}</p></div>
+                      <p className="font-bold text-white sm:mr-2">{req.amount}</p>
+                      <div className="flex space-x-2 w-full sm:w-auto"><button onClick={()=>showToast('Booking accepted!')} className="flex-1 sm:flex-none px-4 py-2 bg-emerald-600 text-white text-xs font-bold rounded-xl hover:bg-emerald-500 transition-colors">Accept</button><button onClick={()=>showToast('Booking declined.')} className="flex-1 sm:flex-none px-4 py-2 bg-slate-700 text-white text-xs font-bold rounded-xl hover:bg-slate-600 transition-colors">Decline</button></div>
+                    </div>
+                  ))}</div>
+                </div>
+              )}
+
+              {/* LEASER: LISTINGS */}
+              {ddRole==='leaser' && effectiveTab==='listings' && (
+                <div className="p-4 sm:p-6 md:p-8 max-w-5xl mx-auto">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8"><h1 className="text-2xl font-extrabold text-white">My Spaces</h1><button onClick={()=>setCreateStep(0)} className="flex items-center justify-center bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-5 py-2.5 rounded-xl transition-colors shadow-lg shadow-emerald-500/20"><Plus className="h-4 w-4 mr-2"/> Add Space</button></div>
+                  <div className="grid md:grid-cols-2 gap-5">{myListings.map(lst=>(
+                    <div key={lst.id} className="bg-slate-800/30 border border-white/5 hover:border-emerald-500/30 rounded-3xl overflow-hidden transition-colors">
+                      <div className="h-36 bg-gradient-to-br from-emerald-900/30 to-slate-800 overflow-hidden"><img src={lst.image} alt={lst.name} className="h-full w-full object-cover" loading="lazy" /></div>
+                      <div className="p-5"><div className="flex justify-between items-start mb-4"><h3 className="font-bold text-white text-lg">{lst.name}</h3><span className="bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-xs font-bold px-3 py-1 rounded-full flex items-center"><div className="h-1.5 w-1.5 rounded-full bg-emerald-400 mr-1.5 animate-pulse"></div>{lst.status}</span></div><div className="grid grid-cols-3 gap-3"><div className="text-center bg-slate-700/30 rounded-xl p-3"><p className="text-lg font-extrabold text-emerald-400">${lst.price}</p><p className="text-[10px] text-slate-500">/hr</p></div><div className="text-center bg-slate-700/30 rounded-xl p-3"><p className="text-lg font-extrabold text-white">{lst.bookings}</p><p className="text-[10px] text-slate-500">bookings</p></div><div className="text-center bg-slate-700/30 rounded-xl p-3"><p className="text-lg font-extrabold text-emerald-400">{lst.earned}</p><p className="text-[10px] text-slate-500">earned</p></div></div></div>
+                    </div>
+                  ))}</div>
+                </div>
+              )}
+
+              {/* LEASER: REQUESTS */}
+              {ddRole==='leaser' && effectiveTab==='requests' && (
+                <div className="p-4 sm:p-6 md:p-8 max-w-3xl mx-auto">
+                  <h1 className="text-2xl font-extrabold text-white mb-6">Booking Requests</h1>
+                  <div className="space-y-4">{leaserRequests.map((req,i)=>(
+                    <div key={i} className="bg-slate-800/30 border border-white/5 rounded-2xl p-5">
+                      <div className="flex items-start space-x-4 mb-4"><div className="h-12 w-12 rounded-full border border-white/10 overflow-hidden flex-shrink-0"><img src={req.image} alt={req.name} className="h-full w-full object-cover" loading="lazy" /></div><div className="flex-1"><div className="flex justify-between"><div><p className="font-bold text-white">{req.name}</p><p className="text-xs text-slate-400">{req.space}</p></div><span className="font-extrabold text-white text-lg">{req.amount}</span></div></div></div>
+                      <div className="bg-slate-700/30 rounded-xl p-3 mb-4 text-sm text-slate-300 italic">"{req.msg}"</div>
+                      <div className="flex flex-wrap items-center gap-3 text-xs text-slate-400 mb-4"><span><Calendar className="inline h-3 w-3 mr-1"/>{req.date}</span><span><Clock className="inline h-3 w-3 mr-1"/>{req.time}</span><span><Users className="inline h-3 w-3 mr-1"/>{req.guests} guests</span></div>
+                      <div className="flex space-x-3"><button onClick={()=>showToast('Booking accepted! '+req.name+' notified.')} className="flex-1 bg-emerald-600 text-white font-bold py-3 rounded-xl hover:bg-emerald-500 transition-colors">Accept</button><button onClick={()=>showToast('Booking declined.')} className="flex-1 bg-slate-700 text-slate-300 font-bold py-3 rounded-xl hover:bg-slate-600 transition-colors">Decline</button></div>
+                    </div>
+                  ))}</div>
+                </div>
+              )}
+
+              {/* SPONSOR: DISCOVER */}
+              {ddRole==='sponsor' && effectiveTab==='discover' && (
+                <div className="p-4 sm:p-6 md:p-8 max-w-5xl mx-auto">
+                  <div className="mb-8"><h1 className="text-2xl sm:text-3xl font-extrabold text-white mb-1">Discover Events</h1><p className="text-slate-400">Find Edmonton events that align with your brand.</p></div>
+                  <div className="flex space-x-3 mb-6 overflow-x-auto hide-scrollbar pb-2">{['All','Academic','Culture','Tech','Community','Sport'].map((cat,i)=><button key={cat} className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-bold border transition-all ${i===0?'bg-amber-600 border-amber-500 text-white':'bg-slate-800/50 border-white/5 text-slate-400 hover:border-amber-500/50 hover:text-white'}`}>{cat}</button>)}</div>
+                  <div className="grid md:grid-cols-2 gap-5">{events.map(event=>(
+                    <div key={event.id} className="bg-slate-800/30 border border-white/5 hover:border-amber-500/30 rounded-3xl overflow-hidden transition-colors">
+                      <div className="h-44 overflow-hidden">
+                        <img src={event.image} alt={event.name} className="h-full w-full object-cover" loading="lazy" />
+                      </div>
+                      <div className="p-6">
+                        <div className="flex justify-between items-start mb-4"><div><h3 className="font-bold text-white text-base mb-1">{event.name}</h3><p className="text-xs text-slate-400">{event.org}</p></div><span className="bg-amber-500/20 border border-amber-500/30 text-amber-300 text-xs font-bold px-3 py-1 rounded-full flex-shrink-0 ml-2">{event.niche}</span></div>
+                        <p className="text-sm text-slate-400 mb-4">{event.desc}</p>
+                        <div className="flex flex-wrap gap-3 text-xs text-slate-400 mb-4"><span className="bg-slate-700/50 px-2 py-1 rounded"><Calendar className="inline h-3 w-3 mr-1"/>{event.date}</span><span className="bg-slate-700/50 px-2 py-1 rounded"><Users className="inline h-3 w-3 mr-1"/>{event.attendees}</span><span className="bg-slate-700/50 px-2 py-1 rounded"><DollarSign className="inline h-3 w-3 mr-1"/>Asking ${event.asking}</span></div>
+                        <div className="mb-4"><div className="flex justify-between text-xs mb-1.5"><span className="text-slate-400">Funding Progress</span><span className="text-amber-300 font-bold">${event.raised} / ${event.asking}</span></div><div className="h-2 bg-slate-700 rounded-full overflow-hidden"><div className="h-full bg-gradient-to-r from-amber-500 to-emerald-500 rounded-full" style={{width:`${Math.min((event.raised/event.asking)*100,100)}%`}}></div></div></div>
+                        <button onClick={()=>{setSelectedEvent(event);setProposalOpen(true);}} className={`w-full py-3 rounded-xl text-sm font-bold transition-colors ${myCampaigns.find(c=>c.event===event.name)?'bg-amber-500/20 text-amber-300 border border-amber-500/30 cursor-default':'bg-amber-600 text-white hover:bg-amber-500'}`}>{myCampaigns.find(c=>c.event===event.name)?'Offer Submitted':'Make an Offer'}</button>
+                      </div>
+                    </div>
+                  ))}</div>
+                </div>
+              )}
+
+              {/* SPONSOR: CAMPAIGNS */}
+              {ddRole==='sponsor' && effectiveTab==='campaigns' && (
+                <div className="p-4 sm:p-6 md:p-8 max-w-4xl mx-auto">
+                  <h1 className="text-2xl font-extrabold text-white mb-6">My Campaigns</h1>
+                  {myCampaigns.length===0 ? <div className="text-center py-20 text-slate-500"><Briefcase className="h-12 w-12 mx-auto mb-4 opacity-30"/><p>No active campaigns yet.</p></div> : (
+                    <div className="space-y-4">{myCampaigns.map(c=>(
+                      <div key={c.id} className="bg-slate-800/30 border border-amber-500/20 rounded-2xl p-5">
+                        <div className="flex items-center justify-between mb-4"><div><h3 className="font-bold text-white">{c.event}</h3><p className="text-xs text-slate-400 mt-0.5">Offer: ${c.amount}</p></div><span className={`text-xs font-bold px-3 py-1.5 rounded-full border ${c.status==='Active'?'bg-emerald-500/20 border-emerald-500/30 text-emerald-300':'bg-yellow-500/20 border-yellow-500/30 text-yellow-300'}`}>{c.status}</span></div>
+                        <div className="grid grid-cols-3 gap-3"><div className="bg-slate-700/30 rounded-xl p-3 text-center"><p className="font-bold text-amber-400">{c.impressions}</p><p className="text-[10px] text-slate-500 mt-0.5">impressions</p></div><div className="bg-slate-700/30 rounded-xl p-3 text-center"><p className="font-bold text-white">{c.reach}</p><p className="text-[10px] text-slate-500 mt-0.5">reach</p></div><div className="bg-slate-700/30 rounded-xl p-3 text-center"><p className="font-bold text-emerald-400">${c.amount}</p><p className="text-[10px] text-slate-500 mt-0.5">invested</p></div></div>
+                      </div>
+                    ))}</div>
+                  )}
+                </div>
+              )}
+
+              {/* SPONSOR: ANALYTICS */}
+              {ddRole==='sponsor' && effectiveTab==='analytics' && (
+                <div className="p-4 sm:p-6 md:p-8 max-w-4xl mx-auto">
+                  <h1 className="text-2xl font-extrabold text-white mb-6">Campaign Analytics</h1>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">{[{label:'Total Invested',value:'$'+myCampaigns.reduce((a,c)=>a+c.amount,0),c:'text-amber-400',bg:'bg-amber-500/10',b:'border-amber-500/20'},{label:'Est. Impressions',value:'2.4K',c:'text-emerald-400',bg:'bg-emerald-500/10',b:'border-emerald-500/20'},{label:'Active Campaigns',value:String(myCampaigns.length),c:'text-emerald-400',bg:'bg-emerald-500/10',b:'border-emerald-500/20'}].map(s=><div key={s.label} className={`${s.bg} border ${s.b} rounded-2xl p-5 text-center`}><p className={`text-3xl font-extrabold ${s.c} mb-1`}>{s.value}</p><p className="text-xs text-slate-400">{s.label}</p></div>)}</div>
+                  <div className="bg-slate-800/30 border border-white/5 rounded-2xl p-6"><h3 className="font-bold text-white mb-5">Brand Reach Over Time</h3><div className="flex items-end space-x-2 h-40">{[40,65,55,80,70,90,85,100,95,110,105,120].map((h,i)=><div key={i} className="flex-1 rounded-t-md bg-gradient-to-t from-amber-600/60 to-amber-400/20 hover:from-amber-500/80 transition-colors cursor-pointer" style={{height:`${(h/120)*100}%`}}></div>)}</div><div className="flex justify-between text-xs text-slate-500 mt-2"><span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span></div></div>
+                </div>
+              )}
+
+              {/* SHARED: PROFILE */}
+              {effectiveTab==='profile' && (
+                <div className="p-4 sm:p-6 md:p-8 max-w-2xl mx-auto">
+                  <h1 className="text-2xl font-extrabold text-white mb-8">My Profile</h1>
+                  <div className="bg-slate-800/30 border border-white/5 rounded-3xl p-6 sm:p-8 text-center mb-6">
+                    <div className={`h-20 w-20 rounded-full bg-gradient-to-br ${ddRole==='renter'?'from-emerald-500 to-amber-600':ddRole==='leaser'?'from-emerald-500 to-green-600':'from-amber-500 to-pink-600'} flex items-center justify-center text-2xl font-extrabold text-white mx-auto mb-4 shadow-lg`}>{form.firstName[0]}{form.lastName[0]}</div>
+                    <h2 className="text-2xl font-extrabold text-white">{form.firstName} {form.lastName}</h2>
+                    <p className="text-slate-400 text-sm mt-1">{form.firstName.toLowerCase()[0]}{form.lastName.toLowerCase()}@ualberta.ca</p>
+                    <div className="flex items-center justify-center mt-4 space-x-2 flex-wrap gap-2">
+                      <span className={`text-xs font-bold px-4 py-1.5 rounded-full border ${ddRole==='renter'?'bg-emerald-500/20 text-emerald-300 border-emerald-500/30':ddRole==='leaser'?'bg-emerald-500/20 text-emerald-300 border-emerald-500/30':'bg-amber-500/20 text-amber-300 border-amber-500/30'}`}>{ddRole==='renter'?'Space Renter':ddRole==='leaser'?'Space Leaser':'Event Sponsor'}</span>
+                      <span className="text-xs font-bold px-4 py-1.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30"><Award className="inline h-3 w-3 mr-1"/>University Verified</span>
+                    </div>
+                  </div>
+                  <div className="space-y-3">{[{icon:User,label:'Full Name',value:form.firstName+' '+form.lastName},{icon:Mail,label:'Email',value:form.firstName.toLowerCase()[0]+form.lastName.toLowerCase()+'@ualberta.ca'},{icon:MapPin,label:'Phone',value:form.phone},{icon:MapPin,label:'Location',value:form.address}].map(row=><div key={row.label} className="bg-slate-800/30 border border-white/5 rounded-2xl p-4 flex items-center space-x-4"><row.icon className="h-5 w-5 text-slate-400 flex-shrink-0"/><div><p className="text-xs text-slate-500">{row.label}</p><p className="text-sm font-medium text-white">{row.value}</p></div></div>)}</div>
+                </div>
+              )}
+
+            </main>
+          </div>
+          <div className="md:hidden border-t border-white/5 bg-[#0c1220]/95 backdrop-blur">
+            <nav className="grid grid-cols-4 gap-1 px-2 py-2">
+              {tabs.map(t => {
+                const isActive = effectiveTab === t.id;
+                return (
+                  <button
+                    key={t.id}
+                    onClick={() => setAppTab(t.id)}
+                    className={`flex flex-col items-center justify-center rounded-xl py-2 transition-colors ${isActive ? (ddRole==='renter' ? 'text-emerald-300 bg-emerald-500/20' : ddRole==='leaser' ? 'text-emerald-300 bg-emerald-500/20' : 'text-amber-300 bg-amber-500/20') : 'text-slate-500 hover:text-slate-300 hover:bg-slate-800/40'}`}
+                  >
+                    <t.icon className="h-4 w-4 mb-1" />
+                    <span className="text-[10px] font-bold leading-none">{t.label}</span>
+                  </button>
+                );
+              })}
+            </nav>
           </div>
         </div>
       );
@@ -813,25 +1534,25 @@
         <div className="max-w-5xl mx-auto space-y-12 animate-in fade-in zoom-in-95 duration-700">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-4 tracking-tight">Market Strategy</h2>
-            <div className="h-1 w-20 bg-indigo-500 mx-auto rounded-full mb-6"></div>
+            <div className="h-1 w-20 bg-emerald-500 mx-auto rounded-full mb-6"></div>
             <p className="text-lg text-slate-400 max-w-2xl mx-auto">Strategic positioning, targeted demographics, and competitive analysis in the Edmonton, Alberta ecosystem.</p>
           </div>
 
           <div className="grid lg:grid-cols-5 gap-6">
             <div className="lg:col-span-3 glass-panel p-8 rounded-[2rem]">
               <h3 className="text-2xl font-bold text-white mb-8 flex items-center">
-                <Users className="mr-3 text-indigo-400" /> Core Demographics
+                <Users className="mr-3 text-emerald-400" /> Core Demographics
               </h3>
               <div className="space-y-6">
                 <div className="flex items-start bg-slate-800/30 p-5 rounded-2xl border border-white/5">
-                  <div className="bg-indigo-500/20 p-2 rounded-xl mr-4 shrink-0"><BookOpen className="h-5 w-5 text-indigo-400" /></div>
+                  <div className="bg-emerald-500/20 p-2 rounded-xl mr-4 shrink-0"><BookOpen className="h-5 w-5 text-emerald-400" /></div>
                   <div>
                     <strong className="block text-white text-lg mb-1">Students & Organizers</strong>
                     <span className="text-slate-400 text-sm leading-relaxed">Demand is highly inelastic when planning an in-person event. They need unique, affordable spaces without massive hotel deposits.</span>
                   </div>
                 </div>
                 <div className="flex items-start bg-slate-800/30 p-5 rounded-2xl border border-white/5">
-                  <div className="bg-purple-500/20 p-2 rounded-xl mr-4 shrink-0"><Megaphone className="h-5 w-5 text-purple-400" /></div>
+                  <div className="bg-amber-500/20 p-2 rounded-xl mr-4 shrink-0"><Megaphone className="h-5 w-5 text-amber-400" /></div>
                   <div>
                     <strong className="block text-white text-lg mb-1">Small Business Owners</strong>
                     <span className="text-slate-400 text-sm leading-relaxed">Require affordable, highly-targeted local marketing. Event sponsorship directly puts their brand in front of active community members.</span>
@@ -853,12 +1574,12 @@
                   <TrendingUp className="mr-3 text-pink-400" /> Marketing Mix
                 </h3>
                 <div className="space-y-4">
-                  <div className="border-l-2 border-indigo-500 pl-4 py-1">
-                    <p className="text-xs font-bold text-indigo-400 tracking-wider mb-1">PRODUCT</p>
+                  <div className="border-l-2 border-emerald-500 pl-4 py-1">
+                    <p className="text-xs font-bold text-emerald-400 tracking-wider mb-1">PRODUCT</p>
                     <p className="text-slate-300 text-sm">Dual-sided digital marketplace app for short-term renting and micro-sponsorships.</p>
                   </div>
-                  <div className="border-l-2 border-purple-500 pl-4 py-1">
-                    <p className="text-xs font-bold text-purple-400 tracking-wider mb-1">PRICE</p>
+                  <div className="border-l-2 border-amber-500 pl-4 py-1">
+                    <p className="text-xs font-bold text-amber-400 tracking-wider mb-1">PRICE</p>
                     <p className="text-slate-300 text-sm">10% Booking Commission (~$500 cart) + $35/mo optional Vendor Subscription.</p>
                   </div>
                   <div className="border-l-2 border-pink-500 pl-4 py-1">
@@ -875,7 +1596,7 @@
           </div>
 
           <div className="relative rounded-[2rem] overflow-hidden border border-white/10">
-            <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 opacity-80"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-emerald-950 to-slate-900 opacity-80"></div>
             <div className="relative z-10 p-10 md:p-12">
               <div className="flex items-center mb-8">
                 <LineChart className="h-8 w-8 text-white mr-4" />
@@ -889,21 +1610,21 @@
                     <h4 className="font-bold text-lg text-slate-200">The Old Way (Competitors)</h4>
                   </div>
                   <ul className="space-y-4 text-slate-400 text-sm">
-                    <li className="flex items-center"><span className="mr-3 opacity-50">✕</span> University of Alberta Rooms (Highly Restrictive)</li>
-                    <li className="flex items-center"><span className="mr-3 opacity-50">✕</span> Peerspace (Not locally optimized for YEG/Students)</li>
-                    <li className="flex items-center"><span className="mr-3 opacity-50">✕</span> Large Hotel Chains (Rigid, expensive, formal only)</li>
+                    <li className="flex items-center"><X className="h-4 w-4 mr-3 opacity-60" /> University of Alberta Rooms (Highly Restrictive)</li>
+                    <li className="flex items-center"><X className="h-4 w-4 mr-3 opacity-60" /> Peerspace (Not locally optimized for YEG/Students)</li>
+                    <li className="flex items-center"><X className="h-4 w-4 mr-3 opacity-60" /> Large Hotel Chains (Rigid, expensive, formal only)</li>
                   </ul>
                 </div>
                 
-                <div className="bg-indigo-500/10 p-6 rounded-2xl border border-indigo-500/20">
+                <div className="bg-emerald-500/10 p-6 rounded-2xl border border-emerald-500/20">
                   <div className="flex items-center space-x-3 mb-6 border-b border-emerald-500/30 pb-3">
                     <span className="h-3 w-3 rounded-full bg-emerald-500 animate-pulse"></span>
                     <h4 className="font-bold text-lg text-white">The EventSpot Edge</h4>
                   </div>
                   <ul className="space-y-4 text-slate-300 text-sm font-medium">
-                    <li className="flex items-start"><span className="mr-3 text-emerald-400">✓</span> <span><strong className="text-white">Loyalty Ecosystem:</strong> Built-in rewards incentivize recurring use.</span></li>
-                    <li className="flex items-start"><span className="mr-3 text-emerald-400">✓</span> <span><strong className="text-white">Sponsor Integration:</strong> A unique feature unlocking funding directly inside the app.</span></li>
-                    <li className="flex items-start"><span className="mr-3 text-emerald-400">✓</span> <span><strong className="text-white">Mobile-First Fluidity:</strong> Modern UX design over legacy web forms.</span></li>
+                    <li className="flex items-start"><CheckCircle2 className="h-4 w-4 mr-3 text-emerald-400 mt-0.5 flex-shrink-0" /> <span><strong className="text-white">Loyalty Ecosystem:</strong> Built-in rewards incentivize recurring use.</span></li>
+                    <li className="flex items-start"><CheckCircle2 className="h-4 w-4 mr-3 text-emerald-400 mt-0.5 flex-shrink-0" /> <span><strong className="text-white">Sponsor Integration:</strong> A unique feature unlocking funding directly inside the app.</span></li>
+                    <li className="flex items-start"><CheckCircle2 className="h-4 w-4 mr-3 text-emerald-400 mt-0.5 flex-shrink-0" /> <span><strong className="text-white">Mobile-First Fluidity:</strong> Modern UX design over legacy web forms.</span></li>
                   </ul>
                 </div>
               </div>
@@ -924,7 +1645,7 @@
               <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-3 tracking-tight">Pro Forma</h2>
               <p className="text-slate-400">Year 1 Financial Projections & Startup Assumptions.</p>
             </div>
-            <div className="bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 px-4 py-2 rounded-xl text-sm font-bold flex items-center mt-4 md:mt-0">
+            <div className="bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 px-4 py-2 rounded-xl text-sm font-bold flex items-center mt-4 md:mt-0">
               <BarChart3 className="mr-2 h-4 w-4" /> LIVE MODEL
             </div>
           </div>
@@ -933,8 +1654,8 @@
             {[
               { label: 'Projected Bookings', value: '250', sub: '@ ~$500 avg value', color: 'text-blue-400', border: 'border-blue-500/20', bg: 'bg-blue-500/5' },
               { label: 'Vendor Subs', value: '30', sub: '@ $35 / month', color: 'text-emerald-400', border: 'border-emerald-500/20', bg: 'bg-emerald-500/5' },
-              { label: 'Total Revenue', value: '$25.1k', sub: 'Year 1 Top Line', color: 'text-purple-400', border: 'border-purple-500/20', bg: 'bg-purple-500/5' },
-              { label: 'Net Income', value: '$945', sub: 'After 10% Tax & Exp', color: 'text-indigo-400', border: 'border-indigo-500/20', bg: 'bg-indigo-500/5' }
+              { label: 'Total Revenue', value: '$25.1k', sub: 'Year 1 Top Line', color: 'text-amber-400', border: 'border-amber-500/20', bg: 'bg-amber-500/5' },
+              { label: 'Net Income', value: '$945', sub: 'After 10% Tax & Exp', color: 'text-emerald-400', border: 'border-emerald-500/20', bg: 'bg-emerald-500/5' }
             ].map((kpi, i) => (
               <div key={i} className={`p-6 rounded-3xl border ${kpi.border} ${kpi.bg} relative overflow-hidden group`}>
                 <div className={`absolute -right-4 -top-4 w-16 h-16 rounded-full blur-xl opacity-20 group-hover:opacity-40 transition-opacity bg-current ${kpi.color}`}></div>
@@ -993,10 +1714,10 @@
                     <span>Income Tax Expense (10%)</span>
                     <span>-$105</span>
                   </div>
-                  <div className="flex justify-between items-center mt-6 pt-6 border-t border-indigo-500/30">
+                  <div className="flex justify-between items-center mt-6 pt-6 border-t border-emerald-500/30">
                     <span className="text-xl font-extrabold text-white">Net Income</span>
-                    <div className="bg-indigo-500/20 px-4 py-2 rounded-xl border border-indigo-500/30">
-                      <span className="text-xl font-extrabold text-indigo-400">$945</span>
+                    <div className="bg-emerald-500/20 px-4 py-2 rounded-xl border border-emerald-500/30">
+                      <span className="text-xl font-extrabold text-emerald-400">$945</span>
                     </div>
                   </div>
                 </div>
@@ -1006,7 +1727,7 @@
             <div className="lg:col-span-5 space-y-6">
               <div className="glass-panel p-8 rounded-[2rem] border border-white/10">
                 <h3 className="font-bold text-white mb-6 tracking-wide flex items-center">
-                  <LayoutDashboard className="h-5 w-5 mr-2 text-purple-400"/> Model Assumptions
+                  <LayoutDashboard className="h-5 w-5 mr-2 text-amber-400"/> Model Assumptions
                 </h3>
                 <ul className="space-y-5 text-sm">
                   <li className="bg-slate-800/50 p-4 rounded-xl border border-white/5">
@@ -1033,16 +1754,16 @@
                 </ul>
               </div>
 
-              <div className="bg-gradient-to-br from-indigo-900/40 to-purple-900/40 p-8 rounded-[2rem] border border-indigo-500/20 relative overflow-hidden">
+              <div className="bg-gradient-to-br from-emerald-900/40 to-amber-900/40 p-8 rounded-[2rem] border border-emerald-500/20 relative overflow-hidden">
                 <div className="absolute top-0 right-0 p-4 opacity-10"><DollarSign className="h-24 w-24"/></div>
                 <h3 className="font-bold text-white mb-2 relative z-10">Startup Financing</h3>
-                <p className="text-sm text-indigo-200 mb-4 relative z-10">Total Required: $20,000</p>
+                <p className="text-sm text-emerald-200 mb-4 relative z-10">Total Required: $20,000</p>
                 <div className="space-y-2 relative z-10 text-xs">
-                  <div className="flex justify-between border-b border-indigo-500/20 pb-1">
+                  <div className="flex justify-between border-b border-emerald-500/20 pb-1">
                     <span className="text-slate-300">Bank Loan (8% APR)</span>
                     <span className="text-white font-bold">$10,000</span>
                   </div>
-                  <div className="flex justify-between border-b border-indigo-500/20 pb-1">
+                  <div className="flex justify-between border-b border-emerald-500/20 pb-1">
                     <span className="text-slate-300">Alberta Business Grant</span>
                     <span className="text-white font-bold">$5,000</span>
                   </div>
@@ -1066,7 +1787,7 @@
         { name: 'Chim Wopara', role: 'Chief Technology Officer', desc: 'Developing the web application and core user journey.', color: 'from-blue-500 to-cyan-500' },
         { name: 'Ethan Robinson', role: 'Chief Financial Officer', desc: 'Financial modeling, balance sheets, and projections.', color: 'from-emerald-500 to-teal-500' },
         { name: 'Nicole Sukaria', role: 'Chief Marketing Officer', desc: 'Market positioning and target audience outreach.', color: 'from-pink-500 to-rose-500' },
-        { name: 'Valentina Valdes', role: 'Chief Operations Officer', desc: 'Team management and operational monitoring.', color: 'from-purple-500 to-indigo-500' },
+        { name: 'Valentina Valdes', role: 'Chief Operations Officer', desc: 'Team management and operational monitoring.', color: 'from-amber-500 to-emerald-500' },
         { name: 'Temi Akindele', role: 'Head of Data & Analytics', desc: 'Competitor analysis and quality control metrics.', color: 'from-amber-500 to-orange-500' },
       ];
 
@@ -1103,8 +1824,8 @@
               </div>
             ))}
             
-            <div className="glass-panel rounded-3xl p-8 border border-indigo-500/20 bg-indigo-900/10 flex flex-col justify-center text-center">
-              <ShieldCheck className="h-8 w-8 text-indigo-400 mx-auto mb-4" />
+            <div className="glass-panel rounded-3xl p-8 border border-emerald-500/20 bg-emerald-900/10 flex flex-col justify-center text-center">
+              <ShieldCheck className="h-8 w-8 text-emerald-400 mx-auto mb-4" />
               <h3 className="text-lg font-bold text-white mb-2">Our Corporate Values</h3>
               <p className="text-xs text-slate-400 leading-relaxed">
                 Operating with strict accountability, requiring transparent communication loops, and data-driven innovation to ensure a thriving, secure marketplace.
