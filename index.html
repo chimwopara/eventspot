@@ -9,38 +9,97 @@
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   
-  <script type="importmap">
-    {
-      "imports": {
-        "react": "https://esm.sh/react@18.2.0",
-        "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
-        "lucide-react": "https://esm.sh/lucide-react@0.292.0?deps=react@18.2.0"
-      }
-    }
-  </script>
 </head>
 <body class="bg-[#0b130f] text-[#d7dfd0]">
-  <div id="root">
-    <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0b130f;color:#d7dfd0;font-family:Manrope,Segoe UI,sans-serif;padding:24px;text-align:center;">
-      <div>
-        <h1 style="margin:0 0 10px;font-size:30px;font-weight:800;">EventSpot</h1>
-        <p style="margin:0;font-size:14px;opacity:.8;">Loading experience...</p>
-      </div>
-    </div>
-  </div>
+  <div id="root"></div>
+
+  <script>
+    window.__eventspotBoot = {
+      started: false,
+      mounted: false,
+      babelLoaded: false,
+      babelFailed: false,
+      renderError: ''
+    };
+
+    function renderBootState(title, message, tone) {
+      var root = document.getElementById('root');
+      if (!root) return;
+      var accent = tone === 'error' ? '#ef4444' : '#34d399';
+      root.innerHTML = '' +
+        '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0b130f;color:#d7dfd0;font-family:Manrope,Segoe UI,sans-serif;padding:24px;text-align:center;">' +
+          '<div style="max-width:640px">' +
+            '<h1 style="margin:0 0 10px;font-size:30px;font-weight:800;">EventSpot</h1>' +
+            '<p style="margin:0 0 10px;font-size:14px;opacity:.92;">' + title + '</p>' +
+            '<p style="margin:0;font-size:13px;line-height:1.5;opacity:.82;color:' + accent + ';">' + message + '</p>' +
+          '</div>' +
+        '</div>';
+    }
+
+    (function loadBabelWithFallback() {
+      var sources = [
+        'https://unpkg.com/@babel/standalone/babel.min.js',
+        'https://cdn.jsdelivr.net/npm/@babel/standalone/babel.min.js',
+        'https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.24.7/babel.min.js'
+      ];
+      var i = 0;
+
+      function tryNextSource() {
+        if (i >= sources.length) {
+          window.__eventspotBoot.babelFailed = true;
+          renderBootState(
+            'Could not start the app engine.',
+            'Babel could not be loaded from CDN sources. Check network access, then hard refresh.',
+            'error'
+          );
+          return;
+        }
+
+        var source = sources[i++];
+        var script = document.createElement('script');
+        var settled = false;
+        var timeout = setTimeout(function () {
+          if (settled) return;
+          settled = true;
+          script.remove();
+          tryNextSource();
+        }, 4500);
+
+        script.src = source;
+        script.async = false;
+        script.onload = function () {
+          if (settled) return;
+          settled = true;
+          clearTimeout(timeout);
+          window.__eventspotBoot.babelLoaded = true;
+        };
+        script.onerror = function () {
+          if (settled) return;
+          settled = true;
+          clearTimeout(timeout);
+          tryNextSource();
+        };
+        document.head.appendChild(script);
+      }
+
+      tryNextSource();
+    })();
+
+  </script>
 
   <script type="text/babel" data-type="module">
-    import React, { useState, useEffect } from 'react';
-    import { createRoot } from 'react-dom/client';
+    import React, { useState, useEffect } from 'https://esm.sh/react@18.2.0';
+    import { createRoot } from 'https://esm.sh/react-dom@18.2.0/client';
     import { 
       MapPin, Calendar, DollarSign, Award, Users, TrendingUp, Smartphone, 
       Search, ShieldCheck, ChevronRight, PlayCircle, BarChart3, Building, Briefcase,
       Building2, Home, BookOpen, Monitor, Megaphone, LineChart, Sparkles, LayoutDashboard, Layers,
       Zap, Clock, Globe, ArrowRight, CheckCircle2, User, Lock, Mail, Bell, CreditCard, LogOut, Settings, 
       ChevronLeft, X, SlidersHorizontal, Settings2, Camera, Star, Map, Plus, Maximize2
-    } from 'lucide-react';
+    } from 'https://esm.sh/lucide-react@0.292.0?deps=react@18.2.0';
+
+    if (window.__eventspotBoot) window.__eventspotBoot.started = true;
 
     const EventSpotLogo = ({ className = "w-8 h-8" }) => (
       <svg viewBox="0 0 40 40" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -318,13 +377,13 @@
                 <div className="flex flex-col justify-center">
                   <div className="inline-flex w-fit items-center gap-2 rounded-full border border-emerald-300/45 bg-emerald-400/15 px-4 py-2 text-xs uppercase tracking-[0.14em] text-emerald-100 font-bold">
                     <Sparkles className="h-3.5 w-3.5" />
-                    Edmonton Event Infrastructure
+                    Edmonton Pilot · AREC 323 Group 8
                   </div>
                   <h1 className="mt-6 text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-[1.02] tracking-tight max-w-3xl">
-                    Built for nights that feel bigger than the room.
+                    Unlock Spaces. Fund Your Event.
                   </h1>
                   <p className="mt-6 max-w-2xl text-base sm:text-lg text-slate-200 leading-relaxed">
-                    EventSpot connects hidden venues, fast booking, and micro-sponsorship in one cinematic workflow. Organizers move from idea to funded event without the usual spreadsheet chaos.
+                    EventSpot is a three-sided marketplace for renters, leasers, and sponsors. Users can compare spaces, book in minutes, and connect local businesses to community events in one flow.
                   </p>
 
                   <div className="mt-8 flex flex-col sm:flex-row gap-3">
@@ -340,9 +399,9 @@
 
                 <div className="hidden lg:flex flex-col justify-end items-end gap-4 pb-2">
                   {[
-                    { icon: Calendar, label: 'Bookings Simulated', value: '250+' },
-                    { icon: Building2, label: 'Spaces in Pipeline', value: '90+' },
-                    { icon: DollarSign, label: 'Sponsor Interest', value: '$42k' },
+                    { icon: Users, label: 'Year 1 User Target', value: '500' },
+                    { icon: Building2, label: 'Launch Venue Partners', value: '20' },
+                    { icon: DollarSign, label: 'Year 1 Revenue Goal', value: '$218.4k' },
                   ].map((item) => (
                     <div key={item.label} className="w-72 rounded-2xl border border-white/15 bg-[#06100b]/70 backdrop-blur-sm p-4 animate-bob tilt-card">
                       <div className="flex items-center text-xs text-slate-300 mb-2 font-semibold uppercase tracking-[0.1em]"><item.icon className="h-4 w-4 mr-2 text-emerald-300" />{item.label}</div>
@@ -363,17 +422,17 @@
             <div className="rounded-[2rem] border border-emerald-500/20 bg-[#0d1a14]/80 p-7 md:p-9 flex flex-col">
               <p className="text-xs uppercase tracking-[0.14em] text-emerald-300 font-bold mb-4">City Pulse</p>
               <h2 className="text-3xl md:text-4xl font-extrabold text-white leading-tight mb-4">
-                Big spaces, local stories, one booking layer.
+                Strong local demand, focused first launch.
               </h2>
               <p className="text-slate-300 leading-relaxed mb-7">
-                Instead of generic venue grids, EventSpot frames each listing like a production-ready location with sponsor readiness built in. The result is less friction and stronger event outcomes.
+                The Edmonton rollout is anchored by student organizations and local small businesses. The platform is built to remove fragmented discovery, manual price comparison, and booking friction.
               </p>
 
               <div className="space-y-4 mt-auto">
                 {[
-                  { label: 'Campus & Community Venues', value: '43', note: 'photo-verified listings in rollout' },
-                  { label: 'Median Time To Book', value: '4.2m', note: 'from inquiry to confirmed payment flow' },
-                  { label: 'Average Sponsor Fill', value: '61%', note: 'of funding goal before event day' },
+                  { label: 'U of A Student Groups', value: '475', note: 'core early-adopter ecosystem in Edmonton' },
+                  { label: 'Alberta Small Businesses', value: '160k+', note: '95.4% of all provincial businesses' },
+                  { label: 'Break-even Milestone', value: '23k hrs/yr', note: 'targeted by Year 4 with 150 venues' },
                 ].map((metric) => (
                   <div key={metric.label} className="rounded-2xl border border-white/10 bg-black/20 p-4 tilt-card">
                     <p className="text-xs uppercase tracking-[0.12em] text-slate-400 font-bold">{metric.label}</p>
@@ -418,17 +477,17 @@
             <div className="rounded-[2rem] border border-emerald-500/20 bg-[#0d1a14]/70 p-7 md:p-9">
               <p className="text-xs uppercase tracking-[0.14em] text-emerald-300 font-bold mb-3">Platform Flow</p>
               <h2 className="text-3xl md:text-4xl font-extrabold text-white leading-tight mb-5">
-                Three roles, one continuous motion.
+                Three user groups, one coordinated marketplace.
               </h2>
               <p className="text-slate-300 mb-8 leading-relaxed">
-                The renter, leaser, and sponsor journey is intentionally stitched into one line. No context-switching, no broken handoffs, and no dead-end pages.
+                Renters book faster, leasers monetize underused spaces, and sponsors fund relevant community events with local targeting instead of broad ad waste.
               </p>
 
               <div className="space-y-4">
                 {[
-                  { icon: Search, title: 'Renter Discovers', copy: 'Searches visual listings, checks availability, and books instantly.' },
-                  { icon: Building2, title: 'Leaser Activates', copy: 'Accepts requests, manages space uptime, and tracks monthly earnings.' },
-                  { icon: Briefcase, title: 'Sponsor Funds', copy: 'Finds aligned events and fills funding gaps with measurable reach.' },
+                  { icon: Search, title: 'Renter Books', copy: 'Filters by location, size, price, and availability, then checks out in-app.' },
+                  { icon: Building2, title: 'Leaser Earns', copy: 'Lists idle spaces and accepts bookings without long-term commitment.' },
+                  { icon: Briefcase, title: 'Sponsor Targets', copy: 'Funds events with micro-sponsorship and hyper-local audience relevance.' },
                 ].map((step, i) => (
                   <div key={step.title} className="rounded-2xl border border-white/10 bg-black/20 p-4 flex items-start gap-3 tilt-card">
                     <div className="h-10 w-10 rounded-xl bg-emerald-500/15 border border-emerald-400/25 flex items-center justify-center flex-shrink-0">
@@ -485,16 +544,16 @@
 
               <div className="relative mt-5 grid sm:grid-cols-3 gap-3">
                 <div className="rounded-xl border border-white/10 bg-black/25 p-3">
-                  <p className="text-xs text-slate-400 uppercase tracking-[0.1em] font-bold">Loop Time</p>
-                  <p className="text-2xl font-extrabold text-white mt-1">2m 14s</p>
+                  <p className="text-xs text-slate-400 uppercase tracking-[0.1em] font-bold">Booking Experience</p>
+                  <p className="text-2xl font-extrabold text-white mt-1">&lt; 2 min</p>
                 </div>
                 <div className="rounded-xl border border-white/10 bg-black/25 p-3">
-                  <p className="text-xs text-slate-400 uppercase tracking-[0.1em] font-bold">Funding Velocity</p>
-                  <p className="text-2xl font-extrabold text-emerald-300 mt-1">+38%</p>
+                  <p className="text-xs text-slate-400 uppercase tracking-[0.1em] font-bold">Boost Pricing</p>
+                  <p className="text-2xl font-extrabold text-emerald-300 mt-1">$1 / 24h</p>
                 </div>
                 <div className="rounded-xl border border-white/10 bg-black/25 p-3">
-                  <p className="text-xs text-slate-400 uppercase tracking-[0.1em] font-bold">Cross-Role Match</p>
-                  <p className="text-2xl font-extrabold text-amber-300 mt-1">91%</p>
+                  <p className="text-xs text-slate-400 uppercase tracking-[0.1em] font-bold">Transaction Fee</p>
+                  <p className="text-2xl font-extrabold text-amber-300 mt-1">5%</p>
                 </div>
               </div>
             </div>
@@ -510,10 +569,10 @@
                 <div>
                   <p className="text-xs uppercase tracking-[0.14em] text-emerald-200 font-bold mb-4">Launch Moment</p>
                   <h2 className="text-4xl md:text-5xl font-extrabold text-white leading-[1.03] mb-5">
-                    Make every event pitch look inevitable.
+                    Built to win Edmonton first, then scale.
                   </h2>
                   <p className="text-slate-200 text-base md:text-lg max-w-2xl leading-relaxed mb-8">
-                    Step into the live demo to experience the renter, leaser, and sponsor views as one connected product story.
+                    Our plan targets 500 users and 20 venue partners in Year 1, then scales toward 5,000 users and break-even by Year 4.
                   </p>
 
                   <div className="flex flex-col sm:flex-row gap-3">
@@ -531,9 +590,9 @@
                   <p className="text-xs uppercase tracking-[0.12em] text-amber-200 font-bold mb-3">Pitch Snapshot</p>
                   <div className="space-y-3">
                     {[
-                      { icon: Users, label: 'Target Early Users', value: '1,200' },
-                      { icon: LineChart, label: '12-Month Revenue', value: '$486k' },
-                      { icon: CheckCircle2, label: 'Go-To-Market Readiness', value: 'Live Prototype' },
+                      { icon: Users, label: 'Year 1 Users', value: '500' },
+                      { icon: LineChart, label: 'Year 1 Revenue Target', value: '$218.4k' },
+                      { icon: CheckCircle2, label: 'Launch Venue Partners', value: '20' },
                     ].map((item) => (
                       <div key={item.label} className="flex items-center justify-between border-b border-white/10 pb-2 last:border-b-0 last:pb-0">
                         <div className="text-slate-200 text-sm font-medium flex items-center"><item.icon className="h-4 w-4 mr-2 text-emerald-300" />{item.label}</div>
@@ -615,7 +674,7 @@
           {isDeepDiveOpen && <DeepDiveView onClose={onCloseDeepDive} />}
           <div className="text-center mb-12">
             <h2 className="text-4xl font-extrabold text-white mb-4 tracking-tight">Experience EventSpot</h2>
-            <p className="text-slate-400">Interact with the prototype below. Data is saved for your session.</p>
+            <p className="text-slate-400">Edmonton-first prototype aligned to our current business plan. Data is saved for your session.</p>
             <div className="mt-8">
               <button onClick={onOpenDeepDive} className="inline-flex items-center space-x-3 bg-gradient-to-r from-emerald-600 to-amber-600 hover:opacity-90 transition-all text-white font-bold px-8 py-4 rounded-2xl shadow-lg shadow-emerald-500/30 group border border-emerald-500/30">
                 <Maximize2 className="h-5 w-5"/>
@@ -632,22 +691,22 @@
                 <div className="animate-in fade-in duration-500">
                   <h3 className="text-2xl font-bold text-white mb-4">Welcome to the Prototype</h3>
                   <p className="text-slate-400 leading-relaxed">
-                    We've pre-filled your credentials. Log in to explore the core user flows. Experience how seamlessly users can switch contexts between renting spaces, leasing property, and funding local events.
+                    We've pre-filled your credentials. Log in to explore the renter, leaser, and sponsor flows that support our 500-user / 20-venue Year 1 launch target.
                   </p>
                 </div>
               ) : (
                 <>
                   <div className={`transition-all duration-500 ${role === 'renter' ? 'opacity-100 scale-100' : 'opacity-30 scale-95 cursor-pointer'}`} onClick={() => switchMiniRole('renter')}>
                     <h3 className="text-xl font-bold text-white mb-2 flex items-center"><Search className="mr-2 text-emerald-400 h-5 w-5"/> The Renter</h3>
-                    <p className="text-sm text-slate-400">Click a space to open the booking details. Confirmed bookings will sync to your Booked tab instantly.</p>
+                    <p className="text-sm text-slate-400">Find spaces by budget, size, and location, then book in-app without email back-and-forth.</p>
                   </div>
                   <div className={`transition-all duration-500 ${role === 'leaser' ? 'opacity-100 scale-100' : 'opacity-30 scale-95 cursor-pointer'}`} onClick={() => switchMiniRole('leaser')}>
                     <h3 className="text-xl font-bold text-white mb-2 flex items-center"><Building className="mr-2 text-emerald-400 h-5 w-5"/> The Leaser</h3>
-                    <p className="text-sm text-slate-400">Click Create New Listing to launch the wizard. Your new property will appear on your dashboard.</p>
+                    <p className="text-sm text-slate-400">List an underused property and monetize empty hours with zero upfront platform commitment.</p>
                   </div>
                   <div className={`transition-all duration-500 ${role === 'sponsor' ? 'opacity-100 scale-100' : 'opacity-30 scale-95 cursor-pointer'}`} onClick={() => switchMiniRole('sponsor')}>
                     <h3 className="text-xl font-bold text-white mb-2 flex items-center"><Briefcase className="mr-2 text-amber-400 h-5 w-5"/> The Sponsor</h3>
-                    <p className="text-sm text-slate-400">Select an event to open the funding proposal form and inject capital directly into local organizers.</p>
+                    <p className="text-sm text-slate-400">Support local events with micro-sponsorship to reach a nearby audience instead of broad ad spend.</p>
                   </div>
                 </>
               )}
@@ -1371,7 +1430,7 @@
                 {createStep===1 && (
                   <div className="w-full max-w-lg space-y-5">
                     <div><label className="text-xs font-bold text-slate-400 mb-2 block">HOURLY RATE (CAD)</label><div className="relative"><DollarSign className="absolute left-4 top-3.5 h-5 w-5 text-slate-500"/><input type="number" value={newListing.price} onChange={e=>setNewListing({...newListing,price:e.target.value})} placeholder="60" className="w-full bg-slate-800/50 border border-white/10 rounded-2xl pl-12 pr-4 py-4 text-white text-xl font-bold outline-none focus:border-emerald-500 transition-colors"/></div></div>
-                    <div className="bg-slate-800/30 rounded-2xl p-5 border border-white/5"><div className="font-bold text-white mb-1 text-sm">EventSpot Commission</div><p className="text-sm text-slate-400">We take a flat <span className="text-emerald-400 font-bold">10%</span> per confirmed booking. No monthly fees, no surprises.</p></div>
+                    <div className="bg-slate-800/30 rounded-2xl p-5 border border-white/5"><div className="font-bold text-white mb-1 text-sm">EventSpot Transaction Fee</div><p className="text-sm text-slate-400">We take a flat <span className="text-emerald-400 font-bold">5%</span> per confirmed booking. No monthly fees, no surprises.</p></div>
                     <div><label className="text-xs font-bold text-slate-400 mb-2 block">HOUSE RULES (OPTIONAL)</label><textarea rows={3} placeholder="e.g. No smoking, max 30 guests, shoes off inside..." className="w-full bg-slate-800/50 border border-white/10 rounded-2xl px-4 py-3 text-sm text-white outline-none focus:border-emerald-500 transition-colors resize-none"/></div>
                     <button onClick={()=>setCreateStep(2)} className="w-full bg-gradient-to-r from-emerald-600 to-green-600 text-white font-bold py-4 rounded-2xl hover:opacity-90 transition-opacity shadow-lg shadow-emerald-500/20">Review Listing</button>
                   </div>
@@ -1605,9 +1664,9 @@
       return (
         <div className="max-w-5xl mx-auto space-y-12 animate-in fade-in zoom-in-95 duration-700">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-4 tracking-tight">Market Strategy</h2>
+            <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-4 tracking-tight">Go-To-Market Strategy</h2>
             <div className="h-1 w-20 bg-emerald-500 mx-auto rounded-full mb-6"></div>
-            <p className="text-lg text-slate-400 max-w-2xl mx-auto">Strategic positioning, targeted demographics, and competitive analysis in the Edmonton, Alberta ecosystem.</p>
+            <p className="text-lg text-slate-400 max-w-2xl mx-auto">Edmonton-focused positioning based on our current AREC 323 draft: students, local spaces, and hyper-local sponsorship demand.</p>
           </div>
 
           <div className="grid lg:grid-cols-5 gap-6">
@@ -1620,21 +1679,21 @@
                   <div className="bg-emerald-500/20 p-2 rounded-xl mr-4 shrink-0"><BookOpen className="h-5 w-5 text-emerald-400" /></div>
                   <div>
                     <strong className="block text-white text-lg mb-1">Students & Organizers</strong>
-                    <span className="text-slate-400 text-sm leading-relaxed">Demand is highly inelastic when planning an in-person event. They need unique, affordable spaces without massive hotel deposits.</span>
+                    <span className="text-slate-400 text-sm leading-relaxed">University of Alberta has 44,000+ students and 475 groups; MacEwan adds another 20,000+ potential renters needing affordable event options.</span>
                   </div>
                 </div>
                 <div className="flex items-start bg-slate-800/30 p-5 rounded-2xl border border-white/5">
                   <div className="bg-amber-500/20 p-2 rounded-xl mr-4 shrink-0"><Megaphone className="h-5 w-5 text-amber-400" /></div>
                   <div>
                     <strong className="block text-white text-lg mb-1">Small Business Owners</strong>
-                    <span className="text-slate-400 text-sm leading-relaxed">Require affordable, highly-targeted local marketing. Event sponsorship directly puts their brand in front of active community members.</span>
+                    <span className="text-slate-400 text-sm leading-relaxed">Alberta has 160,000+ small businesses (95.4% of all businesses), many needing affordable local audience targeting.</span>
                   </div>
                 </div>
                 <div className="flex items-start bg-slate-800/30 p-5 rounded-2xl border border-white/5">
                   <div className="bg-emerald-500/20 p-2 rounded-xl mr-4 shrink-0"><Building2 className="h-5 w-5 text-emerald-400" /></div>
                   <div>
-                    <strong className="block text-white text-lg mb-1">Property Leasers</strong>
-                    <span className="text-slate-400 text-sm leading-relaxed">Individuals sitting on unrented apartments or large balconies looking to monetize off-hours with zero long-term commitment.</span>
+                    <strong className="block text-white text-lg mb-1">Leasers / Space Owners</strong>
+                    <span className="text-slate-400 text-sm leading-relaxed">Owners of underused lofts, patios, studios, and after-hours commercial spaces can earn hourly passive income.</span>
                   </div>
                 </div>
               </div>
@@ -1648,19 +1707,19 @@
                 <div className="space-y-4">
                   <div className="border-l-2 border-emerald-500 pl-4 py-1">
                     <p className="text-xs font-bold text-emerald-400 tracking-wider mb-1">PRODUCT</p>
-                    <p className="text-slate-300 text-sm">Dual-sided digital marketplace app for short-term renting and micro-sponsorships.</p>
+                    <p className="text-slate-300 text-sm">Three-sided marketplace connecting Renters, Leasers, and Sponsors in one booking workflow.</p>
                   </div>
                   <div className="border-l-2 border-amber-500 pl-4 py-1">
                     <p className="text-xs font-bold text-amber-400 tracking-wider mb-1">PRICE</p>
-                    <p className="text-slate-300 text-sm">10% Booking Commission (~$500 cart) + $35/mo optional Vendor Subscription.</p>
+                    <p className="text-slate-300 text-sm">5% transaction fee + $1 CAD ranking boosts (24h) + premium bidding for high-demand dates.</p>
                   </div>
                   <div className="border-l-2 border-pink-500 pl-4 py-1">
                     <p className="text-xs font-bold text-pink-400 tracking-wider mb-1">PLACE</p>
-                    <p className="text-slate-300 text-sm">Initially geo-fenced to the Edmonton, Alberta market via App/Web.</p>
+                    <p className="text-slate-300 text-sm">Edmonton-first rollout via iOS, Android, and web; then Calgary and one additional city by Year 7.</p>
                   </div>
                   <div className="border-l-2 border-emerald-500 pl-4 py-1">
                     <p className="text-xs font-bold text-emerald-400 tracking-wider mb-1">PROMOTION</p>
-                    <p className="text-slate-300 text-sm">Social media, targeted YouTube ads, and grassroots on-campus promotions.</p>
+                    <p className="text-slate-300 text-sm">75% digital ads, 15% physical media, 10% paid promotions; strong campus outreach and geofencing.</p>
                   </div>
                 </div>
               </div>
@@ -1682,9 +1741,9 @@
                     <h4 className="font-bold text-lg text-slate-200">The Old Way (Competitors)</h4>
                   </div>
                   <ul className="space-y-4 text-slate-400 text-sm">
-                    <li className="flex items-center"><X className="h-4 w-4 mr-3 opacity-60" /> University of Alberta Rooms (Highly Restrictive)</li>
-                    <li className="flex items-center"><X className="h-4 w-4 mr-3 opacity-60" /> Peerspace (Not locally optimized for YEG/Students)</li>
-                    <li className="flex items-center"><X className="h-4 w-4 mr-3 opacity-60" /> Large Hotel Chains (Rigid, expensive, formal only)</li>
+                    <li className="flex items-center"><X className="h-4 w-4 mr-3 opacity-60" /> Fragmented search across websites, emails, and phone calls</li>
+                    <li className="flex items-center"><X className="h-4 w-4 mr-3 opacity-60" /> Peerspace / Eventbrite (broad focus, less local student fit)</li>
+                    <li className="flex items-center"><X className="h-4 w-4 mr-3 opacity-60" /> Traditional venues (formal, costly, limited flexibility)</li>
                   </ul>
                 </div>
                 
@@ -1694,9 +1753,9 @@
                     <h4 className="font-bold text-lg text-white">The EventSpot Edge</h4>
                   </div>
                   <ul className="space-y-4 text-slate-300 text-sm font-medium">
-                    <li className="flex items-start"><CheckCircle2 className="h-4 w-4 mr-3 text-emerald-400 mt-0.5 flex-shrink-0" /> <span><strong className="text-white">Loyalty Ecosystem:</strong> Built-in rewards incentivize recurring use.</span></li>
-                    <li className="flex items-start"><CheckCircle2 className="h-4 w-4 mr-3 text-emerald-400 mt-0.5 flex-shrink-0" /> <span><strong className="text-white">Sponsor Integration:</strong> A unique feature unlocking funding directly inside the app.</span></li>
-                    <li className="flex items-start"><CheckCircle2 className="h-4 w-4 mr-3 text-emerald-400 mt-0.5 flex-shrink-0" /> <span><strong className="text-white">Mobile-First Fluidity:</strong> Modern UX design over legacy web forms.</span></li>
+                    <li className="flex items-start"><CheckCircle2 className="h-4 w-4 mr-3 text-emerald-400 mt-0.5 flex-shrink-0" /> <span><strong className="text-white">Three-Sided Fit:</strong> Renters, Leasers, and Sponsors grow together through network effects.</span></li>
+                    <li className="flex items-start"><CheckCircle2 className="h-4 w-4 mr-3 text-emerald-400 mt-0.5 flex-shrink-0" /> <span><strong className="text-white">Micro-Sponsorship Model:</strong> Local businesses fund events with measurable audience relevance.</span></li>
+                    <li className="flex items-start"><CheckCircle2 className="h-4 w-4 mr-3 text-emerald-400 mt-0.5 flex-shrink-0" /> <span><strong className="text-white">Focused Launch Strategy:</strong> Edmonton-first execution before multi-city expansion.</span></li>
                   </ul>
                 </div>
               </div>
@@ -1715,19 +1774,19 @@
           <div className="flex flex-col md:flex-row justify-between items-end mb-10">
             <div>
               <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-3 tracking-tight">Pro Forma</h2>
-              <p className="text-slate-400">Year 1 Financial Projections & Startup Assumptions.</p>
+              <p className="text-slate-400">Financial targets and assumptions synced to the current AREC 323 draft.</p>
             </div>
             <div className="bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 px-4 py-2 rounded-xl text-sm font-bold flex items-center mt-4 md:mt-0">
-              <BarChart3 className="mr-2 h-4 w-4" /> LIVE MODEL
+              <BarChart3 className="mr-2 h-4 w-4" /> DRAFT MODEL
             </div>
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             {[
-              { label: 'Projected Bookings', value: '250', sub: '@ ~$500 avg value', color: 'text-blue-400', border: 'border-blue-500/20', bg: 'bg-blue-500/5' },
-              { label: 'Vendor Subs', value: '30', sub: '@ $35 / month', color: 'text-emerald-400', border: 'border-emerald-500/20', bg: 'bg-emerald-500/5' },
-              { label: 'Total Revenue', value: '$25.1k', sub: 'Year 1 Top Line', color: 'text-amber-400', border: 'border-amber-500/20', bg: 'bg-amber-500/5' },
-              { label: 'Net Income', value: '$945', sub: 'After 10% Tax & Exp', color: 'text-emerald-400', border: 'border-emerald-500/20', bg: 'bg-emerald-500/5' }
+              { label: 'Year 1 Users', value: '500', sub: 'SMART launch target', color: 'text-blue-400', border: 'border-blue-500/20', bg: 'bg-blue-500/5' },
+              { label: 'Venue Partners', value: '20', sub: 'Year 1 Edmonton goal', color: 'text-emerald-400', border: 'border-emerald-500/20', bg: 'bg-emerald-500/5' },
+              { label: 'Year 1 Revenue', value: '$218.4k', sub: 'Target from plan table', color: 'text-amber-400', border: 'border-amber-500/20', bg: 'bg-amber-500/5' },
+              { label: 'Break-even Volume', value: '23k hrs', sub: 'Targeted by Year 4', color: 'text-emerald-400', border: 'border-emerald-500/20', bg: 'bg-emerald-500/5' }
             ].map((kpi, i) => (
               <div key={i} className={`p-6 rounded-3xl border ${kpi.border} ${kpi.bg} relative overflow-hidden group`}>
                 <div className={`absolute -right-4 -top-4 w-16 h-16 rounded-full blur-xl opacity-20 group-hover:opacity-40 transition-opacity bg-current ${kpi.color}`}></div>
@@ -1742,54 +1801,50 @@
             <div className="lg:col-span-7 glass-panel rounded-[2rem] overflow-hidden flex flex-col">
               <div className="bg-slate-900/80 px-8 py-5 border-b border-white/5 flex items-center">
                 <DollarSign className="mr-2 text-emerald-400" />
-                <h3 className="font-bold text-white tracking-wide">Income Statement (Year 1)</h3>
+                <h3 className="font-bold text-white tracking-wide">Financial Targets Snapshot</h3>
               </div>
               <div className="p-8 flex-1">
                 <div className="space-y-1 text-sm font-medium">
                   <div className="flex justify-between py-2 text-slate-300">
-                    <span>Commission Sales Revenue</span>
-                    <span>$12,500</span>
+                    <span>Addressable Rentable Demand (Edmonton model)</span>
+                    <span>58,200 hrs</span>
                   </div>
                   <div className="flex justify-between py-2 text-slate-300">
-                    <span>Vendor Subscription Revenue</span>
-                    <span>$12,600</span>
+                    <span>Modeled Top-Line Potential</span>
+                    <span>$1,746,000</span>
                   </div>
                   <div className="flex justify-between py-3 my-2 border-y border-white/10 text-white font-bold text-base">
-                    <span>Total Revenue</span>
-                    <span className="text-emerald-400">$25,100</span>
+                    <span>Year 1 Revenue Target (SMART)</span>
+                    <span className="text-emerald-400">$218,400</span>
                   </div>
                   <div className="flex justify-between py-2 text-slate-400">
-                    <span>Cost of Goods Sold (COGS)</span>
-                    <span>-$1,250</span>
+                    <span>Year 1 Marketing Budget</span>
+                    <span>-$116,400</span>
                   </div>
                   <div className="flex justify-between py-3 my-2 border-y border-white/10 text-white font-bold text-base">
-                    <span>Gross Profit</span>
-                    <span>$23,850</span>
+                    <span>Budget Remaining Before Opex/COGS</span>
+                    <span>$102,000</span>
                   </div>
                   <div className="flex justify-between py-2 text-slate-400">
-                    <span>Operating Expenses (Fixed)</span>
-                    <span>-$22,000</span>
+                    <span>Marketing Split</span>
+                    <span>75% / 15% / 10%</span>
                   </div>
                   <div className="flex justify-between py-3 my-2 border-y border-white/10 text-white font-bold text-base">
-                    <span>Operating Income (EBIT)</span>
-                    <span>$1,850</span>
+                    <span>Cities Served</span>
+                    <span>1 → 3+</span>
                   </div>
                   <div className="flex justify-between py-2 text-slate-400">
-                    <span>Interest Expense</span>
-                    <span>-$800</span>
+                    <span>Year 3-4 Milestone</span>
+                    <span>5,000 users · 150 venues</span>
                   </div>
                   <div className="flex justify-between py-2 text-slate-400">
-                    <span>Earnings Before Tax</span>
-                    <span>$1,050</span>
-                  </div>
-                  <div className="flex justify-between py-2 text-slate-400">
-                    <span>Income Tax Expense (10%)</span>
-                    <span>-$105</span>
+                    <span>Year 5-7 Milestone</span>
+                    <span>25,000 users · 3 cities</span>
                   </div>
                   <div className="flex justify-between items-center mt-6 pt-6 border-t border-emerald-500/30">
-                    <span className="text-xl font-extrabold text-white">Net Income</span>
+                    <span className="text-xl font-extrabold text-white">Break-even Target</span>
                     <div className="bg-emerald-500/20 px-4 py-2 rounded-xl border border-emerald-500/30">
-                      <span className="text-xl font-extrabold text-emerald-400">$945</span>
+                      <span className="text-xl font-extrabold text-emerald-400">End of Year 4</span>
                     </div>
                   </div>
                 </div>
@@ -1804,44 +1859,44 @@
                 <ul className="space-y-5 text-sm">
                   <li className="bg-slate-800/50 p-4 rounded-xl border border-white/5">
                     <div className="flex justify-between mb-1">
-                      <span className="text-slate-400">Commission Rate</span>
-                      <span className="text-white font-bold">10%</span>
+                      <span className="text-slate-400">Leaser Transaction Fee</span>
+                      <span className="text-white font-bold">5%</span>
                     </div>
-                    <p className="text-[10px] text-slate-500">Standard cut from average $500 cart.</p>
+                    <p className="text-[10px] text-slate-500">Collected when a booking is completed through the platform.</p>
                   </li>
                   <li className="bg-slate-800/50 p-4 rounded-xl border border-white/5">
                     <div className="flex justify-between mb-1">
-                      <span className="text-slate-400">Variable Costs</span>
-                      <span className="text-white font-bold">$5.00</span>
+                      <span className="text-slate-400">Ranking Boost Price</span>
+                      <span className="text-white font-bold">$1 / point</span>
                     </div>
-                    <p className="text-[10px] text-slate-500">Per booking (payment processing, server fees).</p>
+                    <p className="text-[10px] text-slate-500">Per 24-hour cycle for Leasers and Sponsors.</p>
                   </li>
                   <li className="bg-slate-800/50 p-4 rounded-xl border border-white/5">
                     <div className="flex justify-between mb-1">
-                      <span className="text-slate-400">Fixed Costs</span>
-                      <span className="text-white font-bold">$22,000</span>
+                      <span className="text-slate-400">Average Booking Benchmark</span>
+                      <span className="text-white font-bold">$50 / hr</span>
                     </div>
-                    <p className="text-[10px] text-slate-500">Dev (12k), Marketing (5k), Hosting/Events (3k), Legal (2k).</p>
+                    <p className="text-[10px] text-slate-500">Current draft assumption in Section 6 market-demand model.</p>
                   </li>
                 </ul>
               </div>
 
               <div className="bg-gradient-to-br from-emerald-900/40 to-amber-900/40 p-8 rounded-[2rem] border border-emerald-500/20 relative overflow-hidden">
                 <div className="absolute top-0 right-0 p-4 opacity-10"><DollarSign className="h-24 w-24"/></div>
-                <h3 className="font-bold text-white mb-2 relative z-10">Startup Financing</h3>
-                <p className="text-sm text-emerald-200 mb-4 relative z-10">Total Required: $20,000</p>
+                <h3 className="font-bold text-white mb-2 relative z-10">Funding Direction</h3>
+                <p className="text-sm text-emerald-200 mb-4 relative z-10">Debt-led financing in current draft.</p>
                 <div className="space-y-2 relative z-10 text-xs">
                   <div className="flex justify-between border-b border-emerald-500/20 pb-1">
-                    <span className="text-slate-300">Bank Loan (8% APR)</span>
-                    <span className="text-white font-bold">$10,000</span>
+                    <span className="text-slate-300">Interest Rate Stress Trigger</span>
+                    <span className="text-white font-bold">&gt; 10%</span>
                   </div>
                   <div className="flex justify-between border-b border-emerald-500/20 pb-1">
-                    <span className="text-slate-300">Alberta Business Grant</span>
-                    <span className="text-white font-bold">$5,000</span>
+                    <span className="text-slate-300">Debt Repayment Horizon</span>
+                    <span className="text-white font-bold">10-15 years</span>
                   </div>
                   <div className="flex justify-between pb-1">
-                    <span className="text-slate-300">Founder Contributions ($1k ea)</span>
-                    <span className="text-white font-bold">$5,000</span>
+                    <span className="text-slate-300">Office Lease Benchmark</span>
+                    <span className="text-white font-bold">$4,200 / month</span>
                   </div>
                 </div>
               </div>
@@ -1989,7 +2044,7 @@
               <section>
                 <h2 className="text-2xl font-bold text-white mb-4">3. Fees and Payments</h2>
                 <p className="text-slate-400">
-                  EventSpot charges a 10% commission on all successful bookings. Vendor subscriptions are billed at a flat rate of $35 per month. All fees are non-refundable unless otherwise stated in our cancellation policy. We reserve the right to modify our fee structure with 30 days prior notice to active users.
+                  EventSpot charges a 5% transaction fee on successful bookings and offers optional pay-per-use visibility boosts for listing and sponsor placement. All fees are non-refundable unless otherwise stated in our cancellation policy. We reserve the right to modify our fee structure with 30 days prior notice to active users.
                 </p>
               </section>
 
@@ -2007,6 +2062,8 @@
 
     const mountNode = document.getElementById('root');
     const showFatalError = (message) => {
+      if (window.__eventspotBoot) window.__eventspotBoot.renderError = message || 'Unknown render error';
+      if (!mountNode) return;
       mountNode.innerHTML = `
         <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0b130f;color:#d7dfd0;font-family:Manrope,Segoe UI,sans-serif;padding:24px;text-align:center;">
           <div style="max-width:560px">
@@ -2023,8 +2080,10 @@
     });
 
     try {
+      if (!mountNode) throw new Error('Root mount node was not found.');
       const root = createRoot(mountNode);
       root.render(<EventSpotApp />);
+      if (window.__eventspotBoot) window.__eventspotBoot.mounted = true;
     } catch (err) {
       showFatalError(err?.message);
     }
