@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>EventSpot - Pitch & Platform</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -789,8 +789,8 @@
 
       if(S.ddStep==='signin') {
         stepContent = `<div class="w-full max-w-md"><div class="text-center mb-10">${eventSpotLogo('h-16 w-16 mx-auto mb-5 drop-shadow-[0_0_20px_rgba(16,185,129,0.6)]')}<h1 class="text-4xl font-extrabold text-white mb-2">Welcome back.</h1><p class="text-slate-400">Sign in to your EventSpot account.</p></div>
-          <div class="space-y-4"><div class="relative">${icon('Mail','absolute left-4 top-3.5 h-5 w-5 text-slate-500')}<input readonly value="cwopara@ualberta.ca" type="email" class="w-full bg-slate-800/50 border border-white/10 rounded-2xl pl-12 pr-4 py-4 text-white text-sm outline-none"/></div>
-          <div class="relative">${icon('Lock','absolute left-4 top-3.5 h-5 w-5 text-slate-500')}<input readonly value="••••••••••••" type="password" class="w-full bg-slate-800/50 border border-white/10 rounded-2xl pl-12 pr-4 py-4 text-white text-sm outline-none"/></div>
+          <div class="space-y-4"><div class="relative">${icon('Mail','absolute left-4 top-3.5 h-5 w-5 text-slate-500')}<input value="cwopara@ualberta.ca" type="email" class="w-full bg-slate-800/50 border border-white/10 rounded-2xl pl-12 pr-4 py-4 text-white text-base outline-none"/></div>
+          <div class="relative">${icon('Lock','absolute left-4 top-3.5 h-5 w-5 text-slate-500')}<input value="••••••••••••" type="password" class="w-full bg-slate-800/50 border border-white/10 rounded-2xl pl-12 pr-4 py-4 text-white text-base outline-none"/></div>
           <button onclick="ddSetStep('onboard_name')" class="w-full mt-2 bg-gradient-to-r from-emerald-600 to-amber-600 text-white font-bold py-4 rounded-2xl hover:opacity-90 transition-opacity shadow-lg shadow-emerald-500/20 flex items-center justify-center">Sign In ${icon('ArrowRight','ml-2 h-4 w-4')}</button></div>
           <p class="text-center text-xs text-slate-500 mt-8">University email required for student verification.</p></div>`;
       } else if(S.ddStep==='onboard_name') {
