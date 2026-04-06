@@ -14,8 +14,9 @@
       background: #05070a;
       color: #d7dfd0;
       font-family: Manrope, "Avenir Next", "Segoe UI", sans-serif;
+      overflow-x: hidden;
     }
-    #root { min-height: 100vh; }
+    #root { min-height: 100vh; overflow-x: hidden; }
 
     @keyframes float { 0%, 100% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-20px) rotate(2deg); } }
     @keyframes float-reverse { 0%, 100% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(20px) rotate(-2deg); } }
@@ -24,7 +25,7 @@
     @keyframes orbit-slow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
     @keyframes pulse-ring { 0%, 100% { transform: scale(1); opacity: 0.24; } 50% { transform: scale(1.09); opacity: 0.52; } }
     @keyframes bob { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-8px); } }
-    @keyframes aurora-shift { 0% { transform: translate3d(-4%, -3%, 0) scale(1); } 50% { transform: translate3d(4%, 3%, 0) scale(1.08); } 100% { transform: translate3d(-4%, -3%, 0) scale(1); } }
+    @keyframes aurora-shift { 0% { opacity: 0.85; } 50% { opacity: 1; } 100% { opacity: 0.85; } }
     .animate-float { animation: float 6s ease-in-out infinite; }
     .animate-float-delayed { animation: float-reverse 7s ease-in-out infinite; }
     .animate-glow { animation: pulse-glow 4s ease-in-out infinite; }
@@ -63,6 +64,22 @@
     s.src='https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4/cdn.min.js';
     document.head.appendChild(s);
   "></script>
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <style>
+    .leaflet-container { background: #0a1628 !important; }
+    .leaflet-tile-pane { opacity: 0.85; }
+    .space-marker { width: 40px; height: 40px; border-radius: 50%; border: 2px solid rgba(110,231,183,0.7); overflow: hidden; box-shadow: 0 0 12px rgba(16,185,129,0.5); cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
+    .space-marker:hover { transform: scale(1.2); box-shadow: 0 0 20px rgba(16,185,129,0.8); }
+    .space-marker img { width: 100%; height: 100%; object-fit: cover; }
+    .leaflet-popup-content-wrapper { background: #0c1422 !important; color: #d7dfd0 !important; border: 1px solid rgba(52,211,153,0.3) !important; border-radius: 16px !important; box-shadow: 0 8px 32px rgba(0,0,0,0.5) !important; }
+    .leaflet-popup-tip { background: #0c1422 !important; border: 1px solid rgba(52,211,153,0.3) !important; }
+    .leaflet-popup-content { margin: 12px 16px !important; font-family: 'Manrope', sans-serif !important; }
+    .leaflet-control-zoom a { background: #0c1422 !important; color: #d7dfd0 !important; border-color: rgba(255,255,255,0.1) !important; }
+    .leaflet-control-zoom a:hover { background: #1e293b !important; }
+    .leaflet-control-attribution { display: none !important; }
+  </style>
 
 </head>
 <body class="bg-[#05070a] text-[#d7dfd0]">
@@ -191,6 +208,26 @@
     ddMyListings: [
       { id:1, name:'Glenora Loft', price:75, status:'Active', bookings:8, earned:'$2,400', image:'https://images.unsplash.com/photo-1604328698692-f76ea9498e76?auto=format&fit=crop&w=1400&q=80' },
       { id:2, name:'Whyte Ave Studio', price:55, status:'Active', bookings:5, earned:'$1,100', image:'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&w=1400&q=80' },
+      { id:3, name:'Jasper Ave Penthouse', price:120, status:'Active', bookings:12, earned:'$5,760', image:'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1400&q=80' },
+      { id:4, name:'Ritchie Brewery Hall', price:90, status:'Active', bookings:15, earned:'$5,400', image:'https://images.unsplash.com/photo-1559329007-40df8a9345d8?auto=format&fit=crop&w=1400&q=80' },
+      { id:5, name:'Garneau Art Gallery', price:65, status:'Active', bookings:9, earned:'$2,340', image:'https://images.unsplash.com/photo-1513364776144-60967b0f800f?auto=format&fit=crop&w=1400&q=80' },
+      { id:6, name:'Mill Creek Garden Patio', price:40, status:'Active', bookings:22, earned:'$3,520', image:'https://images.unsplash.com/photo-1416339306562-f3d12fefd36f?auto=format&fit=crop&w=1400&q=80' },
+      { id:7, name:'Highlands Dance Studio', price:50, status:'Active', bookings:18, earned:'$3,600', image:'https://images.unsplash.com/photo-1508807526345-15e9b5f4eaff?auto=format&fit=crop&w=1400&q=80' },
+      { id:8, name:'104 St Coworking Lounge', price:35, status:'Active', bookings:31, earned:'$4,340', image:'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1400&q=80' },
+      { id:9, name:'Old Strathcona Wine Bar', price:110, status:'Active', bookings:7, earned:'$3,080', image:'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=1400&q=80' },
+      { id:10, name:'Bonnie Doon Yoga Loft', price:30, status:'Active', bookings:40, earned:'$4,800', image:'https://images.unsplash.com/photo-1545205597-3d9d02c29597?auto=format&fit=crop&w=1400&q=80' },
+      { id:11, name:'Ice District Event Suite', price:150, status:'Active', bookings:4, earned:'$2,400', image:'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=1400&q=80' },
+      { id:12, name:'Belgravia Heritage Hall', price:85, status:'Active', bookings:11, earned:'$3,740', image:'https://images.unsplash.com/photo-1464146072230-91cabc968266?auto=format&fit=crop&w=1400&q=80' },
+      { id:13, name:'Westmount Recording Den', price:45, status:'Active', bookings:14, earned:'$2,520', image:'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&w=1400&q=80' },
+      { id:14, name:'Rossdale River Pavilion', price:70, status:'Active', bookings:6, earned:'$1,680', image:'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?auto=format&fit=crop&w=1400&q=80' },
+      { id:15, name:'Kingsway Photo Studio', price:60, status:'Active', bookings:20, earned:'$4,800', image:'https://images.unsplash.com/photo-1471341971476-ae15ff5dd4ea?auto=format&fit=crop&w=1400&q=80' },
+      { id:16, name:'Sherwood Park Barn', price:95, status:'Active', bookings:3, earned:'$1,140', image:'https://images.unsplash.com/photo-1510076857177-7470076d4098?auto=format&fit=crop&w=1400&q=80' },
+      { id:17, name:'Ada Boulevard Terrace', price:80, status:'Active', bookings:10, earned:'$3,200', image:'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1400&q=80' },
+      { id:18, name:'Chinatown Dim Sum Hall', price:55, status:'Active', bookings:16, earned:'$3,520', image:'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=1400&q=80' },
+      { id:19, name:'McKernan Community Hub', price:25, status:'Active', bookings:35, earned:'$3,500', image:'https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1400&q=80' },
+      { id:20, name:'Griesbach Officers\' Mess', price:100, status:'Active', bookings:5, earned:'$2,000', image:'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&w=1400&q=80' },
+      { id:21, name:'Strathearn Pottery Workshop', price:40, status:'Active', bookings:12, earned:'$1,920', image:'https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?auto=format&fit=crop&w=1400&q=80' },
+      { id:22, name:'Cloverdale Conference Suite', price:70, status:'Active', bookings:8, earned:'$2,240', image:'https://images.unsplash.com/photo-1431540015947-df950f22b6a5?auto=format&fit=crop&w=1400&q=80' },
     ],
     ddSelectedEvent: null,
     ddProposalOpen: false,
@@ -216,11 +253,11 @@
   ];
 
   const ddSpaces = [
-    { id:1, name:'Downtown Balcony', type:'Outdoor Rooftop', price:45, rating:4.8, reviews:32, capacity:'Up to 40 guests', amenities:['WiFi','Bistro Lighting','Sound System'], color:'from-emerald-700/35 to-green-600/10', border:'border-emerald-500/25', accent:'text-emerald-300', badge:'bg-emerald-500/20 text-emerald-200', image:'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&w=1400&q=80', area:'Downtown Core' },
-    { id:2, name:'Strathcona Lounge', type:'Indoor Venue', price:80, rating:5.0, reviews:58, capacity:'Up to 80 guests', amenities:['Full Kitchen','Bar Setup','AV System','Parking'], color:'from-amber-700/35 to-yellow-600/10', border:'border-amber-500/25', accent:'text-amber-300', badge:'bg-amber-500/20 text-amber-200', image:'https://images.unsplash.com/photo-1551632436-cbf8dd35adfa?auto=format&fit=crop&w=1400&q=80', area:'Old Strathcona' },
-    { id:3, name:'Campus Study Hall', type:'Academic Space', price:25, rating:4.5, reviews:21, capacity:'Up to 30 guests', amenities:['4K Projector','Whiteboards','High-Speed WiFi'], color:'from-lime-700/35 to-emerald-600/10', border:'border-lime-500/25', accent:'text-lime-300', badge:'bg-lime-500/20 text-lime-200', image:'https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1400&q=80', area:'U of A Campus' },
-    { id:4, name:'Oliver Rooftop Garden', type:'Outdoor Garden', price:65, rating:4.7, reviews:44, capacity:'Up to 60 guests', amenities:['Patio Furniture','String Lights','City Views'], color:'from-green-700/35 to-amber-600/10', border:'border-green-500/25', accent:'text-green-300', badge:'bg-green-500/20 text-green-200', image:'https://images.unsplash.com/photo-1505236858219-8359eb29e329?auto=format&fit=crop&w=1400&q=80', area:'Oliver District' },
-    { id:5, name:'Warehouse Loft', type:'Industrial Venue', price:95, rating:4.9, reviews:67, capacity:'Up to 120 guests', amenities:['Full Stage','Pro Sound System','Bar Setup','Parking'], color:'from-emerald-800/35 to-amber-700/10', border:'border-yellow-500/25', accent:'text-yellow-300', badge:'bg-yellow-500/20 text-yellow-200', image:'https://images.unsplash.com/photo-1489515217757-5fd1be406fef?auto=format&fit=crop&w=1400&q=80', area:'Boyle Street' },
+    { id:1, name:'Downtown Balcony', type:'Outdoor Rooftop', price:45, rating:4.8, reviews:32, capacity:'Up to 40 guests', amenities:['WiFi','Bistro Lighting','Sound System'], color:'from-emerald-700/35 to-green-600/10', border:'border-emerald-500/25', accent:'text-emerald-300', badge:'bg-emerald-500/20 text-emerald-200', image:'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&w=1400&q=80', area:'Downtown Core', lat:53.5461, lng:-113.4938 },
+    { id:2, name:'Strathcona Lounge', type:'Indoor Venue', price:80, rating:5.0, reviews:58, capacity:'Up to 80 guests', amenities:['Full Kitchen','Bar Setup','AV System','Parking'], color:'from-amber-700/35 to-yellow-600/10', border:'border-amber-500/25', accent:'text-amber-300', badge:'bg-amber-500/20 text-amber-200', image:'https://images.unsplash.com/photo-1551632436-cbf8dd35adfa?auto=format&fit=crop&w=1400&q=80', area:'Old Strathcona', lat:53.5192, lng:-113.4970 },
+    { id:3, name:'Campus Study Hall', type:'Academic Space', price:25, rating:4.5, reviews:21, capacity:'Up to 30 guests', amenities:['4K Projector','Whiteboards','High-Speed WiFi'], color:'from-lime-700/35 to-emerald-600/10', border:'border-lime-500/25', accent:'text-lime-300', badge:'bg-lime-500/20 text-lime-200', image:'https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1400&q=80', area:'U of A Campus', lat:53.5232, lng:-113.5263 },
+    { id:4, name:'Oliver Rooftop Garden', type:'Outdoor Garden', price:65, rating:4.7, reviews:44, capacity:'Up to 60 guests', amenities:['Patio Furniture','String Lights','City Views'], color:'from-green-700/35 to-amber-600/10', border:'border-green-500/25', accent:'text-green-300', badge:'bg-green-500/20 text-green-200', image:'https://images.unsplash.com/photo-1505236858219-8359eb29e329?auto=format&fit=crop&w=1400&q=80', area:'Oliver District', lat:53.5480, lng:-113.5210 },
+    { id:5, name:'Warehouse Loft', type:'Industrial Venue', price:95, rating:4.9, reviews:67, capacity:'Up to 120 guests', amenities:['Full Stage','Pro Sound System','Bar Setup','Parking'], color:'from-emerald-800/35 to-amber-700/10', border:'border-yellow-500/25', accent:'text-yellow-300', badge:'bg-yellow-500/20 text-yellow-200', image:'https://images.unsplash.com/photo-1489515217757-5fd1be406fef?auto=format&fit=crop&w=1400&q=80', area:'Boyle Street', lat:53.5405, lng:-113.4760 },
   ];
 
   const ddEvents = [
@@ -813,9 +850,7 @@
       </div>` : '';
 
       return `<div class="fixed inset-0 z-[200] bg-[#040913] flex flex-col overflow-hidden">
-        <div class="absolute inset-0 aurora-bg pointer-events-none bg-[radial-gradient(circle_at_16%_24%,rgba(16,185,129,0.2),transparent_40%),radial-gradient(circle_at_88%_16%,rgba(245,158,11,0.16),transparent_38%),radial-gradient(circle_at_52%_78%,rgba(52,211,153,0.16),transparent_42%)]"></div>
-        <div class="absolute top-[-15%] left-[-10%] w-[40%] h-[40%] rounded-full bg-emerald-900/30 blur-[100px] pointer-events-none"></div>
-        <div class="absolute bottom-[-15%] right-[-10%] w-[35%] h-[45%] rounded-full bg-yellow-900/20 blur-[100px] pointer-events-none"></div>
+        <div class="absolute inset-0 pointer-events-none overflow-hidden"><div class="absolute inset-0 bg-[radial-gradient(circle_at_16%_24%,rgba(16,185,129,0.22),transparent_40%),radial-gradient(circle_at_88%_16%,rgba(245,158,11,0.18),transparent_38%),radial-gradient(circle_at_52%_78%,rgba(52,211,153,0.18),transparent_42%),radial-gradient(circle_at_30%_55%,rgba(6,95,70,0.15),transparent_45%),radial-gradient(circle_at_80%_70%,rgba(120,100,20,0.1),transparent_40%)] aurora-bg"></div></div>
         <button onclick="ddCloseDeepDive()" class="absolute top-5 right-5 z-50 h-10 w-10 rounded-full bg-slate-800/60 border border-white/10 flex items-center justify-center hover:bg-slate-700 transition-colors">${icon('X','h-4 w-4 text-slate-400')}</button>
         ${S.ddStep!=='signin'&&S.ddStep!=='ready'?`<div class="absolute top-0 left-0 right-0 h-1 bg-slate-800/60"><div class="h-full bg-gradient-to-r from-emerald-500 to-amber-600 transition-all duration-700" style="width:${((stepNum-1)/4)*100}%"></div></div>`:''}
         <div class="flex-1 flex items-center justify-center p-6 overflow-y-auto">${stepContent}</div>
@@ -961,7 +996,7 @@
     // Renter Explore
     if(role==='renter' && et==='explore') {
       mainContent = `<div class="p-4 sm:p-6 md:p-8 max-w-5xl mx-auto"><h1 class="text-2xl font-extrabold text-white mb-6">Explore Edmonton</h1>
-        <div class="h-56 sm:h-72 bg-slate-800/30 rounded-3xl border border-white/5 flex items-center justify-center mb-8 relative overflow-hidden"><div class="absolute inset-0 opacity-30" style="background-image:radial-gradient(circle at 30% 50%, #22c55e40 0%, transparent 50%), radial-gradient(circle at 70% 50%, #f59e0b30 0%, transparent 50%)"></div>${filteredSpaces.map((s,i)=>`<button class="absolute h-10 w-10 rounded-full border border-emerald-300/50 overflow-hidden cursor-pointer hover:scale-110 transition-transform drop-shadow-lg" style="left:${15+i*17}%;top:${25+(i%3)*20}%" onclick="ddOpenBookingDetailById(${s.id})" title="${s.name}"><img src="${s.image}" alt="${s.name}" class="h-full w-full object-cover" loading="lazy"/></button>`).join('')}<div class="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/60 backdrop-blur-sm px-4 py-2 rounded-full text-xs text-slate-300">Click a pin to view space details</div></div>
+        <div id="explore-map" class="h-[400px] sm:h-[500px] rounded-3xl border border-white/5 mb-8 overflow-hidden relative z-10"></div>
         ${filteredSpaces.length===0?'<div class="text-slate-500 text-sm bg-slate-800/30 border border-white/5 rounded-2xl p-6">No spaces match this filter right now.</div>':`<div class="grid grid-cols-2 md:grid-cols-3 gap-4">${filteredSpaces.map(s=>`<button onclick="ddOpenBookingDetailById(${s.id})" class="flex items-center space-x-3 bg-slate-800/40 hover:bg-slate-800/70 border border-white/5 rounded-2xl p-3 text-left transition-colors"><img src="${s.image}" alt="${s.name}" class="h-10 w-10 rounded-lg object-cover flex-shrink-0" loading="lazy"/><div><p class="font-bold text-white text-sm">${s.name}</p><p class="text-xs text-slate-400">${s.area}</p></div></button>`).join('')}</div>`}
       </div>`;
     }
@@ -1037,7 +1072,7 @@
     const sidebarRoleColor = role==='sponsor'?'text-amber-400':'text-emerald-400';
 
     return `<div class="fixed inset-0 z-[200] bg-[#040913] flex flex-col overflow-hidden">
-      <div class="absolute inset-0 aurora-bg pointer-events-none bg-[radial-gradient(circle_at_18%_24%,rgba(16,185,129,0.16),transparent_40%),radial-gradient(circle_at_82%_20%,rgba(245,158,11,0.14),transparent_38%),radial-gradient(circle_at_52%_78%,rgba(52,211,153,0.16),transparent_42%)]"></div>
+      <div class="absolute inset-0 pointer-events-none overflow-hidden"><div class="absolute inset-0 bg-[radial-gradient(circle_at_18%_24%,rgba(16,185,129,0.16),transparent_40%),radial-gradient(circle_at_82%_20%,rgba(245,158,11,0.14),transparent_38%),radial-gradient(circle_at_52%_78%,rgba(52,211,153,0.16),transparent_42%)] aurora-bg"></div></div>
       ${toastHtml}${bookingFlowHtml}${proposalHtml}${createHtml}
 
       <header class="h-14 sm:h-16 bg-[#0c1220] border-b border-white/5 flex items-center px-3 sm:px-6 gap-2 flex-shrink-0 z-40">
@@ -1193,9 +1228,7 @@
     const deepDiveHtml = renderDeepDive();
 
     const html = `<div class="min-h-screen bg-[#05070a] font-sans text-[#d7dfd0] overflow-hidden selection:bg-emerald-500/30 flex flex-col">
-      <div class="fixed top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-emerald-900/20 blur-[120px] pointer-events-none"></div>
-      <div class="fixed bottom-[-20%] right-[-10%] w-[40%] h-[50%] rounded-full bg-yellow-900/10 blur-[100px] pointer-events-none"></div>
-      <div class="fixed inset-0 pointer-events-none aurora-bg bg-[radial-gradient(circle_at_18%_24%,rgba(16,185,129,0.16),transparent_36%),radial-gradient(circle_at_84%_18%,rgba(245,158,11,0.14),transparent_38%),radial-gradient(circle_at_56%_84%,rgba(110,231,183,0.08),transparent_42%)]"></div>
+      ${!da?`<div class="fixed inset-0 pointer-events-none overflow-hidden"><div class="absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,rgba(16,185,129,0.18),transparent_40%),radial-gradient(circle_at_85%_15%,rgba(245,158,11,0.14),transparent_38%),radial-gradient(circle_at_50%_80%,rgba(110,231,183,0.1),transparent_42%),radial-gradient(circle_at_30%_60%,rgba(6,95,70,0.12),transparent_45%),radial-gradient(circle_at_75%_75%,rgba(120,100,20,0.08),transparent_40%)] aurora-bg"></div></div>`:''}
 
       ${!da?`<div class="fixed top-0 left-0 right-0 z-[80] h-1 bg-[#07120d]/85 backdrop-blur-sm pointer-events-none"><div class="h-full bg-gradient-to-r from-emerald-400 via-lime-300 to-amber-400 shadow-[0_0_18px_rgba(52,211,153,0.45)] transition-[width] duration-150" style="width:${S.pageScrollProgress}%"></div></div>`:''}
 
@@ -1216,10 +1249,56 @@
         <div class="text-center md:text-left text-xs text-slate-500 flex flex-col md:flex-row justify-between items-center border-t border-white/5 pt-6"><p>&copy; ${new Date().getFullYear()} EventSpot Inc. All rights reserved.</p><p class="mt-2 md:mt-0">Headquartered in Edmonton, Alberta, Canada.</p></div>
       </div></footer>`:''}
 
-      ${deepDiveHtml}
-    </div>`;
+    </div>${deepDiveHtml}`;
 
     document.getElementById('root').innerHTML = html;
+    initExploreMap();
+  }
+
+  // ---- LEAFLET MAP ----
+  let _mapInstance = null;
+  function initExploreMap() {
+    const container = document.getElementById('explore-map');
+    if (!container) { if (_mapInstance) { _mapInstance.remove(); _mapInstance = null; } return; }
+    if (_mapInstance) { _mapInstance.remove(); _mapInstance = null; }
+    if (typeof L === 'undefined') return;
+
+    const map = L.map(container, { zoomControl: true, attributionControl: false }).setView([53.535, -113.500], 13);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      maxZoom: 19,
+      subdomains: 'abcd'
+    }).addTo(map);
+
+    const filteredSpaces = S.ddSpaceFilter === 'All' ? ddSpaces : ddSpaces.filter(s => {
+      if (S.ddSpaceFilter === 'Rooftop') return s.type.includes('Rooftop');
+      return s.type.includes(S.ddSpaceFilter);
+    });
+
+    filteredSpaces.forEach(space => {
+      const markerIcon = L.divIcon({
+        className: '',
+        html: `<div class="space-marker"><img src="${space.image}" alt="${space.name}"/></div>`,
+        iconSize: [40, 40],
+        iconAnchor: [20, 20],
+        popupAnchor: [0, -24]
+      });
+      const marker = L.marker([space.lat, space.lng], { icon: markerIcon }).addTo(map);
+      marker.bindPopup(`
+        <div style="min-width:200px">
+          <img src="${space.image}" style="width:100%;height:80px;object-fit:cover;border-radius:8px;margin-bottom:8px"/>
+          <div style="font-weight:800;color:#fff;font-size:14px;margin-bottom:2px">${space.name}</div>
+          <div style="font-size:11px;color:#94a3b8;margin-bottom:6px">${space.area} · ${space.type}</div>
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <span style="color:#6ee7b7;font-weight:800;font-size:16px">$${space.price}<span style="font-size:11px;color:#64748b">/hr</span></span>
+            <span style="color:#fbbf24;font-size:12px">★ ${space.rating}</span>
+          </div>
+          <button onclick="ddOpenBookingDetailById(${space.id})" style="width:100%;margin-top:8px;padding:8px;background:linear-gradient(to right,#059669,#d97706);color:#fff;font-weight:700;font-size:12px;border:none;border-radius:12px;cursor:pointer">Book This Space</button>
+        </div>
+      `);
+    });
+
+    _mapInstance = map;
+    setTimeout(() => map.invalidateSize(), 100);
   }
 
   // ---- SCROLL HANDLER ----
